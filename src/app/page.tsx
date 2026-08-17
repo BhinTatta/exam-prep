@@ -1,69 +1,120 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { siteConfig, exams } from "@/config/site";
+import { BookOpen, MessagesSquare, Users, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+
+const features = [
+  {
+    icon: BookOpen,
+    title: "Curated resources",
+    description:
+      "Institute material, books, test series and PYQs — organized by subject and category, kept up to date by moderators.",
+    href: "/resources",
+    cta: "Browse resources",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Community Q&A",
+    description:
+      "Ask a question with full LaTeX support, get answers from the community, or deep-link straight to ChatGPT for a first pass.",
+    href: "/qa",
+    cta: "Ask a question",
+  },
+  {
+    icon: Users,
+    title: "Mentor marketplace",
+    description:
+      "Book 1:1 sessions with verified toppers and mentors. Simple manual UPI payment, Jitsi video call, zero platform fee in v1.",
+    href: "/mentors",
+    cta: "Find a mentor",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="flex flex-col">
+      <section className="relative overflow-hidden border-b">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,theme(colors.primary/8%),transparent_60%)]" />
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-24 text-center">
+          <Badge variant="secondary" className="gap-1.5 px-3 py-1">
+            <Sparkles className="size-3.5" /> Free forever. No ads. Community-first.
+          </Badge>
+          <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            {siteConfig.tagline}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="max-w-2xl text-balance text-lg text-muted-foreground">
+            {siteConfig.description} Built for {exams.map((e) => e.label).join(", ")} aspirants,
+            by people who&apos;ve taken the exams.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/resources">
+              <Button size="lg" className="gap-1.5">
+                Explore resources <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+            <Link href="/qa">
+              <Button size="lg" variant="outline">
+                Ask the community
+              </Button>
+            </Link>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {exams.map((exam) => (
+              <Badge key={exam.slug} variant="outline" className="px-3 py-1 text-sm font-normal">
+                {exam.fullName}
+              </Badge>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-4 py-20">
+        <div className="mb-10 text-center">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Everything in one place</h2>
+          <p className="mt-2 text-muted-foreground">Three pillars, one platform, zero cost to you.</p>
         </div>
-      </main>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <Card key={f.title} className="flex flex-col justify-between transition-shadow hover:shadow-md">
+              <CardHeader>
+                <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                  <f.icon className="size-5 text-primary" />
+                </div>
+                <CardTitle>{f.title}</CardTitle>
+                <CardDescription>{f.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href={f.href}>
+                  <Button variant="ghost" className="gap-1.5 px-0 hover:bg-transparent hover:underline">
+                    {f.cta} <ArrowRight className="size-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t bg-muted/30">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center">
+          <ShieldCheck className="size-8 text-primary" />
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            Run by moderators, not algorithms
+          </h2>
+          <p className="max-w-xl text-muted-foreground">
+            Content is curated by trusted moderators, mentors are manually verified before they
+            can take bookings, and every payment is confirmed by a human before a session is
+            locked in.
+          </p>
+          <Link href="/mentors/apply">
+            <Button variant="outline" size="lg">
+              Apply to become a mentor
+            </Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

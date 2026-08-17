@@ -2,7 +2,39 @@
   "permissions": {
     "allow": [
       "Bash(npm -v)",
-      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)"
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(cd \"F:/development/exam-prep\" && mv ../PROJECT_BRIEF.md.bak PROJECT_BRIEF.md && cat package.json | grep -E '\"next\"|\"react\"')",
+      "Bash(npx --yes shadcn@latest init -d)",
+      "Bash(npx --yes shadcn@latest add button input textarea label card badge avatar dropdown-menu dialog alert-dialog select tabs table separator sheet sonner form checkbox switch tooltip popover command skeleton scroll-area breadcrumb pagination navigation-menu accordion progress calendar)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p prisma)",
+      "Bash(npx --yes prisma@5 --version)",
+      "Bash(npx --yes prisma@5 generate)",
+      "Bash(npm ls *)",
+      "Bash(npx tsc *)",
+      "Bash(npx --yes shadcn@latest add --help)",
+      "Bash(npx --yes shadcn@latest init --help)",
+      "Bash(rm -rf src/components/ui)",
+      "Bash(npx --yes shadcn@latest init -b radix -f -d)",
+      "Bash(npx --yes shadcn@latest init -b radix -f -y)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(npm root *)",
+      "Bash(npx --yes shadcn@latest init -p radix-nova -f -y)",
+      "Bash(npx --yes shadcn@latest init -p nova -b radix -f -y)",
+      "Bash(npx --yes shadcn@latest add button -y -o)",
+      "Bash(npx --yes shadcn@latest add input textarea label card badge avatar dropdown-menu dialog alert-dialog select tabs table separator sheet sonner form checkbox switch tooltip popover command skeleton scroll-area breadcrumb pagination navigation-menu accordion progress calendar -y -o)",
+      "Bash(npm uninstall *)",
+      "Bash(npx prisma *)",
+      "Bash(npm run *)",
+      "Read(//tmp/**)",
+      "Bash(docker --version)",
+      "Bash(where postgres *)",
+      "Bash(where pg_ctl)",
+      "Bash(mv prisma/schema.prisma.bak prisma/schema.prisma)",
+      "Bash(npm view *)",
+      "Bash(node --env-file=.env scratch-create-bucket.mjs)",
+      "Bash(node --env-file=.env -e ' *)",
+      "Bash(git add *)"
     ]
   }
 }
