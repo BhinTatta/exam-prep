@@ -34,7 +34,8 @@
       "Bash(npm view *)",
       "Bash(node --env-file=.env scratch-create-bucket.mjs)",
       "Bash(node --env-file=.env -e ' *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

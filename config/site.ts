@@ -46,6 +46,26 @@ export const navLinks = [
   { href: "/resources", label: "Resources" },
   { href: "/qa", label: "Q&A" },
   { href: "/mentors", label: "Mentors" },
+  { href: "/tests", label: "Diagnostic Test" },
+] as const;
+
+// Suggestions only (admin can still type any topic) — keeps topic tagging
+// consistent across questions and mentor profiles without hardcoding a
+// closed list.
+export const suggestedPhysicsTopics = [
+  "Mechanics",
+  "Rotational Mechanics",
+  "Waves & Oscillations",
+  "Thermodynamics & Statistical Mechanics",
+  "Electricity & Magnetism",
+  "Electromagnetic Theory",
+  "Optics",
+  "Modern Physics",
+  "Quantum Mechanics",
+  "Atomic & Molecular Physics",
+  "Solid State Physics",
+  "Nuclear & Particle Physics",
+  "Mathematical Physics",
 ] as const;
 
 export const chatGptDeepLink = (question: string) =>

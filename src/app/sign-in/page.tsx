@@ -6,7 +6,13 @@ import { TelegramLoginButton } from "@/components/auth/telegram-login-button";
 import { siteConfig } from "@/config/site";
 import { GraduationCap } from "lucide-react";
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl = "/" } = await searchParams;
+
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center px-4">
       <Card className="w-full">
@@ -19,7 +25,7 @@ export default function SignInPage() {
           <form
             action={async () => {
               "use server";
-              await signIn("google", { redirectTo: "/" });
+              await signIn("google", { redirectTo: callbackUrl });
             }}
           >
             <Button type="submit" variant="outline" className="w-full">
@@ -51,10 +57,14 @@ export default function SignInPage() {
             <Separator className="flex-1" />
           </div>
 
-          <TelegramLoginButton callbackUrl="/" />
+          <TelegramLoginButton callbackUrl={callbackUrl} />
 
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            By continuing you agree this is a free, community-run platform. No spam, no ads.
+            By continuing you agree to our{" "}
+            <a href="/terms" className="underline underline-offset-2 hover:text-foreground">
+              Terms &amp; Conditions
+            </a>
+            . Free, community-run platform. No spam, no ads.
           </p>
         </CardContent>
       </Card>

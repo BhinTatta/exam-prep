@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ResourceFilters } from "@/components/resources/resource-filters";
 import { ResourceActions } from "@/components/resources/resource-actions";
+import { ReportButton } from "@/components/report-button";
 import { resourceCategories } from "@/config/site";
 import { BookMarked, ExternalLink, Plus, Pin, Star } from "lucide-react";
 import type { Prisma } from "@prisma/client";
@@ -83,9 +84,12 @@ export default async function ResourcesPage({
                   {r.featured && <Star className="size-3.5 fill-amber-400 text-amber-400" />}
                   <CardTitle className="text-base leading-snug">{r.title}</CardTitle>
                 </div>
-                {canWrite && (
-                  <ResourceActions id={r.id} pinned={r.pinned} featured={r.featured} isAdmin={isAdmin} />
-                )}
+                <div className="flex shrink-0 items-center">
+                  {session?.user && <ReportButton targetType="RESOURCE" targetId={r.id} />}
+                  {canWrite && (
+                    <ResourceActions id={r.id} pinned={r.pinned} featured={r.featured} isAdmin={isAdmin} />
+                  )}
+                </div>
               </CardHeader>
               <CardContent className="flex flex-1 flex-col justify-between gap-3">
                 <div className="flex flex-wrap gap-1.5">

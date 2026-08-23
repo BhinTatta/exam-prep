@@ -10,6 +10,7 @@ import { KatexContent } from "@/components/katex-content";
 import { CommentForm } from "@/components/qa/comment-form";
 import { CommentItem } from "@/components/qa/comment-item";
 import { QuestionModActions } from "@/components/qa/question-mod-actions";
+import { ReportButton } from "@/components/report-button";
 import { chatGptDeepLink } from "@/config/site";
 import { formatDistanceToNow } from "date-fns";
 import { Bot, Lock, Pin } from "lucide-react";
@@ -61,7 +62,10 @@ export default async function QuestionDetailPage({ params }: { params: Promise<{
               </p>
             </div>
           </div>
-          {canModerate && <QuestionModActions id={question.id} pinned={question.pinned} locked={question.locked} />}
+          <div className="flex items-center gap-1">
+            {session?.user && <ReportButton targetType="QUESTION" targetId={question.id} />}
+            {canModerate && <QuestionModActions id={question.id} pinned={question.pinned} locked={question.locked} />}
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <KatexContent text={question.body} className="text-sm leading-relaxed" />
@@ -90,6 +94,7 @@ export default async function QuestionDetailPage({ params }: { params: Promise<{
                 questionId={question.id}
                 hasUpvoted={Array.isArray(c.votes) && c.votes.length > 0}
                 canModerate={canModerate}
+                canReport={!!session?.user}
               />
             ))}
             {question.comments.length === 0 && (

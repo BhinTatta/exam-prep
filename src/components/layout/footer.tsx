@@ -18,9 +18,12 @@ export function Footer() {
           <Link href="/mentors" className="hover:text-foreground">
             Mentors
           </Link>
-          <a href={`mailto:${siteConfig.supportEmail}`} className="hover:text-foreground">
+          <Link href="/contact" className="hover:text-foreground">
             Contact
-          </a>
+          </Link>
+          <Link href="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
         </div>
       </div>
     </footer>

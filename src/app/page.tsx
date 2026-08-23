@@ -3,9 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { siteConfig, exams } from "@/config/site";
-import { BookOpen, MessagesSquare, Users, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { BookOpen, MessagesSquare, Users, ArrowRight, ShieldCheck, Sparkles, Target } from "lucide-react";
 
 const features = [
+  {
+    icon: Target,
+    title: "Free diagnostic test",
+    description:
+      "15 minutes, no account needed. Get a real topic-by-topic score, a study plan, and — if it'll actually help — a mentor match.",
+    href: "/tests",
+    cta: "Take the diagnostic",
+  },
   {
     icon: BookOpen,
     title: "Curated resources",
@@ -49,14 +57,14 @@ export default function Home() {
             by people who&apos;ve taken the exams.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/resources">
+            <Link href="/tests">
               <Button size="lg" className="gap-1.5">
-                Explore resources <ArrowRight className="size-4" />
+                Take the free diagnostic <ArrowRight className="size-4" />
               </Button>
             </Link>
-            <Link href="/qa">
+            <Link href="/resources">
               <Button size="lg" variant="outline">
-                Ask the community
+                Explore resources
               </Button>
             </Link>
           </div>

@@ -57,15 +57,16 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
-  emailVerified DateTime?
-  name          String?
-  image         String?
-  role          Role      @default(USER)
-  telegramId    String?   @unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  email           String?   @unique
+  emailVerified   DateTime?
+  name            String?
+  image           String?
+  role            Role      @default(USER)
+  telegramId      String?   @unique
+  termsAcceptedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
@@ -79,6 +80,8 @@ model User {
   verifiedMentors  MentorProfile[] @relation("MentorVerifier")
   paymentsVerified Booking[]      @relation("PaymentVerifier")
   payoutsPaid      Payout[]       @relation("PayoutAdmin")
+  reports          Report[]
+  assessmentAttempts AssessmentAttempt[]
 
   @@index([role])
 }
@@ -172,6 +175,12 @@ model MentorProfile {
   availability Availability[]
   bookings     Booking[]
 
+  // Topic tags (e.g. "Rotational Mechanics") used to match this mentor against
+  // a mentee's weak topics from an assessment result. Empty until the mentor
+  // (or admin) tags them; recommendation logic falls back to "any verified
+  // mentor" when no tagged mentor overlaps.
+  topics String[] @default([])
+
   @@index([verified])
 }
 
@@ -245,4 +254,185 @@ model Payout {
   paidAt      DateTime?
   notes       String?
   createdAt   DateTime  @default(now())
+}
+
+// ---------- Reports & contact ----------
+
+enum ReportTargetType {
+  QUESTION
+  COMMENT
+  RESOURCE
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model Report {
+  id         String           @id @default(cuid())
+  targetType ReportTargetType
+  targetId   String
+  contextUrl String? // page the report was filed from, for the admin to jump to the content
+  reason     String
+  details    String?          @db.Text
+  status     ReportStatus     @default(OPEN)
+
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  resolvedAt DateTime?
+  resolvedBy String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([targetType, targetId, reporterId])
+  @@index([status])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([resolved])
+}
+
+// ---------- Assessment engine (diagnostic tests, e.g. "JAM Physics") ----------
+// A `Test` is one free assessment. Anyone can take it without an account —
+// see AssessmentAttempt.userId. Designed to scale to multiple tests: a Test
+// is config, not a hardcoded flow.
+
+enum AssessmentQuestionSection {
+  PROFILE // "which year are you in", "prep level" — no correct answer
+  CONTENT // actual subject questions, scored
+}
+
+model Test {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  subject         String
+  description     String?  @db.Text
+  durationMinutes Int      @default(15)
+  published       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  questions AssessmentQuestion[]
+  attempts  AssessmentAttempt[]
+
+  @@index([published])
+}
+
+model AssessmentQuestion {
+  id      String                    @id @default(cuid())
+  testId  String
+  test    Test                      @relation(fields: [testId], references: [id], onDelete: Cascade)
+  section AssessmentQuestionSection @default(CONTENT)
+
+  // For CONTENT questions this is the subject topic (e.g. "Rotational
+  // Mechanics") used for scoring breakdown and mentor matching. For PROFILE
+  // questions it's a stable key (e.g. "prep_level") the admin assigns so the
+  // study-plan generator can read it back — same table, same admin CRUD,
+  // per the "controlled from admin" requirement.
+  topic String
+
+  prompt   String  @db.Text
+  imageUrl String?
+
+  // [{ id: "a", label: "..." }, ...]. Single-select for both sections in v1.
+  options          Json
+  correctOptionIds String[] @default([]) // empty for PROFILE questions
+
+  marks         Int     @default(4)
+  negativeMarks Int     @default(1)
+  order         Int     @default(0)
+  isActive      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  responses AttemptResponse[]
+
+  @@index([testId, section, order])
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EVALUATED
+}
+
+model AssessmentAttempt {
+  id     String @id @default(cuid())
+  testId String
+  test   Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  // Null until claimed by a logged-in user. Anonymous attempts are fully
+  // usable — the result page carries the attemptId, and signing in from
+  // there claims it. No account required to take the test.
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  status      AttemptStatus @default(IN_PROGRESS)
+  startedAt   DateTime      @default(now())
+  submittedAt DateTime?
+
+  // Marketing attribution only — not used for anon/account linking.
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+
+  responses AttemptResponse[]
+  result    AttemptResult?
+
+  @@index([testId])
+  @@index([userId])
+}
+
+model AttemptResponse {
+  id        String             @id @default(cuid())
+  attemptId String
+  attempt   AssessmentAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  question  AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  selectedOptionIds String[] @default([])
+  isCorrect         Boolean?
+  marksAwarded      Int?
+
+  createdAt DateTime @default(now())
+
+  @@unique([attemptId, questionId])
+}
+
+model AttemptResult {
+  id        String            @id @default(cuid())
+  attemptId String            @unique
+  attempt   AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  totalScore     Int
+  maxScore       Int
+  topicBreakdown Json // TopicStat[] — see src/lib/assessment/types.ts
+  strengths      String[]
+  weaknesses     String[]
+
+  // Answers to PROFILE questions, e.g. { "prep_level": "Just starting out" }.
+  // Captured at submit time so study-plan generation doesn't need to rejoin
+  // responses later.
+  profileAnswers Json?
+
+  // Null until the signed-in owner unlocks it (the account-creation hook —
+  // see the results page). Generated on demand, not at submit time, so
+  // anonymous test-takers who never sign up never cost an AI call.
+  // Never the source of truth for the score itself. See src/lib/ai/study-plan.ts.
+  studyPlan            Json?
+  recommendedMentorIds String[] @default([])
+
+  generatedAt DateTime @default(now())
 }

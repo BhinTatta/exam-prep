@@ -7,6 +7,7 @@ import { ArrowBigUp, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { KatexContent } from "@/components/katex-content";
+import { ReportButton } from "@/components/report-button";
 import { toggleUpvote, deleteComment } from "@/app/qa/actions";
 import { cn } from "@/lib/utils";
 
@@ -15,11 +16,13 @@ export function CommentItem({
   questionId,
   hasUpvoted,
   canModerate,
+  canReport,
 }: {
   comment: { id: string; body: string; upvotes: number; createdAt: Date; user: { name: string | null; image: string | null } };
   questionId: string;
   hasUpvoted: boolean;
   canModerate: boolean;
+  canReport: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -37,22 +40,25 @@ export function CommentItem({
               · {formatDistanceToNow(comment.createdAt, { addSuffix: true })}
             </span>
           </p>
-          {canModerate && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-6 text-muted-foreground hover:text-destructive"
-              disabled={isPending}
-              onClick={() =>
-                startTransition(async () => {
-                  await deleteComment(comment.id, questionId);
-                  toast.success("Comment removed");
-                })
-              }
-            >
-              <Trash2 className="size-3.5" />
-            </Button>
-          )}
+          <div className="flex items-center">
+            {canReport && <ReportButton targetType="COMMENT" targetId={comment.id} className="size-6 text-muted-foreground hover:text-destructive" />}
+            {canModerate && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-6 text-muted-foreground hover:text-destructive"
+                disabled={isPending}
+                onClick={() =>
+                  startTransition(async () => {
+                    await deleteComment(comment.id, questionId);
+                    toast.success("Comment removed");
+                  })
+                }
+              >
+                <Trash2 className="size-3.5" />
+              </Button>
+            )}
+          </div>
         </div>
         <KatexContent text={comment.body} className="mt-1 text-sm" />
         <Button
