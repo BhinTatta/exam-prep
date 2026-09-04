@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { hasRole } from "@/lib/auth-helpers";
-import { GraduationCap, LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
+import { Calendar, GraduationCap, LayoutDashboard, LogOut, ShieldCheck, User } from "lucide-react";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
 export async function Navbar() {
@@ -80,6 +80,16 @@ export async function Navbar() {
                   </span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <User className="mr-2 size-4" /> My profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/bookings">
+                    <Calendar className="mr-2 size-4" /> My sessions
+                  </Link>
+                </DropdownMenuItem>
                 {hasRole(user.role, "MENTOR") && (
                   <DropdownMenuItem asChild>
                     <Link href="/mentor/dashboard">

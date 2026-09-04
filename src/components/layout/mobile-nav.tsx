@@ -30,6 +30,20 @@ export function MobileNav({ isSignedIn, role }: { isSignedIn: boolean; role?: st
               </Button>
             </Link>
           ))}
+          {isSignedIn && (
+            <>
+              <Link href="/profile" onClick={() => setOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start">
+                  My profile
+                </Button>
+              </Link>
+              <Link href="/bookings" onClick={() => setOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start">
+                  My sessions
+                </Button>
+              </Link>
+            </>
+          )}
           {isSignedIn && hasRole(role, "ADMIN") && (
             <Link href="/admin" onClick={() => setOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
