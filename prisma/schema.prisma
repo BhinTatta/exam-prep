@@ -56,17 +56,33 @@ enum Role {
   ADMIN
 }
 
+// Where the student currently is in their JAM/NET/GATE prep journey —
+// shown on their profile and used to tailor mentor matching.
+enum AcademicStatus {
+  FIRST_YEAR
+  SECOND_YEAR
+  THIRD_YEAR
+  FINAL_YEAR
+  POST_GRADUATE
+  DROPPER
+  WORKING_PROFESSIONAL
+  OTHER
+}
+
 model User {
-  id              String    @id @default(cuid())
-  email           String?   @unique
+  id              String         @id @default(cuid())
+  email           String?        @unique
   emailVerified   DateTime?
   name            String?
   image           String?
-  role            Role      @default(USER)
-  telegramId      String?   @unique
+  bio             String?        @db.Text
+  collegeName     String?
+  academicStatus  AcademicStatus?
+  role            Role           @default(USER)
+  telegramId      String?        @unique
   termsAcceptedAt DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   accounts Account[]
   sessions Session[]
