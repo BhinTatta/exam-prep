@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TelegramLoginButton } from "@/components/auth/telegram-login-button";
+import { EmailAuthForm } from "@/components/auth/email-auth-form";
 import { siteConfig } from "@/config/site";
 import { GraduationCap } from "lucide-react";
 
@@ -50,6 +51,14 @@ export default async function SignInPage({
               Continue with Google
             </Button>
           </form>
+
+          <div className="flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">OR</span>
+            <Separator className="flex-1" />
+          </div>
+
+          <EmailAuthForm callbackUrl={callbackUrl} />
 
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />

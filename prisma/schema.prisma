@@ -80,6 +80,7 @@ model User {
   academicStatus  AcademicStatus?
   role            Role           @default(USER)
   telegramId      String?        @unique
+  firebaseUid     String?        @unique
   termsAcceptedAt DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt

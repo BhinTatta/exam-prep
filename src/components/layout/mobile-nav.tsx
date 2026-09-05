@@ -6,7 +6,7 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { navLinks, siteConfig } from "@/config/site";
-import { hasRole } from "@/lib/auth-helpers";
+import { hasRole } from "@/lib/roles";
 
 export function MobileNav({ isSignedIn, role }: { isSignedIn: boolean; role?: string }) {
   const [open, setOpen] = useState(false);

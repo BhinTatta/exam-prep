@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyTelegramAuth, type TelegramAuthPayload } from "@/lib/telegram";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { authConfig } from "@/auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -43,6 +44,52 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             image: payload.photo_url,
           },
         });
+
+        return { id: user.id, name: user.name, email: user.email, image: user.image, role: user.role };
+      },
+    }),
+    Credentials({
+      id: "firebase",
+      name: "Email",
+      credentials: {
+        idToken: { label: "Firebase ID token", type: "text" },
+      },
+      async authorize(credentials) {
+        if (typeof credentials?.idToken !== "string") return null;
+
+        let decoded;
+        try {
+          decoded = await getFirebaseAdminAuth().verifyIdToken(credentials.idToken);
+        } catch {
+          return null;
+        }
+
+        if (!decoded.email) return null;
+
+        // Link by firebaseUid first; fall back to linking an existing
+        // email-only row (e.g. pre-seeded admin, or a Google account with
+        // the same email) rather than colliding on the unique email
+        // constraint — same intent as Google's allowDangerousEmailAccountLinking.
+        let user = await prisma.user.findUnique({ where: { firebaseUid: decoded.uid } });
+        if (!user) {
+          const existingByEmail = await prisma.user.findUnique({ where: { email: decoded.email } });
+          user = existingByEmail
+            ? await prisma.user.update({
+                where: { id: existingByEmail.id },
+                data: {
+                  firebaseUid: decoded.uid,
+                  emailVerified: decoded.email_verified ? new Date() : existingByEmail.emailVerified,
+                },
+              })
+            : await prisma.user.create({
+                data: {
+                  firebaseUid: decoded.uid,
+                  email: decoded.email,
+                  emailVerified: decoded.email_verified ? new Date() : null,
+                  name: decoded.name ?? decoded.email.split("@")[0],
+                },
+              });
+        }
 
         return { id: user.id, name: user.name, email: user.email, image: user.image, role: user.role };
       },
