@@ -1,5 +1,5 @@
-import { initializeApp, getApps, getApp, cert, type App } from "firebase-admin/app";
-import { getAuth, type Auth } from "firebase-admin/auth";
+import type { App } from "firebase-admin/app";
+import type { Auth } from "firebase-admin/auth";
 
 // Node-only (service account). Never import this from a client component or
 // edge middleware — see src/auth.ts, which mirrors the Telegram provider's
@@ -9,10 +9,15 @@ import { getAuth, type Auth } from "firebase-admin/auth";
 // src/auth.ts on every page render) must be a no-op until email/password
 // sign-in is actually attempted, so the rest of the app keeps working before
 // FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY are set.
+// The firebase-admin SDK is pulled in via dynamic import() for the same
+// reason — loading it eagerly runs its (heavy, CJS-quirky) module graph on
+// every request, not just the sign-in path.
 let app: App | undefined;
 
-function getFirebaseAdminApp(): App {
+async function getFirebaseAdminApp(): Promise<App> {
   if (app) return app;
+
+  const { initializeApp, getApps, getApp, cert } = await import("firebase-admin/app");
   if (getApps().length > 0) {
     app = getApp();
     return app;
@@ -31,6 +36,7 @@ function getFirebaseAdminApp(): App {
   return app;
 }
 
-export function getFirebaseAdminAuth(): Auth {
-  return getAuth(getFirebaseAdminApp());
+export async function getFirebaseAdminAuth(): Promise<Auth> {
+  const { getAuth } = await import("firebase-admin/auth");
+  return getAuth(await getFirebaseAdminApp());
 }

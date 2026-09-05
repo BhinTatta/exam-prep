@@ -13,7 +13,7 @@ const TEST_USERS = [{ email: "razorpaytest@test.com", password: "Asdf.1234", nam
 const prisma = new PrismaClient();
 
 async function main() {
-  const firebaseAdminAuth = getFirebaseAdminAuth();
+  const firebaseAdminAuth = await getFirebaseAdminAuth();
   for (const { email, password, name } of TEST_USERS) {
     const firebaseUser = await firebaseAdminAuth
       .getUserByEmail(email)

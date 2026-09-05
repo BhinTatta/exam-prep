@@ -59,7 +59,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         let decoded;
         try {
-          decoded = await getFirebaseAdminAuth().verifyIdToken(credentials.idToken);
+          const adminAuth = await getFirebaseAdminAuth();
+          decoded = await adminAuth.verifyIdToken(credentials.idToken);
         } catch {
           return null;
         }
