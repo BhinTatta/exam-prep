@@ -3,7 +3,7 @@
 // need to hardcode these strings.
 
 export const siteConfig = {
-  name: "JAM Physics",
+  name: "IITJAM Buddy",
   shortName: "JAMP",
   tagline: "Free, community-first prep for JAM, NET & GATE Physics",
   description:

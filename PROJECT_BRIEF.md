@@ -1,6 +1,6 @@
 # Exam Prep Platform — v1 Project Brief
 
-> Working name: "JAM Physics" (config-driven, will expand beyond Physics later — see `config/site.ts`)
+> Name: "IITJAM Buddy" (config-driven, will expand beyond Physics later — see `config/site.ts`)
 
 ## Goal
 A free, no-ads, community-first web platform for physics entrance exam prep (JAM, NET, GATE),
