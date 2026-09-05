@@ -1,8 +1,9 @@
-# JAM Physics Diagnostic — Question Bank v1 (for review)
+# JAM Physics Diagnostic — Question Bank v1
 
-**Status:** draft — to be finalized, then loaded via the admin panel (or `prisma/seed.ts`).
-**Test:** `jam-physics-diagnostic` · 20 CONTENT questions · single-correct · suggested 20–25 min.
-**Marks:** `4` per question, `1` negative (matches existing seed). See "Scoring notes" for an alternative.
+**Status:** ✅ live in `prisma/seed.ts` — 5 PROFILE + 20 CONTENT questions, seeded to
+`jam-physics-diagnostic` (published, 25 min). Edit further via the admin panel.
+**Marks:** `4` per CONTENT question, `1` negative. See "Scoring notes" for the open decision
+on whether to drop negative marking for a diagnostic.
 
 ---
 
@@ -360,10 +361,13 @@ nucleon".
    force direction, adiabatic ⇒ isentropic, photoelectric intensity, Fourier series). Q14 here
    overlaps the photoelectric one — decide whether to replace the seed set entirely with these
    20 or keep a few.
-5. **Count.** 20 is the top of your 15–20 range. If you want a 15-minute test, the natural cut
-   to 15 is: drop Q2, Q5, Q10, Q16, Q20 (keeps every topic represented, removes both hard ones
-   and the longer-to-read ones).
-6. **PROFILE questions** (year, prep level) already exist in the seed and are unchanged.
+5. **Count.** 20 CONTENT questions seeded. If you later want a 15-minute version, the natural
+   cut to 15 is: drop Q2, Q5, Q10, Q16, Q20 (keeps every topic represented, removes both hard
+   ones and the longer-to-read ones).
+6. **PROFILE questions** — 5 seeded (no correct answer, fed to the study-plan generator as
+   context): `year`, `prep_level`, `study_hours`, `pyq_practice`, `weakest_area_self`. The
+   last one (self-reported weakest area) is worth comparing against the *measured* weakest
+   topic in the results — a mismatch is itself a useful signal.
 
-Once you've marked up this file, I can emit it as a `prisma/seed.ts` block or as
-`createQuestion` payloads for the admin action.
+These questions live in `prisma/seed.ts`. To change wording/answers after launch, use the
+admin panel (Tests → JAM Physics Diagnostic) so edits aren't lost on a reseed.
