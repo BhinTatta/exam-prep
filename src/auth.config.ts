@@ -4,6 +4,10 @@ import Google from "next-auth/providers/google";
 // Edge-safe config: used by middleware. No Prisma adapter and no Node-only
 // providers here — those live in src/auth.ts (server/route-handler only).
 export const authConfig = {
+  // Without this, Auth.js pins the OAuth callback/redirect base URL to
+  // whatever AUTH_URL is set to and rejects requests from any other host
+  // (e.g. a newly added custom domain) with a Configuration error.
+  trustHost: true,
   pages: {
     signIn: "/sign-in",
   },
