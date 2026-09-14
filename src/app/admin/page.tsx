@@ -2,23 +2,39 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserCheck, CreditCard, ShieldAlert, Calendar } from "lucide-react";
+import { UserCheck, CreditCard, ShieldAlert, Calendar, Users } from "lucide-react";
 
 export const metadata = { title: "Admin" };
 
+/**
+ * Reading the clock is a data-fetching concern, not render logic — keeping it
+ * out of the component body keeps the render pure.
+ */
+function countCapturedLast24h() {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  return prisma.payment.count({ where: { status: "CAPTURED", capturedAt: { gte: since } } });
+}
+
 export default async function AdminOverviewPage() {
-  const [pendingMentors, pendingPayments, sessionsThisMonth, totalUsers] = await Promise.all([
+  const [pendingMentors, capturedToday, needsAttention, sessions, totalUsers] = await Promise.all([
     prisma.mentorProfile.count({ where: { verified: false } }),
-    prisma.booking.count({ where: { status: "PAYMENT_SUBMITTED" } }),
+    countCapturedLast24h(),
+    // Things only a human can clear: cancellation requests, and webhooks that
+    // failed to process (a stuck payment hides here, not in the payment list).
+    Promise.all([
+      prisma.booking.count({ where: { cancellationRequestedAt: { not: null } } }),
+      prisma.webhookEvent.count({ where: { processedAt: null, error: { not: null } } }),
+    ]).then(([a, b]) => a + b),
     prisma.booking.count({ where: { status: { in: ["CONFIRMED", "COMPLETED"] } } }),
     prisma.user.count(),
   ]);
 
   const cards = [
     { label: "Pending mentor approvals", value: pendingMentors, href: "/admin/mentors", icon: UserCheck },
-    { label: "Pending payment verifications", value: pendingPayments, href: "/admin/payments", icon: CreditCard },
-    { label: "Active + completed sessions", value: sessionsThisMonth, href: "/admin/sessions", icon: Calendar },
-    { label: "Total users", value: totalUsers, href: "/admin/users", icon: ShieldAlert },
+    { label: "Payments needing attention", value: needsAttention, href: "/admin/payments", icon: ShieldAlert },
+    { label: "Captured in last 24h", value: capturedToday, href: "/admin/payments?status=CAPTURED", icon: CreditCard },
+    { label: "Active + completed sessions", value: sessions, href: "/admin/sessions", icon: Calendar },
+    { label: "Total users", value: totalUsers, href: "/admin/users", icon: Users },
   ];
 
   return (

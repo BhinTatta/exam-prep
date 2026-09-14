@@ -9,6 +9,7 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:create-test-user": "tsx prisma/create-test-user.ts"
@@ -46,6 +47,7 @@
     "react-easy-crop": "^6.2.3",
     "react-hook-form": "^7.85.0",
     "react-katex": "^3.1.0",
+    "server-only": "^0.0.1",
     "shadcn": "^4.16.2",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.6.0",

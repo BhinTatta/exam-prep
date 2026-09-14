@@ -70,34 +70,34 @@ enum AcademicStatus {
 }
 
 model User {
-  id              String         @id @default(cuid())
-  email           String?        @unique
+  id              String          @id @default(cuid())
+  email           String?         @unique
   emailVerified   DateTime?
   name            String?
   image           String?
-  bio             String?        @db.Text
+  bio             String?         @db.Text
   collegeName     String?
   academicStatus  AcademicStatus?
-  role            Role           @default(USER)
-  telegramId      String?        @unique
-  firebaseUid     String?        @unique
+  role            Role            @default(USER)
+  telegramId      String?         @unique
+  firebaseUid     String?         @unique
   termsAcceptedAt DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   accounts Account[]
   sessions Session[]
 
-  resources       Resource[]
-  questions       Question[]
-  comments        Comment[]
-  commentUpvotes  CommentUpvote[]
-  mentorProfile   MentorProfile?
-  bookingsAsMentee Booking[]      @relation("MenteeBookings")
-  verifiedMentors  MentorProfile[] @relation("MentorVerifier")
-  paymentsVerified Booking[]      @relation("PaymentVerifier")
-  payoutsPaid      Payout[]       @relation("PayoutAdmin")
-  reports          Report[]
+  resources          Resource[]
+  questions          Question[]
+  comments           Comment[]
+  commentUpvotes     CommentUpvote[]
+  mentorProfile      MentorProfile?
+  bookingsAsMentee   Booking[]           @relation("MenteeBookings")
+  verifiedMentors    MentorProfile[]     @relation("MentorVerifier")
+  refundsInitiated   Refund[]            @relation("RefundAdmin")
+  payoutsPaid        Payout[]            @relation("PayoutAdmin")
+  reports            Report[]
   assessmentAttempts AssessmentAttempt[]
 
   @@index([role])
@@ -179,8 +179,8 @@ model MentorProfile {
   institute  String
   rank       String? // e.g. AIR / rank proof text
   subjects   String[]
-  rate       Int // per-session rate, INR
-  upiId      String // for manual payment collection
+  rate       Int // per-session rate, INR — this is exactly what the mentee is charged
+  upiId      String // where the admin sends this mentor's payout (mentees never see it)
   proofUrl   String // uploaded proof document (Supabase Storage)
   bio        String?   @db.Text
   verified   Boolean   @default(false)
@@ -217,16 +217,18 @@ model Availability {
 }
 
 enum BookingStatus {
-  PENDING_PAYMENT
-  PAYMENT_SUBMITTED
-  CONFIRMED
+  PENDING_PAYMENT // created, slot held, mentee has not paid yet
+  PAYMENT_PROCESSING // authorised at Razorpay but not captured (e.g. pending UPI)
+  CONFIRMED // captured — safe to run the session
   COMPLETED
   DISPUTED
-  CANCELLED
+  CANCELLED // cancelled before payment, or rejected by an admin
+  EXPIRED // hold lapsed before payment; slot released
+  REFUNDED // money returned to the mentee
 }
 
 model Booking {
-  id     String @id @default(cuid())
+  id String @id @default(cuid())
 
   menteeId String
   mentee   User   @relation("MenteeBookings", fields: [menteeId], references: [id], onDelete: Cascade)
@@ -238,27 +240,124 @@ model Booking {
   slot   Availability @relation(fields: [slotId], references: [id])
 
   status BookingStatus @default(PENDING_PAYMENT)
-  amount Int
-
-  utrReference   String?
-  paymentProofUrl String?
+  amount Int // INR rupees (Payment.amount is paise — see src/lib/razorpay/money.ts)
 
   meetLink String?
 
-  paymentVerifiedBy String?
-  verifier          User?     @relation("PaymentVerifier", fields: [paymentVerifiedBy], references: [id])
-  paymentVerifiedAt DateTime?
+  // Deadline for the mentee to pay. Past this, the booking is swept to EXPIRED
+  // and the slot is released — see expireStaleHolds() in src/lib/payments/sync.ts.
+  expiresAt DateTime?
+
+  // Mentee-initiated cancellation request on an already-paid booking. Refunds
+  // are admin-only, so this is a flag for the admin queue, not a state change.
+  cancellationRequestedAt DateTime?
+  cancellationReason      String?   @db.Text
 
   menteeConfirmedHappened Boolean? // post-session "did this happen?" prompt
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  payout Payout?
+  payments Payment[]
+  payout   Payout?
 
   @@index([status])
   @@index([menteeId])
   @@index([mentorId])
+  @@index([status, expiresAt])
+}
+
+// ---------- Payments (Razorpay Standard Checkout) ----------
+
+enum PaymentStatus {
+  CREATED // order created at Razorpay, mentee has not paid yet
+  AUTHORIZED // funds held by Razorpay, not yet captured
+  CAPTURED // money confirmed, queued for settlement
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+/// One Razorpay order. A booking can have several: a fresh order is created if
+/// an earlier hold expired and the mentee starts over.
+model Payment {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  razorpayOrderId   String  @unique
+  razorpayPaymentId String? @unique
+  receipt           String // our reference, "bk_<bookingId>" (Razorpay caps this at 40 chars)
+
+  amount   Int // PAISE, not rupees
+  currency String @default("INR")
+
+  status  PaymentStatus @default(CREATED)
+  method  String? // upi / card / netbanking / wallet, as reported by Razorpay
+  email   String?
+  contact String?
+
+  errorCode        String?
+  errorDescription String?
+
+  authorizedAt DateTime?
+  capturedAt   DateTime?
+  failedAt     DateTime?
+
+  refundedAmount Int @default(0) // PAISE
+
+  refunds Refund[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Refund {
+  id        String  @id @default(cuid())
+  paymentId String
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  razorpayRefundId String  @unique
+  amount           Int // PAISE
+  status           String // pending / processed / failed, as reported by Razorpay
+  reason           String?
+
+  initiatedBy String? // admin User id; null when refunded automatically (late auth)
+  admin       User?   @relation("RefundAdmin", fields: [initiatedBy], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([paymentId])
+}
+
+/// Every webhook delivery we accept. `eventId` is Razorpay's x-razorpay-event-id
+/// and is the idempotency key: Razorpay retries a failed delivery up to 24 times.
+model WebhookEvent {
+  id       String @id @default(cuid())
+  provider String @default("razorpay")
+  eventId  String @unique
+  event    String // "payment.captured", "refund.failed", ...
+  payload  Json
+
+  // Lifted out of the payload so the admin UI can build a per-payment timeline.
+  // Filtering a Json column on nested content is not something Postgres/Prisma
+  // will do with an index, hence real columns.
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+
+  processedAt DateTime?
+  error       String?   @db.Text
+  receivedAt  DateTime  @default(now())
+
+  @@index([event])
+  @@index([receivedAt])
+  @@index([razorpayOrderId])
+  @@index([razorpayPaymentId])
 }
 
 model Payout {
@@ -413,11 +512,11 @@ model AssessmentAttempt {
 }
 
 model AttemptResponse {
-  id        String             @id @default(cuid())
-  attemptId String
-  attempt   AssessmentAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  id         String             @id @default(cuid())
+  attemptId  String
+  attempt    AssessmentAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
   questionId String
-  question  AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question   AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   selectedOptionIds String[] @default([])
   isCorrect         Boolean?

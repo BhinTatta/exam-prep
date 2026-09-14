@@ -8,10 +8,14 @@ import { Button } from "@/components/ui/button";
 import { IndianRupee } from "lucide-react";
 import { DAYS } from "@/lib/days";
 import { bookSlot } from "@/app/mentors/actions";
+import { expireStaleHolds } from "@/lib/payments/sync";
 
 export default async function MentorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth();
+
+  // Put slots from abandoned checkouts back on sale before listing availability.
+  await expireStaleHolds();
 
   const mentor = await prisma.mentorProfile.findUnique({
     where: { id },

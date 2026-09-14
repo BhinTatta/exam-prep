@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth-helpers";
-import { jitsiRoomUrl } from "@/config/site";
+import { createRefund, fetchOrderPayments } from "@/lib/razorpay/client";
+import { applyPaymentEntity, applyRefundEntity } from "@/lib/payments/sync";
+import { formatInr } from "@/lib/razorpay/money";
 import type { Role } from "@prisma/client";
 
 export async function verifyMentor(mentorProfileId: string, approve: boolean) {
@@ -26,28 +28,72 @@ export async function verifyMentor(mentorProfileId: string, approve: boolean) {
   revalidatePath("/admin");
 }
 
-export async function confirmPayment(bookingId: string, approve: boolean) {
+/**
+ * Refund a captured payment, in full or in part.
+ *
+ * Refunds are admin-only by design: a mentee who has already paid files a
+ * cancellation request (see requestCancellation in app/bookings/actions.ts) and
+ * an admin decides. The booking moves to REFUNDED and the slot is released once
+ * the refund covers the whole payment — that bookkeeping lives in
+ * applyRefundEntity so the webhook and this action agree.
+ */
+export async function refundPayment(paymentId: string, amountPaise: number, reason?: string) {
   const admin = await requireRole("ADMIN");
 
-  const booking = await prisma.booking.findUniqueOrThrow({ where: { id: bookingId }, include: { mentor: true } });
-  if (booking.status !== "PAYMENT_SUBMITTED") throw new Error("Nothing to confirm for this booking");
-
-  if (approve) {
-    await prisma.booking.update({
-      where: { id: bookingId },
-      data: {
-        status: "CONFIRMED",
-        paymentVerifiedBy: admin.id,
-        paymentVerifiedAt: new Date(),
-        meetLink: jitsiRoomUrl(booking.mentor.id.slice(0, 8), booking.id),
-      },
-    });
-  } else {
-    await prisma.$transaction([
-      prisma.booking.update({ where: { id: bookingId }, data: { status: "CANCELLED" } }),
-      prisma.availability.update({ where: { id: booking.slotId }, data: { isBooked: false } }),
-    ]);
+  const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId } });
+  if (!payment.razorpayPaymentId) throw new Error("This payment was never completed");
+  if (payment.status !== "CAPTURED" && payment.status !== "PARTIALLY_REFUNDED") {
+    throw new Error("Only a captured payment can be refunded");
   }
+
+  const refundable = payment.amount - payment.refundedAmount;
+  if (refundable <= 0) throw new Error("This payment has already been fully refunded");
+
+  const amount = Math.round(amountPaise);
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error("Enter a refund amount");
+  if (amount > refundable) {
+    throw new Error(`You can refund at most ${formatInr(refundable)} on this payment`);
+  }
+
+  const refund = await createRefund(payment.razorpayPaymentId, {
+    amount,
+    notes: { bookingId: payment.bookingId, refundedBy: admin.id },
+  });
+
+  await applyRefundEntity(refund, { initiatedBy: admin.id, reason });
+
+  revalidatePath("/admin/payments");
+  revalidatePath(`/admin/payments/${paymentId}`);
+  revalidatePath(`/bookings/${payment.bookingId}`);
+}
+
+/**
+ * Pull this payment's current state from Razorpay and re-apply it. The manual
+ * escape hatch for a webhook that never arrived.
+ */
+export async function syncPaymentFromRazorpay(paymentId: string) {
+  await requireRole("ADMIN");
+
+  const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId } });
+
+  const attempts = await fetchOrderPayments(payment.razorpayOrderId);
+  for (const entity of attempts) {
+    await applyPaymentEntity(entity);
+  }
+
+  revalidatePath("/admin/payments");
+  revalidatePath(`/admin/payments/${paymentId}`);
+  revalidatePath(`/bookings/${payment.bookingId}`);
+}
+
+/** Dismiss a mentee's cancellation request without refunding. */
+export async function dismissCancellationRequest(bookingId: string) {
+  await requireRole("ADMIN");
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: { cancellationRequestedAt: null, cancellationReason: null },
+  });
 
   revalidatePath("/admin/payments");
   revalidatePath(`/bookings/${bookingId}`);

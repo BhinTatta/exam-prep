@@ -25,7 +25,10 @@ export default async function AdminSessionsPage() {
 
   return (
     <div>
-      <PageHeader title="Sessions & payouts" description="Confirmed sessions and manual mentor payout checklist." />
+      <PageHeader
+        title="Sessions & payouts"
+        description="Mentees pay the platform; you pay mentors by hand. Each row shows where to send it."
+      />
       {bookings.length === 0 ? (
         <EmptyState icon={Calendar} title="No sessions yet" />
       ) : (
@@ -40,6 +43,9 @@ export default async function AdminSessionsPage() {
                   <p className="text-sm text-muted-foreground">
                     {DAYS[b.slot.dayOfWeek]} {b.slot.startTime} · ₹{b.amount} ·{" "}
                     {formatDistanceToNow(b.createdAt, { addSuffix: true })}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Pay <span className="font-mono">{b.mentor.upiId}</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

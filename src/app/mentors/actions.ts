@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadFile } from "@/lib/supabase";
 import { subjects } from "@/config/site";
+import { expireStaleHolds, holdDeadline } from "@/lib/payments/sync";
 
 const applySchema = z.object({
   institute: z.string().min(2).max(120),
@@ -84,6 +85,10 @@ export async function removeAvailability(id: string) {
 export async function bookSlot(mentorId: string, slotId: string) {
   const user = await requireUser();
 
+  // Free up any slots whose payment window lapsed, so an abandoned checkout
+  // doesn't keep a slot locked out of circulation.
+  await expireStaleHolds();
+
   const mentor = await prisma.mentorProfile.findUniqueOrThrow({ where: { id: mentorId } });
   if (!mentor.verified) throw new Error("This mentor isn't verified yet");
   if (mentor.userId === user.id) throw new Error("You can't book your own slot");
@@ -101,6 +106,7 @@ export async function bookSlot(mentorId: string, slotId: string) {
         mentorId,
         slotId,
         amount: mentor.rate,
+        expiresAt: holdDeadline(),
       },
     });
   });

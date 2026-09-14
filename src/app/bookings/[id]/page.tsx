@@ -1,18 +1,40 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireUser, hasRole } from "@/lib/auth-helpers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
-import { PaymentSubmitForm } from "@/components/bookings/payment-submit-form";
+import { RazorpayCheckoutButton } from "@/components/bookings/razorpay-checkout-button";
+import { HoldCountdown } from "@/components/bookings/hold-countdown";
+import { RequestCancellationForm } from "@/components/bookings/request-cancellation";
 import { CancelBookingButton, ConfirmHappenedButtons } from "@/components/bookings/booking-buttons";
+import { expireStaleHolds, reconcileBookingPayments } from "@/lib/payments/sync";
+import { formatInr } from "@/lib/razorpay/money";
+import { siteConfig } from "@/config/site";
 import { DAYS } from "@/lib/days";
-import { Video, IndianRupee } from "lucide-react";
+import { Video, IndianRupee, ShieldCheck } from "lucide-react";
 
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireUser();
+
+  // Release any lapsed holds before reading, so this page never shows a booking
+  // as payable when its slot has already gone back into circulation.
+  await expireStaleHolds();
+
+  const preliminary = await prisma.booking.findUnique({
+    where: { id },
+    select: { status: true, menteeId: true },
+  });
+  if (!preliminary) notFound();
+
+  // Fallback for a webhook that never arrived. No-ops unless there is an open
+  // order old enough to be worth asking Razorpay about.
+  if (preliminary.status === "PENDING_PAYMENT" || preliminary.status === "PAYMENT_PROCESSING") {
+    await reconcileBookingPayments(id);
+  }
 
   const booking = await prisma.booking.findUnique({
     where: { id },
@@ -20,6 +42,10 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
       mentee: { select: { id: true, name: true } },
       mentor: { include: { user: { select: { id: true, name: true } } } },
       slot: true,
+      payments: {
+        orderBy: { createdAt: "desc" },
+        include: { refunds: { orderBy: { createdAt: "desc" } } },
+      },
     },
   });
 
@@ -30,10 +56,9 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   const isAdmin = hasRole(user.role, "ADMIN");
   if (!isMentee && !isMentor && !isAdmin) notFound();
 
-  const upiUri = `upi://pay?pa=${encodeURIComponent(booking.mentor.upiId)}&am=${booking.amount}&cu=INR&tn=${encodeURIComponent(
-    "Exam prep mentoring session"
-  )}`;
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUri)}`;
+  const settled = booking.payments.find((p) => p.status === "CAPTURED" || p.status === "REFUNDED");
+  const lastFailure = booking.payments.find((p) => p.errorDescription);
+  const totalRefunded = booking.payments.reduce((sum, p) => sum + p.refundedAmount, 0);
 
   return (
     <div className="mx-auto max-w-lg px-4 py-10">
@@ -55,37 +80,45 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
               <IndianRupee className="size-3.5" /> {booking.amount}
             </span>
           </div>
+          {settled?.razorpayPaymentId && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Payment ID</span>
+              <span className="font-mono text-xs">{settled.razorpayPaymentId}</span>
+            </div>
+          )}
 
           <Separator />
 
           {booking.status === "PENDING_PAYMENT" && isMentee && (
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col items-center gap-2 rounded-lg border bg-muted/30 p-4 text-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrSrc} alt="UPI QR code" className="size-40 rounded-md border bg-white p-1" />
-                <p className="text-sm">
-                  Pay to UPI ID <span className="font-mono font-medium">{booking.mentor.upiId}</span>
+            <div className="flex flex-col gap-3">
+              {lastFailure?.errorDescription && (
+                <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                  Last attempt failed: {lastFailure.errorDescription}
                 </p>
-                <p className="text-lg font-semibold">₹{booking.amount}</p>
-              </div>
-              <PaymentSubmitForm bookingId={booking.id} />
+              )}
+              <RazorpayCheckoutButton bookingId={booking.id} amountLabel={`₹${booking.amount}`} />
+              <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <ShieldCheck className="size-3.5" />
+                Card, UPI, netbanking and wallets — secured by Razorpay
+              </p>
+              {booking.expiresAt && <HoldCountdown expiresAt={booking.expiresAt.toISOString()} />}
               <CancelBookingButton bookingId={booking.id} />
             </div>
           )}
 
-          {booking.status === "PAYMENT_SUBMITTED" && (
+          {booking.status === "PENDING_PAYMENT" && !isMentee && (
+            <p className="text-sm text-muted-foreground">
+              Waiting for the mentee to pay. The slot is held until they do or the hold lapses.
+            </p>
+          )}
+
+          {booking.status === "PAYMENT_PROCESSING" && (
             <div className="flex flex-col gap-3">
               <p className="text-sm text-muted-foreground">
                 {isMentee
-                  ? "Payment submitted — an admin will confirm it shortly and generate your video call link."
-                  : "Mentee submitted payment. Waiting on admin confirmation."}
+                  ? "Your bank is still confirming this payment. It usually takes under a minute — this page updates itself once it clears."
+                  : "The mentee's payment is being confirmed by their bank."}
               </p>
-              {booking.utrReference && (
-                <p className="text-xs text-muted-foreground">
-                  UTR: <span className="font-mono">{booking.utrReference}</span>
-                </p>
-              )}
-              {isMentee && <CancelBookingButton bookingId={booking.id} />}
             </div>
           )}
 
@@ -102,11 +135,21 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                   <ConfirmHappenedButtons bookingId={booking.id} />
                 </div>
               )}
+              {isMentee &&
+                (booking.cancellationRequestedAt ? (
+                  <p className="text-xs text-muted-foreground">
+                    Cancellation requested — an admin is reviewing it.
+                  </p>
+                ) : (
+                  <RequestCancellationForm bookingId={booking.id} />
+                ))}
             </div>
           )}
 
           {booking.status === "COMPLETED" && (
-            <p className="text-sm text-muted-foreground">Session completed. Thanks for using {`the platform`}!</p>
+            <p className="text-sm text-muted-foreground">
+              Session completed. Thanks for using {siteConfig.name}!
+            </p>
           )}
 
           {booking.status === "DISPUTED" && (
@@ -117,6 +160,29 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
           {booking.status === "CANCELLED" && (
             <p className="text-sm text-muted-foreground">This booking was cancelled.</p>
+          )}
+
+          {booking.status === "EXPIRED" && (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">
+                This booking expired before it was paid for, so the slot was released.
+              </p>
+              {isMentee && (
+                <Link href={`/mentors/${booking.mentorId}`}>
+                  <Button variant="outline" className="w-full">
+                    Book another slot
+                  </Button>
+                </Link>
+              )}
+            </div>
+          )}
+
+          {booking.status === "REFUNDED" && (
+            <p className="text-sm text-muted-foreground">
+              {totalRefunded > 0
+                ? `${formatInr(totalRefunded)} was refunded to your original payment method. Banks usually take 5–7 working days to show it.`
+                : "This booking was refunded."}
+            </p>
           )}
         </CardContent>
       </Card>
