@@ -3,8 +3,10 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { jitsiRoomUrl } from "@/config/site";
 import {
+  capturePayment,
   createRefund,
   fetchOrderPayments,
+  fetchPayment,
   type RazorpayPayment,
   type RazorpayRefund,
 } from "@/lib/razorpay/client";
@@ -100,6 +102,34 @@ async function refundUnfulfillable(
 }
 
 /**
+ * Capture an authorised payment, tolerating the usual race.
+ *
+ * Returns the captured entity when this call is what captured it, or null when
+ * there is nothing further to apply. On failure we ask Razorpay for the
+ * payment's real state rather than parsing the error text: automatic capture
+ * beating us to it is the common case and is not a problem.
+ */
+async function captureAuthorized(entity: RazorpayPayment): Promise<RazorpayPayment | null> {
+  try {
+    return await capturePayment(entity.id, entity.amount, entity.currency);
+  } catch (err) {
+    const fresh = await fetchPayment(entity.id).catch(() => null);
+    if (fresh?.status === "captured") return fresh;
+
+    // Genuinely not captured. Deliberately not rethrown: that would make the
+    // payment.authorized delivery retry hourly for a day. The payment.captured
+    // webhook, or the admin's Sync button, is the path back from here, and the
+    // booking sits visibly in PAYMENT_PROCESSING meanwhile.
+    console.error("razorpay: could not capture an authorised payment", {
+      paymentId: entity.id,
+      orderId: entity.order_id,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return null;
+  }
+}
+
+/**
  * Reconcile one Razorpay payment entity into our Payment + Booking rows.
  *
  * `entity` must come from Razorpay (a webhook payload or a Fetch Payment call),
@@ -121,8 +151,8 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
   if (!payment) {
     // An order we did not create, or one whose row is gone. Deliberately NOT
     // auto-refunded: we cannot tell a lost row from another integration sharing
-    // this Razorpay account, and auto-capture means the money is safely in the
-    // account for an admin to refund by hand.
+    // this Razorpay account, and the money is safely in the account for an
+    // admin to refund by hand.
     console.error("razorpay: no Payment row for order — needs manual review", {
       orderId: entity.order_id,
       paymentId: entity.id,
@@ -204,6 +234,14 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
       where: { id: booking.id, status: "PENDING_PAYMENT" },
       data: { status: "PAYMENT_PROCESSING" },
     });
+
+    // Razorpay auto-refunds an authorised payment that is never captured, so
+    // the booking would be paid for, never fulfilled, and then silently
+    // reversed. The Dashboard's automatic capture normally gets there first and
+    // this is a no-op; it is here so correctness does not depend on a setting
+    // outside the codebase.
+    const captured = await captureAuthorized(entity);
+    if (captured) await applyPaymentEntity(captured);
     return;
   }
 

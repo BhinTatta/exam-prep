@@ -128,10 +128,34 @@ export function createOrder(params: {
       currency: params.currency ?? "INR",
       receipt: params.receipt,
       notes: params.notes ?? {},
-      // Capture immediately. This overrides the Dashboard setting per order, so
-      // a payment can never sit `authorized` long enough to be auto-refunded.
-      capture: "automatic",
+      // No `capture` field here. The Orders API rejects it outright —
+      // "capture is/are not required and should not be sent" (BAD_REQUEST_ERROR)
+      // — even though the integration guide describes it as a per-order option.
+      // Capture is governed by the Dashboard setting, and by capturePayment()
+      // below as a backstop when that setting is not on automatic.
     },
+  });
+}
+
+/**
+ * Capture an authorised payment.
+ *
+ * Normally the Dashboard's automatic capture does this for us. This is the
+ * backstop for an account where that setting is off or delayed: an authorised
+ * payment that is never captured is auto-refunded by Razorpay when the capture
+ * window closes, which would take the mentee's money and then silently give it
+ * back without ever running the session.
+ *
+ * `amount` and `currency` must match the payment exactly.
+ */
+export function capturePayment(
+  paymentId: string,
+  amount: number, // paise
+  currency = "INR"
+): Promise<RazorpayPayment> {
+  return request<RazorpayPayment>(`/payments/${paymentId}/capture`, {
+    method: "POST",
+    body: { amount, currency },
   });
 }
 
