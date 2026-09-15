@@ -30,7 +30,13 @@ export type RazorpayCheckoutOptions = {
   handler?: (response: RazorpayCheckoutResponse) => void;
   prefill?: { name?: string; email?: string; contact?: string };
   notes?: Record<string, string>;
-  theme?: { color?: string };
+  theme?: {
+    color?: string;
+    /** Colour of the area around the modal. Left to Razorpay's default, this
+     *  has rendered as flat white over the site. */
+    backdrop_color?: string;
+    hide_topbar?: boolean;
+  };
   modal?: {
     confirm_close?: boolean;
     escape?: boolean;

@@ -67,6 +67,11 @@
    ========================================================================== */
 
 :root {
+  /* Tells the browser which palette to paint its own surfaces in — the canvas
+     before CSS loads, scrollbars, and native form controls. Without it those
+     stay light in dark mode, which reads as white flashes around the page. */
+  color-scheme: light;
+
   /* warm paper + ink */
   --background: oklch(0.984 0.006 85);
   --foreground: oklch(0.223 0.008 75);
@@ -126,6 +131,8 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   --background: oklch(0.185 0.010 286);
   --foreground: oklch(0.955 0.008 82);
   --card: oklch(0.228 0.011 286);
@@ -183,8 +190,16 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* The page colour is painted on BOTH html and body, deliberately.
+     A third-party overlay — Razorpay Checkout opening its payment modal, for
+     one — can hide or reset <body> while it is open. With the background on
+     body alone the browser then falls back to its default white canvas, which
+     is what showed behind the checkout modal instead of the site.
+     Measured in Chromium: with body-only, `body{display:none}` and a cleared
+     body background both render pure white; with html painted too, every
+     overlay technique keeps the paper colour. */
   html {
-    @apply font-sans;
+    @apply bg-background font-sans;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-schibsted), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
