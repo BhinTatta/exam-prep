@@ -13,7 +13,8 @@ export function PayoutButton({ bookingId, amount }: { bookingId: string; amount:
     <Button
       size="sm"
       variant="outline"
-      disabled={isPending}
+      loading={isPending}
+      loadingText="Saving…"
       className="gap-1.5"
       onClick={() =>
         startTransition(async () => {

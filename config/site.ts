@@ -33,6 +33,29 @@ export const exams: Exam[] = [
   { slug: "gate", label: "GATE", fullName: "Graduate Aptitude Test in Engineering" },
 ];
 
+// Languages a mentor can offer a session in. A student who thinks in Hindi
+// will book the Hindi mentor — this is a conversion field, not a nicety.
+export const mentorLanguages = [
+  "English",
+  "Hindi",
+  "Bengali",
+  "Marathi",
+  "Tamil",
+  "Telugu",
+  "Kannada",
+  "Malayalam",
+  "Gujarati",
+  "Punjabi",
+  "Odia",
+  "Assamese",
+] as const;
+
+// What a mentor can claim to have cleared — built from the exams above so
+// adding an exam in one place adds it everywhere.
+export const examCredentials = exams.flatMap((exam) =>
+  subjects.map((subject) => `${exam.label} ${subject.label}`)
+);
+
 export const resourceCategories = [
   { slug: "institute", label: "Institute Material" },
   { slug: "books", label: "Books" },

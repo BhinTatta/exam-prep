@@ -1,5 +1,5 @@
 import { signIn } from "@/auth";
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TelegramLoginButton } from "@/components/auth/telegram-login-button";
@@ -29,7 +29,7 @@ export default async function SignInPage({
               await signIn("google", { redirectTo: callbackUrl });
             }}
           >
-            <Button type="submit" variant="outline" className="w-full">
+            <SubmitButton variant="outline" size="xl" className="w-full" loadingText="Opening Google…">
               <svg className="mr-2 size-4" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
@@ -49,7 +49,7 @@ export default async function SignInPage({
                 />
               </svg>
               Continue with Google
-            </Button>
+            </SubmitButton>
           </form>
 
           <div className="flex items-center gap-3">

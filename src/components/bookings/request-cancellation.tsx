@@ -55,8 +55,8 @@ export function RequestCancellationForm({ bookingId }: { bookingId: string }) {
         An admin reviews every request — refunds are not automatic.
       </p>
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={isPending}>
-          {isPending ? "Sending…" : "Send request"}
+        <Button type="submit" size="sm" loading={isPending} loadingText="Sending…">
+          Send request
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={() => setOpen(false)}>
           Never mind

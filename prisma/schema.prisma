@@ -192,11 +192,23 @@ model MentorProfile {
   availability Availability[]
   bookings     Booking[]
 
-  // Topic tags (e.g. "Rotational Mechanics") used to match this mentor against
-  // a mentee's weak topics from an assessment result. Empty until the mentor
-  // (or admin) tags them; recommendation logic falls back to "any verified
-  // mentor" when no tagged mentor overlaps.
+  // Topic tags (e.g. "Rotational Mechanics"). Kept for admin filtering and
+  // future matching — the results page deliberately does NOT rank mentors by
+  // these, because claiming a mentor "closed the same gap" is a promise we
+  // can't back with data yet.
   topics String[] @default([])
+
+  // --- Conversion fields ---------------------------------------------------
+  // A student books a person, not a listing. These carry the three things that
+  // actually decide a booking: did they clear MY exam, are they like me, and
+  // will they understand me. All are required at application time; the column
+  // defaults exist only so the migration can add them to pre-existing rows
+  // without a manual backfill step.
+  examCleared String   @default("") // which exam they actually cleared, e.g. "JAM Physics"
+  examYear    Int      @default(0) // year they cleared it — recency is credibility
+  currentRole String   @default("") // "MSc Physics, IIT Bombay" — where it got them
+  languages   String[] @default([]) // a student who thinks in Hindi books the Hindi mentor
+  story       String   @default("") @db.Text // the "I was where you are" line, in their own words
 
   @@index([verified])
 }

@@ -1,11 +1,16 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
+import { Loader2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // `[data-loading]` hides any icon the caller passed so the spinner takes its
+  // place instead of sitting next to it, and keeps the button at full opacity
+  // while busy (doubled attribute selector out-specifies `disabled:opacity-50`)
+  // — a faded button reads as "broken", not "working".
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&[data-loading]>svg:not([data-slot=button-spinner])]:hidden [&[data-loading][data-loading]]:opacity-100",
   {
     variants: {
       variant: {
@@ -27,6 +32,11 @@ const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        // Conversion sizes. The scale above tops out at 36px, which is fine for
+        // toolbars and wrong for a primary CTA — these are the ones a student
+        // is meant to notice from across the page.
+        xl: "h-11 gap-2 px-5 text-[0.9375rem] font-semibold [&_svg:not([class*='size-'])]:size-4.5",
+        hero: "h-13 gap-2.5 px-7 text-base font-semibold tracking-[-0.01em] [&_svg:not([class*='size-'])]:size-5",
         icon: "size-8",
         "icon-xs":
           "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
@@ -34,10 +44,22 @@ const buttonVariants = cva(
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
       },
+      /**
+       * Opt-in emphasis for the one action on a page we actually want clicked.
+       * `lift` adds real elevation + a hover rise; `glow` adds a brand-coloured
+       * halo on top of it. Both are deliberately unavailable to secondary
+       * buttons by convention — if everything glows, nothing does.
+       */
+      emphasis: {
+        none: "",
+        lift: "shadow-md hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
+        glow: "shadow-lg shadow-primary/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/35 active:translate-y-0",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      emphasis: "none",
     },
   }
 )
@@ -46,22 +68,47 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  emphasis = "none",
   asChild = false,
+  loading = false,
+  loadingText,
+  children,
+  disabled,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    /** Shows a spinner and blocks further clicks. */
+    loading?: boolean
+    /** Optional label swapped in while loading, e.g. "Booking…". */
+    loadingText?: React.ReactNode
   }) {
   const Comp = asChild ? Slot.Root : "button"
+  // Slot forwards to an arbitrary child (often a link), so the spinner and the
+  // `disabled` attribute can't be injected there — callers that need a loading
+  // state render a real button.
+  const isLoading = !asChild && loading
 
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      data-loading={isLoading ? "" : undefined}
+      aria-busy={isLoading || undefined}
+      className={cn(buttonVariants({ variant, size, emphasis, className }))}
+      {...(asChild ? {} : { disabled: disabled || loading })}
       {...props}
-    />
+    >
+      {isLoading ? (
+        <>
+          <Loader2 data-slot="button-spinner" className="animate-spin" />
+          {loadingText ?? children}
+        </>
+      ) : (
+        children
+      )}
+    </Comp>
   )
 }
 

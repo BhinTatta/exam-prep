@@ -30,8 +30,14 @@ export function CommentForm({ questionId }: { questionId: string }) {
         placeholder="Write a reply... ($...$ for math)"
         rows={3}
       />
-      <Button onClick={submit} disabled={isPending || !body.trim()} className="self-end">
-        {isPending ? "Posting..." : "Reply"}
+      <Button
+        onClick={submit}
+        loading={isPending}
+        loadingText="Posting…"
+        disabled={!body.trim()}
+        className="self-end"
+      >
+        Reply
       </Button>
     </div>
   );

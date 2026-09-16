@@ -407,46 +407,90 @@ async function main() {
     console.log("Seeded a welcome question.");
   }
 
-  const mentorProfileCount = await prisma.mentorProfile.count();
-  if (mentorProfileCount === 0) {
+  // Upserted unconditionally — re-running the seed refreshes dummy mentors
+  // that predate the conversion fields instead of skipping them.
+  {
     const dummyMentors = [
       {
         email: "ananya.mentor@example.com",
         name: "Ananya Sharma",
         institute: "IISc Bangalore",
-        rank: "AIR 4, JAM Physics 2023",
+        rank: "AIR 4",
+        examCleared: "JAM Physics",
+        examYear: 2023,
+        currentRole: "MSc Physics, IISc Bangalore",
+        languages: ["English", "Hindi"],
+        story:
+          "I studied alone in a town with no coaching and no seniors to ask. Every week I picked the wrong thing to revise, and I only found that out in the mock tests. That is the part I can save you.",
         subjects: ["physics"],
         topics: ["Mechanics", "Electricity & Magnetism", "Modern Physics"],
         rate: 400,
         upiId: "ananya.mentor@upi",
-        bio: "AIR 4 in JAM Physics 2023, self-study route. I focus on fixing fundamentals rather than shortcuts — most people lose marks on concepts, not tricks.",
+        bio: "Self-study route, no coaching. I focus on fixing fundamentals rather than shortcuts — most people lose marks on concepts, not tricks.",
       },
       {
         email: "rohan.mentor@example.com",
         name: "Rohan Verma",
         institute: "IIT Delhi",
-        rank: "AIR 12, GATE Physics 2022",
+        rank: "AIR 12",
+        examCleared: "GATE Physics",
+        examYear: 2022,
+        currentRole: "PhD student, IIT Delhi",
+        languages: ["English", "Hindi", "Marathi"],
+        story:
+          "I failed my first attempt at 31 percentile and spent six months convinced I was just not smart enough. I wasn't revising wrong topics — I was revising in the wrong order.",
         subjects: ["physics"],
         topics: ["Thermodynamics & Statistical Mechanics", "Mathematical Physics", "Quantum Mechanics"],
         rate: 350,
         upiId: "rohan.mentor@upi",
         bio: "Went through coaching (Fiziks) before cracking GATE. Good at breaking numerical problem-solving into a repeatable process.",
       },
+      {
+        email: "meera.mentor@example.com",
+        name: "Meera Krishnan",
+        institute: "IIT Madras",
+        rank: "AIR 27",
+        examCleared: "CSIR NET Physics",
+        examYear: 2024,
+        currentRole: "Research Associate, IIT Madras",
+        languages: ["English", "Tamil", "Malayalam"],
+        story:
+          "I messaged eleven seniors in my final year. Two replied, both with 'just practise PYQs'. Nobody told me which PYQs or why, so I ended up doing all of them badly.",
+        subjects: ["physics"],
+        topics: ["Quantum Mechanics", "Electromagnetic Theory", "Solid State Physics"],
+        rate: 450,
+        upiId: "meera.mentor@upi",
+        bio: "Cleared NET on the second attempt while working full time. Best with people who have limited hours a day and need a ruthless priority order.",
+      },
     ];
 
-    for (const m of dummyMentors) {
+    for (const [mentorIndex, m] of dummyMentors.entries()) {
       const user = await prisma.user.upsert({
         where: { email: m.email },
         update: { role: "MENTOR" },
         create: { email: m.email, name: m.name, role: "MENTOR" },
       });
-      await prisma.mentorProfile.upsert({
+      const profile = await prisma.mentorProfile.upsert({
         where: { userId: user.id },
-        update: {},
+        // Refresh the conversion fields so re-seeding an older database fills
+        // in profiles created before these columns existed.
+        update: {
+          rank: m.rank,
+          examCleared: m.examCleared,
+          examYear: m.examYear,
+          currentRole: m.currentRole,
+          languages: m.languages,
+          story: m.story,
+        },
         create: {
           userId: user.id,
           institute: m.institute,
           rank: m.rank,
+          examCleared: m.examCleared,
+          examYear: m.examYear,
+          currentRole: m.currentRole,
+          languages: m.languages,
+          story: m.story,
           subjects: m.subjects,
           topics: m.topics,
           rate: m.rate,
@@ -458,8 +502,38 @@ async function main() {
           verifiedAt: new Date(),
         },
       });
+
+      // Open slots, or the card renders "No open slots" and nothing about the
+      // booking flow can be seen. Staggered per mentor so the listing doesn't
+      // show the same "next free" time on every card.
+      const slotPlans = [
+        [
+          { dayOfWeek: 1, startTime: "19:00", duration: 45 },
+          { dayOfWeek: 3, startTime: "21:00", duration: 45 },
+          { dayOfWeek: 6, startTime: "10:00", duration: 45 },
+        ],
+        [
+          { dayOfWeek: 2, startTime: "18:30", duration: 45 },
+          { dayOfWeek: 5, startTime: "20:00", duration: 60 },
+          { dayOfWeek: 0, startTime: "11:00", duration: 45 },
+        ],
+        [
+          { dayOfWeek: 4, startTime: "07:30", duration: 30 },
+          { dayOfWeek: 4, startTime: "22:00", duration: 45 },
+          { dayOfWeek: 6, startTime: "16:00", duration: 45 },
+        ],
+      ];
+      const slots = slotPlans[mentorIndex % slotPlans.length];
+      for (const slot of slots) {
+        const exists = await prisma.availability.findFirst({
+          where: { mentorId: profile.id, dayOfWeek: slot.dayOfWeek, startTime: slot.startTime },
+        });
+        if (!exists) {
+          await prisma.availability.create({ data: { ...slot, mentorId: profile.id } });
+        }
+      }
     }
-    console.log("Seeded dummy verified mentors.");
+    console.log("Seeded dummy verified mentors and their open slots.");
   }
 }
 

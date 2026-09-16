@@ -43,8 +43,8 @@ export function ContactForm() {
         <Label htmlFor="message">Message</Label>
         <Textarea id="message" name="message" required minLength={10} maxLength={5000} rows={5} />
       </div>
-      <Button type="submit" disabled={isPending} className="self-start">
-        {isPending ? "Sending..." : "Send"}
+      <Button type="submit" loading={isPending} loadingText="Sending…" className="self-start">
+        Send
       </Button>
     </form>
   );

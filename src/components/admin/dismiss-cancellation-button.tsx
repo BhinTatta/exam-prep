@@ -27,7 +27,7 @@ export function DismissCancellationButton({ bookingId }: { bookingId: string }) 
         })
       }
     >
-      Dismiss
+      {isPending ? "Dismissing…" : "Dismiss"}
     </button>
   );
 }

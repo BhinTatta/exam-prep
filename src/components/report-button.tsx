@@ -104,7 +104,7 @@ export function ReportButton({
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={isPending} onClick={submit}>
+          <Button loading={isPending} loadingText="Submitting…" onClick={submit}>
             Submit report
           </Button>
         </DialogFooter>
