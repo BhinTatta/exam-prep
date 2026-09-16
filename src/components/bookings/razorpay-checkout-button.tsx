@@ -18,9 +18,11 @@ const CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 /** Matches --primary in globals.css. */
 const BRAND_COLOR = "#4f51c6";
 
-/** Dim, translucent wash so the booking page stays visible behind the modal
- *  rather than the page being replaced by a flat field of colour. */
-const BACKDROP_COLOR = "rgba(20, 18, 28, 0.72)";
+// theme.backdrop_color is deliberately NOT set. Razorpay's default backdrop is
+// already the dim translucent wash we want, and its documented format is a hex
+// code — which cannot express transparency, so overriding it risks an opaque
+// panel that hides the page entirely. If the backdrop ever needs forcing, pass
+// theme.backdrop_color with a hex value, not rgba().
 
 export function RazorpayCheckoutButton({
   bookingId,
@@ -63,7 +65,7 @@ export function RazorpayCheckoutButton({
         description: order.description,
         order_id: order.orderId,
         prefill: { name: order.prefill.name, email: order.prefill.email },
-        theme: { color: BRAND_COLOR, backdrop_color: BACKDROP_COLOR },
+        theme: { color: BRAND_COLOR },
         modal: {
           confirm_close: true,
           ondismiss: () => setInCheckout(false),
