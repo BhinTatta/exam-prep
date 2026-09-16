@@ -2,18 +2,13 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { claimAttempt } from "@/app/tests/[slug]/attempt/[attemptId]/actions";
-import { ResultsReport, type ResultsMentor } from "@/components/assessment/results-report";
-import { daysUntilSlot, pickNextSlot } from "@/lib/days";
+import { ResultsReport } from "@/components/assessment/results-report";
+import { listBookableMentors } from "@/lib/mentors/list";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
 
 export const dynamic = "force-dynamic";
 
 const MENTORS_ON_RESULTS = 2;
-
-/** Mentors with no open slot sort last. */
-function slotDistance(slot: { dayOfWeek: number; startTime: string } | null) {
-  return slot ? daysUntilSlot(slot.dayOfWeek, slot.startTime) : Number.MAX_SAFE_INTEGER;
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; attemptId: string }> }) {
   const { attemptId } = await params;
@@ -51,22 +46,10 @@ export default async function ResultsPage({
   // "this mentor closed your exact gap" is a claim we can't stand behind yet,
   // and a wrong match is worse than no match. We show a couple of verified
   // mentors and let the soonest-available one lead.
-  const recommendedIds = attempt.result.recommendedMentorIds;
-  const mentorProfiles = await prisma.mentorProfile.findMany({
-    where: { verified: true, ...(recommendedIds.length > 0 ? { id: { in: recommendedIds } } : {}) },
-    include: {
-      user: { select: { name: true, image: true } },
-      availability: { where: { isBooked: false } },
-    },
-    orderBy: { createdAt: "desc" },
-    take: MENTORS_ON_RESULTS,
+  const mentors = await listBookableMentors({
+    limit: MENTORS_ON_RESULTS,
+    ids: attempt.result.recommendedMentorIds,
   });
-
-  const mentors: ResultsMentor[] = mentorProfiles
-    .map((m) => ({ mentor: m, nextSlot: pickNextSlot(m.availability) }))
-    // Soonest bookable first — an open slot tomorrow converts better than a
-    // better-looking profile with nothing free for nine days.
-    .sort((a, b) => slotDistance(a.nextSlot) - slotDistance(b.nextSlot));
 
   const canViewFullPlan = !!session?.user && session.user.id === attempt.userId;
   const fullStudyPlan = attempt.result.studyPlan as unknown as StudyPlan | null;

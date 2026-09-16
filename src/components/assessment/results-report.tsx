@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MentorCard, type MentorCardData, type MentorCardSlot } from "@/components/mentors/mentor-card";
+import { MentorCard } from "@/components/mentors/mentor-card";
+import type { BookableMentor } from "@/lib/mentors/list";
 import { StudyPlanSection } from "@/components/assessment/study-plan-section";
 import { cn } from "@/lib/utils";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
@@ -16,11 +17,6 @@ import {
   ShieldCheck,
   ArrowRight,
 } from "lucide-react";
-
-export type ResultsMentor = {
-  mentor: MentorCardData;
-  nextSlot: MentorCardSlot;
-};
 
 /** Honest, non-shaming read of the score — every band has a reason to act. */
 function verdictFor(pct: number) {
@@ -46,7 +42,7 @@ export function ResultsReport({
   maxScore: number;
   topicBreakdown: TopicStat[];
   studyPlan: StudyPlan | null;
-  mentors: ResultsMentor[];
+  mentors: BookableMentor[];
   canViewFullPlan: boolean;
   attemptId: string;
 }) {
@@ -112,7 +108,7 @@ function ConversionBlock({
   mentors,
   topWeakness,
 }: {
-  mentors: ResultsMentor[];
+  mentors: BookableMentor[];
   topWeakness?: string;
 }) {
   const cheapest = mentors.length ? Math.min(...mentors.map((m) => m.mentor.rate)) : null;

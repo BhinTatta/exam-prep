@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { auth, signOut } from "@/auth";
-import { siteConfig, navLinks } from "@/config/site";
+import { siteConfig, navLinks, navCta } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -55,10 +55,17 @@ export async function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button asChild size="sm" emphasis="lift">
+            <Link href={navCta.href}>{navCta.label}</Link>
+          </Button>
           <ThemeToggle />
           {!user ? (
             <Link href="/sign-in">
-              <Button size="sm">Sign in</Button>
+              {/* Ghost, so the one filled button in the header is the funnel
+                  entry and not the account prompt. */}
+              <Button size="sm" variant="ghost">
+                Sign in
+              </Button>
             </Link>
           ) : (
             <DropdownMenu>

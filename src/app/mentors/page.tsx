@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { MentorCard } from "@/components/mentors/mentor-card";
-import { daysUntilSlot, pickNextSlot } from "@/lib/days";
+import { listBookableMentors } from "@/lib/mentors/list";
 import { Users, ShieldCheck, Wallet, Undo2 } from "lucide-react";
 
 export const metadata = {
@@ -13,24 +12,8 @@ export const metadata = {
 };
 export const dynamic = "force-dynamic";
 
-/** Mentors with no open slot sort last. */
-function slotDistance(slot: { dayOfWeek: number; startTime: string } | null) {
-  return slot ? daysUntilSlot(slot.dayOfWeek, slot.startTime) : Number.MAX_SAFE_INTEGER;
-}
-
 export default async function MentorsPage() {
-  const profiles = await prisma.mentorProfile.findMany({
-    where: { verified: true },
-    include: {
-      user: { select: { name: true, image: true } },
-      availability: { where: { isBooked: false } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const mentors = profiles
-    .map((m) => ({ mentor: m, nextSlot: pickNextSlot(m.availability) }))
-    .sort((a, b) => slotDistance(a.nextSlot) - slotDistance(b.nextSlot));
+  const mentors = await listBookableMentors();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">

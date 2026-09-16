@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { navLinks, siteConfig } from "@/config/site";
+import { navLinks, navCta, siteConfig } from "@/config/site";
 import { hasRole } from "@/lib/roles";
 
 export function MobileNav({ isSignedIn, role }: { isSignedIn: boolean; role?: string }) {
@@ -23,6 +23,11 @@ export function MobileNav({ isSignedIn, role }: { isSignedIn: boolean; role?: st
           <SheetTitle>{siteConfig.name}</SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-4">
+          <Link href={navCta.href} onClick={() => setOpen(false)} className="mb-2">
+            <Button size="xl" emphasis="lift" className="w-full">
+              {navCta.label}
+            </Button>
+          </Link>
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
