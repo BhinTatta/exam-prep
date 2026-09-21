@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { TelegramLoginButton } from "@/components/auth/telegram-login-button";
 import { EmailAuthForm } from "@/components/auth/email-auth-form";
 import { siteConfig } from "@/config/site";
-import { GraduationCap } from "lucide-react";
+import { Logo } from "@/components/layout/logo";
 
 export default async function SignInPage({
   searchParams,
@@ -17,8 +17,12 @@ export default async function SignInPage({
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center px-4">
       <Card className="w-full">
-        <CardHeader className="items-center text-center">
-          <GraduationCap className="mb-2 size-8 text-primary" />
+        {/* CardHeader is a grid, so `items-center` only centres within the row —
+            `justify-items-center` is what pulls the mark onto the card's axis. */}
+        <CardHeader className="justify-items-center text-center">
+          {/* The mark alone: the title right below already says the brand name,
+              and the full lock-up would set the wordmark twice in 40px. */}
+          <Logo variant="mark" className="mb-2 h-12" priority />
           <CardTitle className="text-xl">Sign in to {siteConfig.name}</CardTitle>
           <CardDescription>{siteConfig.tagline}</CardDescription>
         </CardHeader>
