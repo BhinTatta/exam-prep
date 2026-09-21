@@ -30,8 +30,11 @@ import {
 // mentor page is dynamic and authoritative, and bookSlot() takes the slot
 // atomically — but it is why this is an hour rather than a day.
 //
-// Nothing invalidates this on demand, deliberately: who appears here is a
-// curation call, not something a mentor approval should decide.
+// The hourly timer is the only thing refreshing this today. To push a change
+// out immediately instead of waiting for it, call revalidateHomePage() from
+// src/lib/cache.ts — that file documents exactly what it does to the cached
+// copy and where it can be called from. Nothing calls it yet, deliberately:
+// who appears here is a curation call, not a consequence of mentor approval.
 export const revalidate = 3600;
 
 const MENTORS_ON_HOME = 3;
