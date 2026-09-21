@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
-import { siteConfig, navLinks, navCta } from "@/config/site";
+import { navLinks, navCta } from "@/config/site";
+import { Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -18,9 +18,10 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <GraduationCap className="size-5 text-primary" />
-            <span>{siteConfig.name}</span>
+          <Link href="/" className="flex items-center">
+            {/* Mark only below sm — the wordmark would crowd out the nav CTA. */}
+            <Logo variant="mark" className="h-7 sm:hidden" priority />
+            <Logo variant="lockup" className="hidden h-7 sm:inline-flex" priority />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => (

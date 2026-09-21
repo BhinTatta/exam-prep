@@ -13,6 +13,45 @@ export const siteConfig = {
   ogImage: "/og.png",
 } as const;
 
+// Every logo variant lives in /public/brand. Swap the files there (keeping the
+// names) to rebrand the whole site; nothing else references a logo path.
+// `width`/`height` are the assets' intrinsic pixel sizes — next/image uses them
+// to reserve space, so they have to be updated alongside any new artwork.
+// See public/brand/README.md.
+export const brandAssets = {
+  // Horizontal mark + wordmark. The navbar's default.
+  lockup: {
+    light: "/brand/logo-light.png",
+    dark: "/brand/logo-dark.png",
+    width: 652,
+    height: 160,
+  },
+  // Vertical mark + wordmark + tagline, for centred surfaces like sign-in.
+  stacked: {
+    light: "/brand/logo-stacked-light.png",
+    dark: "/brand/logo-stacked-dark.png",
+    width: 505,
+    height: 381,
+  },
+  // Mark on its own, for tight spots where the wordmark won't fit.
+  mark: {
+    light: "/brand/mark-light.png",
+    dark: "/brand/mark-dark.png",
+    width: 197,
+    height: 248,
+  },
+} as const;
+
+export type BrandVariant = keyof typeof brandAssets;
+
+// Tab, home-screen, and install icons. Wired up in src/app/layout.tsx.
+export const brandIcons = {
+  favicon: "/brand/favicon.ico",
+  apple: "/brand/apple-icon.png",
+  png192: "/brand/icon-192.png",
+  png512: "/brand/icon-512.png",
+} as const;
+
 export type Subject = {
   slug: string;
   label: string;
