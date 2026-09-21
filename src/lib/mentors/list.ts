@@ -9,6 +9,11 @@ function slotDistance(slot: MentorCardSlot) {
   return slot ? daysUntilSlot(slot.dayOfWeek, slot.startTime) : Number.MAX_SAFE_INTEGER;
 }
 
+/** Pinned mentors first, in the admin's order; unpinned keep their own order. */
+function pinDistance(displayOrder: number | null) {
+  return displayOrder ?? Number.MAX_SAFE_INTEGER;
+}
+
 /**
  * Verified mentors with their soonest open slot, soonest first.
  *
@@ -16,6 +21,11 @@ function slotDistance(slot: MentorCardSlot) {
  * bookable mentors, not the newest few re-ordered among themselves. An open
  * slot tomorrow converts better than a better-looking profile with nothing
  * free for nine days.
+ *
+ * Above that sits the admin's pin order (`displayOrder`, set in
+ * /admin/mentors). A pinned mentor holds their position whatever their
+ * availability looks like — that's the whole point of pinning — and everyone
+ * else falls in behind them on the soonest-slot rule.
  *
  * Two things about the query. It is an explicit `select`, not an `include`:
  * a mentor row carries their UPI ID and proof document, and a listing has no
@@ -39,6 +49,7 @@ export async function listBookableMentors({
       currentRole: true,
       languages: true,
       story: true,
+      displayOrder: true,
       reviewCount: true,
       ratingSum: true,
       user: { select: { name: true, image: true } },
@@ -50,9 +61,15 @@ export async function listBookableMentors({
     orderBy: { createdAt: "desc" },
   });
 
+  // `displayOrder` rides along on the mentor object purely as a sort key; the
+  // card never reads it, and stripping it would cost another pass over the list.
   const ranked = profiles
     .map(({ availability, ...mentor }) => ({ mentor, nextSlot: pickNextSlot(availability) }))
-    .sort((a, b) => slotDistance(a.nextSlot) - slotDistance(b.nextSlot));
+    .sort(
+      (a, b) =>
+        pinDistance(a.mentor.displayOrder) - pinDistance(b.mentor.displayOrder) ||
+        slotDistance(a.nextSlot) - slotDistance(b.nextSlot)
+    );
 
   return limit ? ranked.slice(0, limit) : ranked;
 }

@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { averageRating, formatRating } from "@/lib/reviews";
+import { formatAir } from "@/lib/mentors/rank";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -44,7 +45,7 @@ export default async function MentorOgImage({ params }: { params: Promise<{ id: 
 
   const name = mentor?.user.name ?? siteConfig.name;
   const credential = mentor
-    ? [mentor.rank, mentor.examCleared, mentor.examYear || null].filter(Boolean).join("  ·  ")
+    ? [formatAir(mentor.rank), mentor.examCleared, mentor.examYear || null].filter(Boolean).join("  ·  ")
     : siteConfig.tagline;
   const average = mentor && mentor.verified ? averageRating(mentor) : null;
 

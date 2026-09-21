@@ -29,6 +29,52 @@ export async function verifyMentor(mentorProfileId: string, approve: boolean) {
 }
 
 /**
+ * Set the hand-picked order verified mentors appear in, across every listing.
+ *
+ * Takes the full pinned list rather than one mentor's position, because a
+ * position is only meaningful relative to the others: sending "put her at 2"
+ * one row at a time is how two mentors end up both claiming slot 2. The whole
+ * order arrives at once, gets written as 1..n, and every mentor left out is
+ * unpinned in the same transaction — so what the admin sees on screen is
+ * exactly what the database holds when this returns.
+ *
+ * Unpinned mentors aren't hidden; they simply fall back to the automatic
+ * soonest-slot order below the pinned ones (see src/lib/mentors/list.ts).
+ */
+export async function setMentorDisplayOrder(orderedMentorIds: string[]) {
+  await requireRole("ADMIN");
+
+  const ids = [...new Set(orderedMentorIds)];
+  if (ids.length !== orderedMentorIds.length) {
+    throw new Error("A mentor can only appear once in the order");
+  }
+
+  const verifiedCount = await prisma.mentorProfile.count({
+    where: { id: { in: ids }, verified: true },
+  });
+  if (verifiedCount !== ids.length) {
+    throw new Error("Only verified mentors can be pinned");
+  }
+
+  await prisma.$transaction([
+    // Clear first, so a mentor dragged out of the list doesn't keep a stale
+    // position, and so no two rows briefly share one.
+    prisma.mentorProfile.updateMany({
+      where: { displayOrder: { not: null } },
+      data: { displayOrder: null },
+    }),
+    ...ids.map((id, index) =>
+      prisma.mentorProfile.update({ where: { id }, data: { displayOrder: index + 1 } })
+    ),
+  ]);
+
+  // Every surface that renders a mentor listing.
+  revalidatePath("/");
+  revalidatePath("/mentors");
+  revalidatePath("/admin/mentors");
+}
+
+/**
  * Refund a captured payment, in full or in part.
  *
  * Refunds are admin-only by design: a mentee who has already paid files a

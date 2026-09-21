@@ -14,6 +14,7 @@ import { daysUntilSlot, formatSlotWhen } from "@/lib/days";
 import { bookSlot } from "@/app/mentors/actions";
 import { expireStaleHolds } from "@/lib/payments/sync";
 import { getMentorProfile, REVIEWS_ON_PROFILE } from "@/lib/mentors/profile";
+import { formatAir } from "@/lib/mentors/rank";
 import { averageRating, formatRating } from "@/lib/reviews";
 import { siteConfig } from "@/config/site";
 import {
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const name = mentor.user.name ?? "This mentor";
   const average = averageRating(mentor);
-  const credential = [mentor.rank, mentor.examCleared].filter(Boolean).join(", ");
+  const credential = [formatAir(mentor.rank), mentor.examCleared].filter(Boolean).join(", ");
   const rated = average
     ? ` Rated ${formatRating(average)}/5 by ${mentor.reviewCount} ${mentor.reviewCount === 1 ? "student" : "students"}.`
     : "";
@@ -66,7 +67,9 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
 
   const isOwnProfile = session?.user?.id === mentor.userId;
   const firstName = mentor.user.name?.trim().split(/\s+/)[0] ?? "them";
-  const credential = [mentor.rank, mentor.examCleared, mentor.examYear || null].filter(Boolean).join(" · ");
+  const credential = [formatAir(mentor.rank), mentor.examCleared, mentor.examYear || null]
+    .filter(Boolean)
+    .join(" · ");
   const slots = [...mentor.availability].sort(
     (a, b) => daysUntilSlot(a.dayOfWeek, a.startTime) - daysUntilSlot(b.dayOfWeek, b.startTime)
   );

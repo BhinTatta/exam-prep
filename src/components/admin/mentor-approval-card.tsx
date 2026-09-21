@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Check, X, FileText } from "lucide-react";
 import { verifyMentor } from "@/app/admin/actions";
+import { formatAir } from "@/lib/mentors/rank";
 
 export function MentorApprovalCard({
   profile,
@@ -57,7 +58,9 @@ export function MentorApprovalCard({
         {/* The claim being verified, first — this is what the proof document
             has to back up. */}
         <div className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">
-          {[profile.rank, profile.examCleared, profile.examYear || null].filter(Boolean).join(" · ")}
+          {[formatAir(profile.rank), profile.examCleared, profile.examYear || null]
+            .filter(Boolean)
+            .join(" · ")}
         </div>
         <div className="flex flex-wrap gap-1.5">
           {profile.subjects.map((s) => (

@@ -8,6 +8,7 @@ import { RatingSummary } from "@/components/reviews/rating-summary";
 import { ReviewQuote } from "@/components/reviews/review-quote";
 import { ShareProfile } from "@/components/mentors/share-profile";
 import { listMentorReviews, REVIEWS_PER_PAGE } from "@/lib/mentors/profile";
+import { formatAir } from "@/lib/mentors/rank";
 import { siteConfig } from "@/config/site";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -92,7 +93,7 @@ export default async function MentorReviewsPage({
           <div className="min-w-0">
             <h1 className="font-heading text-xl leading-tight font-bold">{name}</h1>
             <p className="truncate text-sm text-muted-foreground">
-              {[mentor.rank, mentor.examCleared].filter(Boolean).join(" · ") ||
+              {[formatAir(mentor.rank), mentor.examCleared].filter(Boolean).join(" · ") ||
                 mentor.currentRole ||
                 mentor.institute}
             </p>

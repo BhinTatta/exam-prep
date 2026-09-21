@@ -78,8 +78,12 @@ export function MentorApplyForm() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="rank">Your rank / AIR</Label>
-              <Input id="rank" name="rank" placeholder="AIR 12" required />
+              <Label htmlFor="rank">Your All India Rank (AIR)</Label>
+              <Input id="rank" name="rank" inputMode="numeric" placeholder="12" required />
+              <p className="text-xs text-muted-foreground">
+                Just the number — it shows on your profile as &ldquo;AIR 12&rdquo;. If yours isn&apos;t an
+                All India Rank, write it out in full (e.g. &ldquo;CRL 340&rdquo;, &ldquo;State rank 8&rdquo;).
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="institute">Institute you prepared at / are from</Label>

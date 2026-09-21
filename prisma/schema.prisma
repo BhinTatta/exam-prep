@@ -225,7 +225,20 @@ model MentorProfile {
   reviewCount Int @default(0) // published reviews only
   ratingSum   Int @default(0) // sum of those reviews' stars
 
+  // --- Manual listing order ------------------------------------------------
+  // An admin's hand-picked position in every mentor listing: 1 shows first,
+  // then 2, then 3. NULL means unpinned, and unpinned mentors keep the
+  // automatic order (soonest open slot) below the pinned ones.
+  //
+  // This exists because the automatic order optimises for availability, which
+  // is the right default at scale and the wrong one at ten mentors — before
+  // there are enough sessions to rank on outcomes, a human knows which mentor
+  // converts and should be allowed to say so. When a real ranking signal
+  // arrives this column stays as the manual override on top of it.
+  displayOrder Int?
+
   @@index([verified])
+  @@index([verified, displayOrder])
 }
 
 model Availability {

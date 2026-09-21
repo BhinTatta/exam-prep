@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatSlotWhen } from "@/lib/days";
 import { cn } from "@/lib/utils";
 import { RatingChip } from "@/components/reviews/rating-summary";
+import { formatAir } from "@/lib/mentors/rank";
 import { BadgeCheck, CalendarClock, Languages, ArrowRight } from "lucide-react";
 
 export type MentorCardData = {
@@ -53,7 +54,7 @@ export function MentorCard({
   className?: string;
 }) {
   const firstName = firstNameOf(mentor.user.name);
-  const credential = [mentor.rank, mentor.examCleared, mentor.examYear || null]
+  const credential = [formatAir(mentor.rank), mentor.examCleared, mentor.examYear || null]
     .filter(Boolean)
     .join(" · ");
 
