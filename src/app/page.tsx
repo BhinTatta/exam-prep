@@ -30,8 +30,8 @@ import {
 // mentor page is dynamic and authoritative, and bookSlot() takes the slot
 // atomically — but it is why this is an hour rather than a day.
 //
-// Mentor approvals don't wait for the hour: verifyMentor() revalidates this
-// path on approval (see src/app/admin/actions.ts).
+// Nothing invalidates this on demand, deliberately: who appears here is a
+// curation call, not something a mentor approval should decide.
 export const revalidate = 3600;
 
 const MENTORS_ON_HOME = 3;

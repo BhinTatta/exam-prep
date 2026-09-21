@@ -26,10 +26,6 @@ export async function verifyMentor(mentorProfileId: string, approve: boolean) {
 
   revalidatePath("/admin/mentors");
   revalidatePath("/admin");
-  // The home page and the mentor listing are ISR-cached, so an approval would
-  // otherwise take up to an hour to show up. Push it out now instead.
-  revalidatePath("/");
-  revalidatePath("/mentors");
 }
 
 /**
