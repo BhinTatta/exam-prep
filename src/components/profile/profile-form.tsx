@@ -148,8 +148,8 @@ export function ProfileForm({
         />
       </div>
 
-      <Button type="submit" disabled={isPending} className="mt-2 self-start">
-        {isPending ? "Saving..." : "Save changes"}
+      <Button type="submit" loading={isPending} loadingText="Saving…" className="mt-2 self-start">
+        Save changes
       </Button>
     </form>
   );

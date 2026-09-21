@@ -6,16 +6,23 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadFile } from "@/lib/supabase";
-import { subjects } from "@/config/site";
+import { subjects, mentorLanguages, examCredentials } from "@/config/site";
 import { expireStaleHolds, holdDeadline } from "@/lib/payments/sync";
 
+// Everything here is required. A half-filled mentor profile converts nobody,
+// and letting one through means an empty card sitting next to a complete one.
 const applySchema = z.object({
   institute: z.string().min(2).max(120),
-  rank: z.string().max(120).optional(),
+  rank: z.string().min(1).max(120),
+  examCleared: z.enum(examCredentials as [string, ...string[]]),
+  examYear: z.coerce.number().int().min(1990).max(new Date().getFullYear()),
+  currentRole: z.string().min(2).max(120),
+  languages: z.array(z.enum(mentorLanguages as unknown as [string, ...string[]])).min(1),
+  story: z.string().min(60).max(400),
   subjects: z.array(z.enum(subjects.map((s) => s.slug) as [string, ...string[]])).min(1),
   rate: z.coerce.number().int().min(0).max(100000),
   upiId: z.string().min(3).max(80),
-  bio: z.string().max(2000).optional(),
+  bio: z.string().min(40).max(2000),
 });
 
 export async function applyAsMentor(formData: FormData) {
@@ -26,11 +33,16 @@ export async function applyAsMentor(formData: FormData) {
 
   const parsed = applySchema.parse({
     institute: formData.get("institute"),
-    rank: formData.get("rank") || undefined,
+    rank: formData.get("rank"),
+    examCleared: formData.get("examCleared"),
+    examYear: formData.get("examYear"),
+    currentRole: formData.get("currentRole"),
+    languages: formData.getAll("languages"),
+    story: formData.get("story"),
     subjects: formData.getAll("subjects"),
     rate: formData.get("rate"),
     upiId: formData.get("upiId"),
-    bio: formData.get("bio") || undefined,
+    bio: formData.get("bio"),
   });
 
   const proof = formData.get("proof");

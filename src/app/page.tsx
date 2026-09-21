@@ -1,128 +1,280 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { MentorCard } from "@/components/mentors/mentor-card";
+import { listBookableMentors } from "@/lib/mentors/list";
 import { siteConfig, exams } from "@/config/site";
-import { BookOpen, MessagesSquare, Users, ArrowRight, ShieldCheck, Sparkles, Target } from "lucide-react";
+import {
+  BookOpen,
+  MessagesSquare,
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  MessageSquareOff,
+  CalendarX,
+  Target,
+  ClipboardCheck,
+  Undo2,
+  Wallet,
+} from "lucide-react";
 
-const features = [
-  {
-    icon: Target,
-    title: "Free diagnostic test",
-    description:
-      "15 minutes, no account needed. Get a real topic-by-topic score, a study plan, and — if it'll actually help — a mentor match.",
-    href: "/tests",
-    cta: "Take the diagnostic",
-  },
-  {
-    icon: BookOpen,
-    title: "Curated resources",
-    description:
-      "Institute material, books, test series and PYQs — organized by subject and category, kept up to date by moderators.",
-    href: "/resources",
-    cta: "Browse resources",
-  },
-  {
-    icon: MessagesSquare,
-    title: "Community Q&A",
-    description:
-      "Ask a question with full LaTeX support, get answers from the community, or deep-link straight to ChatGPT for a first pass.",
-    href: "/qa",
-    cta: "Ask a question",
-  },
-  {
-    icon: Users,
-    title: "Mentor marketplace",
-    description:
-      "Book 1:1 sessions with verified toppers and mentors. Simple manual UPI payment, Jitsi video call, zero platform fee in v1.",
-    href: "/mentors",
-    cta: "Find a mentor",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function Home() {
+const MENTORS_ON_HOME = 3;
+
+export default async function Home() {
+  const [test, mentors] = await Promise.all([
+    prisma.test.findFirst({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      select: { slug: true, durationMinutes: true },
+    }),
+    listBookableMentors({ limit: MENTORS_ON_HOME }),
+  ]);
+
+  // Straight to the test when there's one to take — the listing page is a hop
+  // that costs a click and a full server round-trip before anyone sees a
+  // question.
+  const testHref = test ? `/tests/${test.slug}` : "/tests";
+  const duration = test ? `${test.durationMinutes} min` : "25 min";
+  const durationWords = `${test?.durationMinutes ?? 25}-minute`;
+
   return (
     <div className="flex flex-col">
       <section className="relative overflow-hidden border-b">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,theme(colors.primary/8%),transparent_60%)]" />
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-24 text-center">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,theme(colors.primary/10%),transparent_60%)]" />
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-20 text-center sm:py-24">
           <Badge variant="secondary" className="gap-1.5 px-3 py-1">
-            <Sparkles className="size-3.5" /> Free forever. No ads. Community-first.
+            <Sparkles className="size-3.5" /> Free forever. No ads. No spam.
           </Badge>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            {siteConfig.tagline}
+
+          <h1 className="max-w-3xl text-balance font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            Find out what&apos;s actually costing you marks.
           </h1>
-          <p className="max-w-2xl text-balance text-lg text-muted-foreground">
-            {siteConfig.description} Built for {exams.map((e) => e.label).join(", ")} aspirants,
-            by people who&apos;ve taken the exams.
+
+          <p className="max-w-2xl text-pretty text-lg text-muted-foreground">
+            A free {durationWords} diagnostic that shows you, topic by topic, where your marks are
+            leaking — then a study plan built from it. No sign-up to take it.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/tests">
-              <Button size="lg" className="gap-1.5">
-                Take the free diagnostic <ArrowRight className="size-4" />
-              </Button>
-            </Link>
-            <Link href="/resources">
-              <Button size="lg" variant="outline">
-                Explore resources
-              </Button>
+
+          {/* One CTA. Two buttons of equal weight is a decision the student
+              doesn't want to make, so the second option is a plain link. */}
+          <div className="flex w-full flex-col items-center gap-4">
+            <Button asChild size="hero" emphasis="glow" className="w-full sm:w-auto">
+              <Link href={testHref}>
+                Take the free test — {duration} <ArrowRight />
+              </Link>
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              No sign-up. No card. Your result the moment you finish.
+            </p>
+            <Link
+              href="/mentors"
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              or meet the mentors who&apos;ve cleared it →
             </Link>
           </div>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
             {exams.map((exam) => (
               <Badge key={exam.slug} variant="outline" className="px-3 py-1 text-sm font-normal">
-                {exam.fullName}
+                {exam.label}
               </Badge>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-20">
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Everything in one place</h2>
-          <p className="mt-2 text-muted-foreground">Three pillars, one platform, zero cost to you.</p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <Card key={f.title} className="flex flex-col justify-between transition-shadow hover:shadow-md">
-              <CardHeader>
-                <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                  <f.icon className="size-5 text-primary" />
-                </div>
-                <CardTitle>{f.title}</CardTitle>
-                <CardDescription>{f.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href={f.href}>
-                  <Button variant="ghost" className="gap-1.5 px-0 hover:bg-transparent hover:underline">
-                    {f.cta} <ArrowRight className="size-4" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+      {/* The mentor pitch sits second, directly under the hero — it's the
+          product, not a footnote below a feature grid. */}
+      <section className="border-b bg-accent/40">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 sm:py-20">
+          <div className="mx-auto flex max-w-2xl flex-col gap-4 text-center">
+            <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+              The part that changes your rank
+            </p>
+            <h2 className="text-balance font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+              You&apos;ve messaged seniors. Most never replied.
+            </h2>
+            <p className="text-pretty text-muted-foreground">
+              The one who did sent two sentences. A 45-minute call with someone who cleared the exact
+              exam you&apos;re preparing for is a different thing — they look at where you&apos;re
+              losing marks and tell you what to drop, what to drill, and in what order.
+            </p>
+            <p className="font-heading text-lg font-semibold text-balance">
+              One call. Months of unguided prep you don&apos;t have to repeat.
+            </p>
+          </div>
+
+          {mentors.length > 0 && (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {mentors.map(({ mentor, nextSlot }, i) => (
+                <MentorCard
+                  key={mentor.id}
+                  mentor={mentor}
+                  nextSlot={nextSlot}
+                  highlight={i === 0 && !!nextSlot}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="flex flex-col items-center gap-3">
+            <Button asChild size="xl" variant={mentors.length > 0 ? "outline" : "default"} emphasis={mentors.length > 0 ? "none" : "glow"}>
+              <Link href="/mentors">
+                {mentors.length > 0 ? "See all verified mentors" : "Meet the mentors"} <ArrowRight />
+              </Link>
+            </Button>
+            <p className="flex items-center gap-1.5 text-center text-xs text-muted-foreground">
+              <ShieldCheck className="size-3.5 shrink-0 text-primary" />
+              Rank proof checked by a human. Mentor doesn&apos;t show up? Full refund, no argument.
+            </p>
+          </div>
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-4xl px-4 py-16 sm:py-20">
+        <h2 className="text-center font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+          How it works
+        </h2>
+        <ol className="mt-8 flex flex-col gap-5">
+          <Step n={1} icon={ClipboardCheck} title={`Take the diagnostic — free, ${duration}`}>
+            No account needed. Conceptual questions across the whole syllabus, not a full mock.
+          </Step>
+          <Step n={2} icon={Target} title="See exactly where the marks leak">
+            A topic-by-topic breakdown and a study plan built from your actual answers.
+          </Step>
+          <Step n={3} icon={MessagesSquare} title="Take it to someone who's been there">
+            Optional, and the only thing that costs money. Pick a mentor, pick a slot, talk.
+          </Step>
+        </ol>
+
+        <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          <Assurance icon={MessageSquareOff} title="Not another group class">
+            1:1 video, no recording, no script.
+          </Assurance>
+          <Assurance icon={Wallet} title="Pay per session">
+            No subscription, no package, no upsell call.
+          </Assurance>
+          <Assurance icon={Undo2} title="They don't show, you don't pay">
+            Full refund if a mentor misses the call.
+          </Assurance>
+        </div>
+      </section>
+
+      {/* Resources and Q&A are real, and they are not why anyone is here —
+          one compact row rather than equal billing with the funnel. */}
       <section className="border-t bg-muted/30">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center">
-          <ShieldCheck className="size-8 text-primary" />
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Run by moderators, not algorithms
+        <div className="mx-auto grid max-w-4xl gap-4 px-4 py-14 sm:grid-cols-2">
+          <SideLink
+            icon={BookOpen}
+            href="/resources"
+            title="Curated resources"
+            description="Institute material, books, test series and PYQs — kept current by moderators."
+          />
+          <SideLink
+            icon={MessagesSquare}
+            href="/qa"
+            title="Community Q&A"
+            description="Ask with full LaTeX support and get answers from people taking the same exam."
+          />
+        </div>
+      </section>
+
+      <section className="border-t">
+        <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-4 py-14 text-center">
+          <CalendarX className="size-7 text-primary" />
+          <h2 className="font-heading text-xl font-semibold tracking-tight">
+            Cleared the exam yourself?
           </h2>
-          <p className="max-w-xl text-muted-foreground">
-            Content is curated by trusted moderators, mentors are manually verified before they
-            can take bookings, and every payment is confirmed by a human before a session is
-            locked in.
+          <p className="text-sm text-muted-foreground">
+            You remember what nobody told you in time. Set your own rate and hours — we verify your
+            rank proof by hand before your profile goes live.
           </p>
-          <Link href="/mentors/apply">
-            <Button variant="outline" size="lg">
-              Apply to become a mentor
-            </Button>
-          </Link>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/mentors/apply">Become a mentor</Link>
+          </Button>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {siteConfig.name} is run by moderators, not algorithms.
+          </p>
         </div>
       </section>
     </div>
+  );
+}
+
+function Step({
+  n,
+  icon: Icon,
+  title,
+  children,
+}: {
+  n: number;
+  icon: typeof Target;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex items-start gap-4">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-heading text-sm font-bold text-primary tabular-nums">
+        {n}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="flex items-center gap-2 font-semibold">
+          <Icon className="size-4 shrink-0 text-primary" />
+          {title}
+        </p>
+        <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground">{children}</p>
+      </div>
+    </li>
+  );
+}
+
+function Assurance({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof ShieldCheck;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1 rounded-xl border bg-card p-4">
+      <Icon className="size-4.5 text-primary" />
+      <p className="mt-1 text-sm font-semibold">{title}</p>
+      <p className="text-xs leading-relaxed text-muted-foreground">{children}</p>
+    </div>
+  );
+}
+
+function SideLink({
+  icon: Icon,
+  href,
+  title,
+  description,
+}: {
+  icon: typeof BookOpen;
+  href: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Card className="relative transition-shadow hover:shadow-md">
+      <CardContent className="flex items-start gap-3 p-5">
+        <Icon className="mt-0.5 size-5 shrink-0 text-primary" />
+        <div className="min-w-0">
+          <p className="font-semibold">
+            <Link href={href} className="after:absolute after:inset-0">
+              {title}
+            </Link>
+          </p>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

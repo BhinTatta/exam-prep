@@ -16,7 +16,9 @@ export function TermsGate() {
   const { data: session, status } = useSession();
 
   if (status !== "authenticated") return null;
-  if (session.user?.termsAcceptedAt) return null;
+  // Belt and braces: never gate someone we don't actually have a user for.
+  if (!session?.user) return null;
+  if (session.user.termsAcceptedAt) return null;
 
   return <TermsDialog />;
 }

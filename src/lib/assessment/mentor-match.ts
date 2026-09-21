@@ -3,25 +3,19 @@ import { prisma } from "@/lib/prisma";
 const MAX_RECOMMENDATIONS = 3;
 
 /**
- * Ranks verified mentors by overlap with the mentee's weak topics. Falls
- * back to any verified mentor (most recently verified first) when no mentor
- * has been tagged with matching topics yet — keeps recommendations non-empty
- * even before admins start tagging mentor topics.
+ * Picks the mentors recorded against an attempt.
+ *
+ * Deliberately NOT ranked by topic overlap. Surfacing a mentor as the answer
+ * to a specific weak topic implies we know they fixed that same gap for
+ * someone — we don't, and a confident wrong match costs more trust than it
+ * wins bookings. Until there's real outcome data to rank on, every verified
+ * mentor is an equally honest suggestion, newest first.
  */
-export async function recommendMentors(weaknesses: string[]) {
-  const mentors = await prisma.mentorProfile.findMany({
+export async function recommendMentors() {
+  return prisma.mentorProfile.findMany({
     where: { verified: true },
     include: { user: { select: { name: true, image: true } } },
     orderBy: { createdAt: "desc" },
+    take: MAX_RECOMMENDATIONS,
   });
-
-  const weakSet = new Set(weaknesses.map((w) => w.toLowerCase()));
-  const ranked = mentors
-    .map((m) => ({
-      mentor: m,
-      overlap: m.topics.filter((t) => weakSet.has(t.toLowerCase())).length,
-    }))
-    .sort((a, b) => b.overlap - a.overlap);
-
-  return ranked.slice(0, MAX_RECOMMENDATIONS).map((r) => r.mentor);
 }

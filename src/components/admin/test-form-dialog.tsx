@@ -121,8 +121,8 @@ export function TestFormDialog({ mode, test }: { mode: "create" | "edit"; test?:
             />
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : mode === "create" ? "Create test" : "Save changes"}
+            <Button type="submit" loading={isPending} loadingText="Saving…">
+              {mode === "create" ? "Create test" : "Save changes"}
             </Button>
           </DialogFooter>
         </form>

@@ -27,7 +27,8 @@ export function TermsDialog() {
         <TermsContent />
         <DialogFooter>
           <Button
-            disabled={isPending}
+            loading={isPending}
+            loadingText="Saving…"
             onClick={() =>
               startTransition(async () => {
                 await acceptTerms();

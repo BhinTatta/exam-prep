@@ -1,69 +1,94 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Users, IndianRupee } from "lucide-react";
+import { MentorCard } from "@/components/mentors/mentor-card";
+import { listBookableMentors } from "@/lib/mentors/list";
+import { Users, ShieldCheck, Wallet, Undo2 } from "lucide-react";
 
-export const metadata = { title: "Mentors" };
+export const metadata = {
+  title: "Talk to someone who cleared it",
+  description:
+    "1:1 video sessions with mentors who sat the same exam and passed it. Pay per session, full refund if they don't show.",
+};
 export const dynamic = "force-dynamic";
 
 export default async function MentorsPage() {
-  const mentors = await prisma.mentorProfile.findMany({
-    where: { verified: true },
-    include: { user: { select: { name: true, image: true } } },
-    orderBy: { createdAt: "desc" },
-  });
+  const mentors = await listBookableMentors();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <PageHeader
-        title="Mentors"
-        description="Verified mentors offering 1:1 sessions. Manual UPI payment, Jitsi video call."
-        action={
-          <Link href="/mentors/apply">
-            <Button variant="outline">Become a mentor</Button>
-          </Link>
-        }
-      />
+      <header className="flex flex-col items-center gap-4 text-center">
+        <h1 className="max-w-2xl text-balance font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+          Talk to someone who was exactly where you are
+        </h1>
+        <p className="max-w-xl text-pretty text-muted-foreground">
+          Every mentor here sat the same exam you&apos;re preparing for — and cleared it. One 45-minute
+          video call is usually worth more than another month of guessing what matters.
+        </p>
+      </header>
+
+      {/* Objection handling, up front: is this real, what does it cost me, what
+          if it goes wrong. Cheaper to answer here than to lose the booking. */}
+      <div className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+        <Assurance icon={ShieldCheck} title="Verified by a human">
+          Rank card and ID checked before a profile goes live.
+        </Assurance>
+        <Assurance icon={Wallet} title="Pay per session">
+          No subscription, no package, no upsell call.
+        </Assurance>
+        <Assurance icon={Undo2} title="They don't show, you don't pay">
+          Full refund if a mentor misses the call. No argument.
+        </Assurance>
+      </div>
 
       {mentors.length === 0 ? (
-        <EmptyState icon={Users} title="No verified mentors yet" description="Check back soon." />
+        <div className="mt-10">
+          <EmptyState
+            icon={Users}
+            title="No verified mentors yet"
+            description="We verify every mentor by hand, so this list fills up slowly. Check back soon."
+          />
+        </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {mentors.map((m) => (
-            <Link key={m.id} href={`/mentors/${m.id}`}>
-              <Card className="h-full transition-shadow hover:shadow-md">
-                <CardHeader className="flex-row items-center gap-3 space-y-0">
-                  <Avatar className="size-10">
-                    <AvatarImage src={m.user.image ?? undefined} />
-                    <AvatarFallback>{(m.user.name ?? "M").slice(0, 1)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-base">{m.user.name}</CardTitle>
-                    <CardDescription>{m.institute}</CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <div className="flex flex-wrap gap-1.5">
-                    {m.subjects.map((s) => (
-                      <Badge key={s} variant="secondary">
-                        {s}
-                      </Badge>
-                    ))}
-                  </div>
-                  <p className="flex items-center gap-1 text-sm font-medium">
-                    <IndianRupee className="size-3.5" /> {m.rate} / session
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {mentors.map(({ mentor, nextSlot }, i) => (
+            <MentorCard
+              key={mentor.id}
+              mentor={mentor}
+              nextSlot={nextSlot}
+              highlight={i === 0 && !!nextSlot}
+            />
           ))}
         </div>
       )}
+
+      <div className="mt-14 flex flex-col items-center gap-3 border-t pt-10 text-center">
+        <p className="font-heading text-lg font-semibold">Cleared the exam yourself?</p>
+        <p className="max-w-md text-sm text-muted-foreground">
+          You remember what nobody told you in time. Set your own rate and hours.
+        </p>
+        <Button asChild variant="outline" size="lg">
+          <Link href="/mentors/apply">Become a mentor</Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function Assurance({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof ShieldCheck;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1 rounded-xl border bg-card p-4">
+      <Icon className="size-4.5 text-primary" />
+      <p className="mt-1 text-sm font-semibold">{title}</p>
+      <p className="text-xs leading-relaxed text-muted-foreground">{children}</p>
     </div>
   );
 }

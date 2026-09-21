@@ -83,8 +83,8 @@ export function QuestionForm() {
             <Label htmlFor="image">Image (optional)</Label>
             <FileInput id="image" name="image" accept="image/*" />
           </div>
-          <Button type="submit" disabled={isPending} className="mt-2">
-            {isPending ? "Posting..." : "Post question"}
+          <Button type="submit" loading={isPending} loadingText="Posting…" className="mt-2">
+            Post question
           </Button>
         </form>
       </CardContent>

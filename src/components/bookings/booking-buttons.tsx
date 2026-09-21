@@ -1,11 +1,21 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { cancelBooking, confirmHappened } from "@/app/bookings/actions";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
 
 export function CancelBookingButton({ bookingId }: { bookingId: string }) {
   const [isPending, startTransition] = useTransition();
@@ -15,7 +25,8 @@ export function CancelBookingButton({ bookingId }: { bookingId: string }) {
     <Button
       variant="outline"
       size="sm"
-      disabled={isPending}
+      loading={isPending}
+      loadingText="Cancelling…"
       onClick={() =>
         startTransition(async () => {
           try {
@@ -33,14 +44,26 @@ export function CancelBookingButton({ bookingId }: { bookingId: string }) {
   );
 }
 
-export function ConfirmHappenedButtons({ bookingId }: { bookingId: string }) {
+/**
+ * The dispute path.
+ *
+ * Its counterpart — "yes, it happened" — no longer exists as a button: rating
+ * the session is what confirms it, so a student is asked one question instead
+ * of two. This one stays a quiet link rather than a peer of the rating,
+ * because it opens an admin review and a refund decision, and it asks before
+ * it fires.
+ */
+export function DidNotHappenButton({ bookingId }: { bookingId: string }) {
+  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  function run(happened: boolean) {
+  function report() {
     startTransition(async () => {
       try {
-        await confirmHappened(bookingId, happened);
+        await confirmHappened(bookingId, false);
+        setOpen(false);
+        toast.success("Reported — an admin will look into it");
         router.refresh();
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Couldn't update");
@@ -49,13 +72,30 @@ export function ConfirmHappenedButtons({ bookingId }: { bookingId: string }) {
   }
 
   return (
-    <div className="flex gap-2">
-      <Button size="sm" disabled={isPending} onClick={() => run(true)} className="gap-1.5">
-        <ThumbsUp className="size-4" /> Yes, it happened
-      </Button>
-      <Button size="sm" variant="outline" disabled={isPending} onClick={() => run(false)} className="gap-1.5">
-        <ThumbsDown className="size-4" /> No, it didn&apos;t
-      </Button>
-    </div>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="link" size="sm" className="self-start px-0 text-muted-foreground">
+          This session didn&apos;t happen
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Report that this session didn&apos;t happen?</AlertDialogTitle>
+          <AlertDialogDescription>
+            An admin reviews it and refunds you in full if the mentor missed the call. Only do this
+            if the call genuinely didn&apos;t take place — a session that went badly is feedback, not
+            a dispute.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>Never mind</AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button variant="destructive" loading={isPending} loadingText="Reporting…" onClick={report}>
+              Yes, report it
+            </Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

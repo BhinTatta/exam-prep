@@ -75,8 +75,8 @@ export function ResourceForm() {
             <Label htmlFor="tags">Tags (comma separated)</Label>
             <Input id="tags" name="tags" placeholder="electrodynamics, gate, notes" />
           </div>
-          <Button type="submit" disabled={isPending} className="mt-2">
-            {isPending ? "Adding..." : "Add resource"}
+          <Button type="submit" loading={isPending} loadingText="Adding…" className="mt-2">
+            Add resource
           </Button>
         </form>
       </CardContent>

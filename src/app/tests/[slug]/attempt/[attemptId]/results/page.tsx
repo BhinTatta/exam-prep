@@ -3,9 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth-helpers";
 import { claimAttempt } from "@/app/tests/[slug]/attempt/[attemptId]/actions";
 import { ResultsReport } from "@/components/assessment/results-report";
+import { listBookableMentors } from "@/lib/mentors/list";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
 
 export const dynamic = "force-dynamic";
+
+const MENTORS_ON_RESULTS = 2;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; attemptId: string }> }) {
   const { attemptId } = await params;
@@ -39,16 +42,14 @@ export default async function ResultsPage({
     notFound();
   }
 
-  const mentors = attempt.result.recommendedMentorIds.length
-    ? await prisma.mentorProfile.findMany({
-        where: { id: { in: attempt.result.recommendedMentorIds } },
-        include: { user: { select: { name: true, image: true } } },
-      })
-    : [];
-  const mentorsById = new Map(mentors.map((m) => [m.id, m]));
-  const orderedMentors = attempt.result.recommendedMentorIds
-    .map((id) => mentorsById.get(id))
-    .filter((m): m is NonNullable<typeof m> => m !== undefined);
+  // Mentors shown here are NOT ranked by topic overlap. Telling a student
+  // "this mentor closed your exact gap" is a claim we can't stand behind yet,
+  // and a wrong match is worse than no match. We show a couple of verified
+  // mentors and let the soonest-available one lead.
+  const mentors = await listBookableMentors({
+    limit: MENTORS_ON_RESULTS,
+    ids: attempt.result.recommendedMentorIds,
+  });
 
   const canViewFullPlan = !!session?.user && session.user.id === attempt.userId;
   const fullStudyPlan = attempt.result.studyPlan as unknown as StudyPlan | null;
@@ -74,7 +75,7 @@ export default async function ResultsPage({
       maxScore={attempt.result.maxScore}
       topicBreakdown={attempt.result.topicBreakdown as unknown as TopicStat[]}
       studyPlan={studyPlan}
-      mentors={orderedMentors}
+      mentors={mentors}
       canViewFullPlan={canViewFullPlan}
       attemptId={attemptId}
     />

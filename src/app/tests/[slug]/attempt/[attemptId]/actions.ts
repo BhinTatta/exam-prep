@@ -33,7 +33,7 @@ export async function submitAttempt(attemptId: string, answers: ScoredAnswer[]) 
   // hook; the full topic-by-topic breakdown and PDF export are what's
   // gated behind sign-in — see the results page).
   const [recommendedMentors, studyPlan] = await Promise.all([
-    recommendMentors(scoring.weaknesses),
+    recommendMentors(),
     generateStudyPlan({
       testTitle: attempt.test.title,
       totalScore: scoring.totalScore,

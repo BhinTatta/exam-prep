@@ -39,7 +39,11 @@ export function NavUser() {
     <div className="flex min-w-[76px] justify-end">
       {!user ? (
         <Link href="/sign-in">
-          <Button size="sm">Sign in</Button>
+          {/* Ghost, so the one filled button in the header is the funnel
+              entry and not the account prompt. */}
+          <Button size="sm" variant="ghost">
+            Sign in
+          </Button>
         </Link>
       ) : (
         <DropdownMenu>

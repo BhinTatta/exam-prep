@@ -134,8 +134,8 @@ export function EmailAuthForm({ callbackUrl = "/" }: { callbackUrl?: string }) {
           >
             Forgot password?
           </button>
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Signing in..." : "Sign in"}
+          <Button type="submit" loading={loading} loadingText="Signing in…" className="w-full">
+            Sign in
           </Button>
         </form>
       </TabsContent>
@@ -157,8 +157,8 @@ export function EmailAuthForm({ callbackUrl = "/" }: { callbackUrl?: string }) {
               autoComplete="new-password"
             />
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Creating account..." : "Create account"}
+          <Button type="submit" loading={loading} loadingText="Creating account…" className="w-full">
+            Create account
           </Button>
         </form>
       </TabsContent>
