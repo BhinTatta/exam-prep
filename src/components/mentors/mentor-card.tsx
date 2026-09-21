@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatSlotWhen } from "@/lib/days";
 import { cn } from "@/lib/utils";
+import { RatingChip } from "@/components/reviews/rating-summary";
 import { BadgeCheck, CalendarClock, Languages, ArrowRight } from "lucide-react";
 
 export type MentorCardData = {
@@ -17,6 +18,10 @@ export type MentorCardData = {
   currentRole: string;
   languages: string[];
   story: string;
+  // Read straight off the mentor row. Ratings on a listing must never cost a
+  // query per card — see the rollup comment in prisma/schema.prisma.
+  reviewCount: number;
+  ratingSum: number;
   user: { name: string | null; image: string | null };
 };
 
@@ -104,6 +109,7 @@ export function MentorCard({
 
         <div className="mt-auto flex flex-col gap-3 pt-1">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+            <RatingChip rollup={mentor} />
             {mentor.languages.length > 0 && (
               <span className="flex items-center gap-1.5">
                 <Languages className="size-3.5" /> {mentor.languages.join(", ")}

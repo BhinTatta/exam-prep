@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireUser, requireRole } from "@/lib/auth-helpers";
 
 const reportSchema = z.object({
-  targetType: z.enum(["QUESTION", "COMMENT", "RESOURCE"]),
+  targetType: z.enum(["QUESTION", "COMMENT", "RESOURCE", "REVIEW"]),
   targetId: z.string().min(1),
   reason: z.string().min(1).max(100),
   details: z.string().max(2000).optional(),

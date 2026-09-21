@@ -535,6 +535,86 @@ async function main() {
     }
     console.log("Seeded dummy verified mentors and their open slots.");
   }
+
+  // Sample session feedback, so the testimonial block, the rating on every
+  // mentor card and the moderation tab all have something real to render in
+  // development. Reviews hang off a booking by design, so each one needs a
+  // completed booking behind it — exactly the constraint the product enforces.
+  {
+    const reviewCount = await prisma.sessionReview.count();
+    if (reviewCount === 0) {
+      const students = [
+        { email: "student.riya@example.com", name: "Riya Nair" },
+        { email: "student.arjun@example.com", name: "Arjun Bose" },
+        { email: "student.sana@example.com", name: "Sana Qureshi" },
+      ];
+      const notes = [
+        {
+          rating: 5,
+          comment:
+            "I went in thinking I was bad at quantum. Turned out I was skipping the linear algebra underneath it. We rewrote my revision order in forty minutes and I have not felt lost since.",
+        },
+        {
+          rating: 5,
+          comment:
+            "Told me to stop doing full mocks every week and drill two topics instead. My score moved more in a month than it had in the previous four.",
+        },
+        {
+          rating: 4,
+          comment:
+            "Very direct, which I needed. Wanted a bit more on how to actually schedule the revision, but the diagnosis of what was wrong was spot on.",
+        },
+      ];
+
+      const mentors = await prisma.mentorProfile.findMany({
+        where: { verified: true },
+        select: { id: true, rate: true, availability: { take: 1, select: { id: true } } },
+        orderBy: { createdAt: "asc" },
+      });
+
+      for (const [i, mentor] of mentors.entries()) {
+        const slotId = mentor.availability[0]?.id;
+        if (!slotId) continue;
+
+        const who = students[i % students.length];
+        const student = await prisma.user.upsert({
+          where: { email: who.email },
+          update: {},
+          create: { email: who.email, name: who.name },
+        });
+        const note = notes[i % notes.length];
+
+        const booking = await prisma.booking.create({
+          data: {
+            menteeId: student.id,
+            mentorId: mentor.id,
+            slotId,
+            amount: mentor.rate,
+            status: "COMPLETED",
+            menteeConfirmedHappened: true,
+          },
+        });
+
+        // Review + rollup together, the same pairing submitReview() makes.
+        await prisma.$transaction([
+          prisma.sessionReview.create({
+            data: {
+              bookingId: booking.id,
+              mentorId: mentor.id,
+              authorId: student.id,
+              rating: note.rating,
+              comment: note.comment,
+            },
+          }),
+          prisma.mentorProfile.update({
+            where: { id: mentor.id },
+            data: { reviewCount: { increment: 1 }, ratingSum: { increment: note.rating } },
+          }),
+        ]);
+      }
+      console.log("Seeded sample session reviews.");
+    }
+  }
 }
 
 main()

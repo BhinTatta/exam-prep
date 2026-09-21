@@ -26,6 +26,11 @@ const schibsted = Schibsted_Grotesk({
 });
 
 export const metadata: Metadata = {
+  // Required for the generated OG images (e.g. a mentor profile's
+  // opengraph-image) to resolve to absolute URLs — a relative og:image is
+  // ignored by every social preview crawler, which is exactly the surface the
+  // share button exists to feed.
+  metadataBase: new URL(siteConfig.url),
   title: { default: siteConfig.name, template: `%s · ${siteConfig.name}` },
   description: siteConfig.description,
 };

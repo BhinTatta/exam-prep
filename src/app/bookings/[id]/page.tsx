@@ -9,7 +9,8 @@ import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
 import { RazorpayCheckoutButton } from "@/components/bookings/razorpay-checkout-button";
 import { HoldCountdown } from "@/components/bookings/hold-countdown";
 import { RequestCancellationForm } from "@/components/bookings/request-cancellation";
-import { CancelBookingButton, ConfirmHappenedButtons } from "@/components/bookings/booking-buttons";
+import { CancelBookingButton, DidNotHappenButton } from "@/components/bookings/booking-buttons";
+import { ReviewForm } from "@/components/reviews/review-form";
 import { expireStaleHolds, reconcileBookingPayments } from "@/lib/payments/sync";
 import { formatInr } from "@/lib/razorpay/money";
 import { siteConfig } from "@/config/site";
@@ -46,6 +47,9 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
         orderBy: { createdAt: "desc" },
         include: { refunds: { orderBy: { createdAt: "desc" } } },
       },
+      // Fetched here rather than in the review block below, so the page costs
+      // the same query count whether or not this session has been rated.
+      review: { select: { rating: true, comment: true, published: true } },
     },
   });
 
@@ -56,6 +60,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   const isAdmin = hasRole(user.role, "ADMIN");
   if (!isMentee && !isMentor && !isAdmin) notFound();
 
+  const mentorFirstName = booking.mentor.user.name?.trim().split(/\s+/)[0] ?? "your mentor";
   const settled = booking.payments.find((p) => p.status === "CAPTURED" || p.status === "REFUNDED");
   const lastFailure = booking.payments.find((p) => p.errorDescription);
   const totalRefunded = booking.payments.reduce((sum, p) => sum + p.refundedAmount, 0);
@@ -130,10 +135,27 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                 </Button>
               </a>
               {isMentee && (
-                <div>
-                  <p className="mb-2 text-sm text-muted-foreground">After your session — did it happen?</p>
-                  <ConfirmHappenedButtons bookingId={booking.id} />
-                </div>
+                <>
+                  <Separator />
+                  {/* Rating the call is also how it gets marked as happened —
+                      a student who has just given five stars should not then
+                      be asked whether it took place. The dispute path stays
+                      separate below, deliberately quieter. */}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <p className="font-heading font-semibold">How was it with {mentorFirstName}?</p>
+                      <p className="text-sm text-muted-foreground">
+                        Once you rate it, this shows on their profile for the next student deciding.
+                      </p>
+                    </div>
+                    <ReviewForm
+                      bookingId={booking.id}
+                      mentorName={mentorFirstName}
+                      existing={booking.review}
+                    />
+                    <DidNotHappenButton bookingId={booking.id} />
+                  </div>
+                </>
               )}
               {isMentee &&
                 (booking.cancellationRequestedAt ? (
@@ -146,11 +168,30 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             </div>
           )}
 
-          {booking.status === "COMPLETED" && (
-            <p className="text-sm text-muted-foreground">
-              Session completed. Thanks for using {siteConfig.name}!
-            </p>
-          )}
+          {booking.status === "COMPLETED" &&
+            (isMentee ? (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <p className="font-heading font-semibold">
+                    {booking.review ? "Your review" : `How was it with ${mentorFirstName}?`}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {booking.review
+                      ? "Change it any time — the profile updates with it."
+                      : "You took this session a while back. A rating still helps the next student decide."}
+                  </p>
+                </div>
+                <ReviewForm
+                  bookingId={booking.id}
+                  mentorName={mentorFirstName}
+                  existing={booking.review}
+                />
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Session completed. Thanks for using {siteConfig.name}!
+              </p>
+            ))}
 
           {booking.status === "DISPUTED" && (
             <p className="text-sm text-muted-foreground">

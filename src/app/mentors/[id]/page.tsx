@@ -1,30 +1,55 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { ShareProfile } from "@/components/mentors/share-profile";
+import { RatingChip, RatingSummary } from "@/components/reviews/rating-summary";
+import { ReviewQuote } from "@/components/reviews/review-quote";
 import { cn } from "@/lib/utils";
 import { daysUntilSlot, formatSlotWhen } from "@/lib/days";
 import { bookSlot } from "@/app/mentors/actions";
 import { expireStaleHolds } from "@/lib/payments/sync";
-import { BadgeCheck, Languages, Video, NotebookPen, ListOrdered, Undo2, CalendarClock } from "lucide-react";
+import { getMentorProfile, REVIEWS_ON_PROFILE } from "@/lib/mentors/profile";
+import { averageRating, formatRating } from "@/lib/reviews";
+import { siteConfig } from "@/config/site";
+import {
+  BadgeCheck,
+  Languages,
+  Video,
+  NotebookPen,
+  ListOrdered,
+  Undo2,
+  CalendarClock,
+  ArrowRight,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const mentor = await prisma.mentorProfile.findUnique({
-    where: { id },
-    select: { examCleared: true, rank: true, user: { select: { name: true } } },
-  });
-  if (!mentor) return { title: "Mentor" };
+  // Same cached read the page itself does — one query serves both.
+  const mentor = await getMentorProfile(id);
+  if (!mentor || !mentor.verified) return { title: "Mentor" };
+
+  const name = mentor.user.name ?? "This mentor";
+  const average = averageRating(mentor);
+  const credential = [mentor.rank, mentor.examCleared].filter(Boolean).join(", ");
+  const rated = average
+    ? ` Rated ${formatRating(average)}/5 by ${mentor.reviewCount} ${mentor.reviewCount === 1 ? "student" : "students"}.`
+    : "";
+  const description = `${name} cleared ${mentor.examCleared} and takes 1:1 video sessions on ${siteConfig.name}.${rated}`;
+  const url = `${siteConfig.url}/mentors/${mentor.id}`;
+
   return {
-    title: `${mentor.user.name} — ${[mentor.rank, mentor.examCleared].filter(Boolean).join(", ")}`,
-    description: `Book a 1:1 video session with ${mentor.user.name}, who cleared ${mentor.examCleared}.`,
+    title: `${name} — ${credential}`,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title: `${name} — ${credential}`, description, url, type: "profile" as const },
+    twitter: { card: "summary_large_image" as const, title: `${name} — ${credential}`, description },
   };
 }
 
@@ -35,13 +60,7 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
   // Put slots from abandoned checkouts back on sale before listing availability.
   await expireStaleHolds();
 
-  const mentor = await prisma.mentorProfile.findUnique({
-    where: { id },
-    include: {
-      user: { select: { name: true, image: true } },
-      availability: { where: { isBooked: false } },
-    },
-  });
+  const mentor = await getMentorProfile(id);
 
   if (!mentor || !mentor.verified) notFound();
 
@@ -51,6 +70,7 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
   const slots = [...mentor.availability].sort(
     (a, b) => daysUntilSlot(a.dayOfWeek, a.startTime) - daysUntilSlot(b.dayOfWeek, b.startTime)
   );
+  const hasMoreReviews = mentor.reviewCount > mentor.reviews.length;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
@@ -68,7 +88,18 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
               <p className="mt-1 text-sm text-muted-foreground">
                 {mentor.currentRole || mentor.institute}
               </p>
+              <RatingChip rollup={mentor} className="mt-1.5 text-sm" />
             </div>
+            {/* Sharing sits with the identity, not with the booking controls —
+                a student forwards "this person", not "this checkout". */}
+            <ShareProfile
+              path={`/mentors/${mentor.id}`}
+              fallbackUrl={`${siteConfig.url}/mentors/${mentor.id}`}
+              mentorName={mentor.user.name ?? "this mentor"}
+              isOwner={isOwnProfile}
+              size="sm"
+              className="shrink-0"
+            />
           </div>
 
           {credential && (
@@ -125,6 +156,42 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
             You leave with an order to work in: what to drop, what to drill, what to ignore entirely.
           </Expectation>
         </ul>
+      </section>
+
+      {/* Sits immediately above the price. Everything up to here is what the
+          mentor says about themselves; this is the only part of the page they
+          don't write. */}
+      <section className="mt-8">
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+          <h2 className="font-heading text-lg font-semibold">
+            What students said after their session
+          </h2>
+          {mentor.reviewCount > 0 && <RatingSummary rollup={mentor} />}
+        </div>
+
+        {mentor.reviews.length === 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            {mentor.reviewCount > 0
+              ? `${mentor.reviewCount} ${mentor.reviewCount === 1 ? "student has" : "students have"} rated ${firstName} without leaving a note.`
+              : `Nobody has rated ${firstName} yet — every review here comes from a paid session, so this fills up only as people actually book.`}
+          </p>
+        ) : (
+          <div className="mt-5 flex flex-col gap-6">
+            {mentor.reviews.map((review) => (
+              <ReviewQuote key={review.id} review={review} canReport={!!session?.user} />
+            ))}
+          </div>
+        )}
+
+        {(hasMoreReviews || mentor.reviews.length >= REVIEWS_ON_PROFILE) && (
+          <Link
+            href={`/mentors/${mentor.id}/reviews`}
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Read all {mentor.reviewCount} {mentor.reviewCount === 1 ? "review" : "reviews"}
+            <ArrowRight className="size-3.5" />
+          </Link>
+        )}
       </section>
 
       <section className="mt-8">

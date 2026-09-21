@@ -99,6 +99,8 @@ model User {
   payoutsPaid        Payout[]            @relation("PayoutAdmin")
   reports            Report[]
   assessmentAttempts AssessmentAttempt[]
+  sessionReviews     SessionReview[]     @relation("ReviewAuthor")
+  reviewsHidden      SessionReview[]     @relation("ReviewModerator")
 
   @@index([role])
 }
@@ -191,6 +193,7 @@ model MentorProfile {
 
   availability Availability[]
   bookings     Booking[]
+  reviews      SessionReview[]
 
   // Topic tags (e.g. "Rotational Mechanics"). Kept for admin filtering and
   // future matching — the results page deliberately does NOT rank mentors by
@@ -209,6 +212,18 @@ model MentorProfile {
   currentRole String   @default("") // "MSc Physics, IIT Bombay" — where it got them
   languages   String[] @default([]) // a student who thinks in Hindi books the Hindi mentor
   story       String   @default("") @db.Text // the "I was where you are" line, in their own words
+
+  // --- Rating rollup ------------------------------------------------------
+  // Denormalised on purpose. Every mentor listing (home, /mentors, the study
+  // plan's recommendations) renders a rating next to each card; computing it
+  // with an aggregate per mentor is the classic N+1 that makes a listing page
+  // scale with the number of mentors. These two columns are written inside the
+  // same transaction as the review itself — see src/app/reviews/actions.ts —
+  // so a listing needs no extra query at all. Sum + count rather than a stored
+  // average because both are exact integers and update atomically with
+  // `increment`, which a float average can't do without read-modify-write.
+  reviewCount Int @default(0) // published reviews only
+  ratingSum   Int @default(0) // sum of those reviews' stars
 
   @@index([verified])
 }
@@ -272,11 +287,57 @@ model Booking {
 
   payments Payment[]
   payout   Payout?
+  review   SessionReview?
 
   @@index([status])
   @@index([menteeId])
   @@index([mentorId])
   @@index([status, expiresAt])
+}
+
+// ---------- Session feedback ----------
+
+/// One mentee's verdict on one session.
+///
+/// Keyed on the booking (`@unique`), which is what makes a review here worth
+/// more than a review anywhere else: it can only exist if that person actually
+/// paid for and sat through that call. There is no "write a review" button
+/// anywhere on the site — the only entry point is a session you took.
+///
+/// A review both edits in place and hides under moderation, so the mentor's
+/// rollup (MentorProfile.reviewCount / ratingSum) is maintained transactionally
+/// alongside every write. `published` is the moderation switch; a hidden review
+/// stays in the table (the author still sees and can fix it) but leaves the
+/// rollup and every public surface.
+model SessionReview {
+  id String @id @default(cuid())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  // Denormalised from the booking so the mentor's reviews are one indexed read
+  // rather than a join through Booking on every profile view.
+  mentorId String
+  mentor   MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  rating  Int // 1..5 stars — enforced in the action, not the column
+  comment String? @db.Text // optional: a star with no words is still signal
+
+  published   Boolean   @default(true)
+  hiddenAt    DateTime?
+  hiddenBy    String?
+  hiddenByMod User?     @relation("ReviewModerator", fields: [hiddenBy], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Covers the only public query there is: this mentor's published reviews,
+  // newest first. Sorted in the index so pagination never sorts at read time.
+  @@index([mentorId, published, createdAt(sort: Desc)])
+  @@index([authorId])
 }
 
 // ---------- Payments (Razorpay Standard Checkout) ----------
@@ -390,6 +451,7 @@ enum ReportTargetType {
   QUESTION
   COMMENT
   RESOURCE
+  REVIEW
 }
 
 enum ReportStatus {
