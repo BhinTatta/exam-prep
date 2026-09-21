@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 import { PageHeader } from "@/components/page-header";
 import { TermsContent } from "@/components/terms-content";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { acceptTerms } from "@/app/terms/actions";
 export const metadata = { title: "Terms & Conditions" };
 
 export default async function TermsPage() {
-  const session = await auth();
+  const session = await getSession();
   const needsAcceptance = !!session?.user && !session.user.termsAcceptedAt;
 
   return (

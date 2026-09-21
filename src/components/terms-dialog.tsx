@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TermsContent } from "@/components/terms-content";
@@ -10,6 +11,7 @@ import { acceptTerms } from "@/app/terms/actions";
 export function TermsDialog() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { update } = useSession();
 
   return (
     <Dialog open>
@@ -29,6 +31,9 @@ export function TermsDialog() {
             onClick={() =>
               startTransition(async () => {
                 await acceptTerms();
+                // TermsGate reads termsAcceptedAt from the client session, so
+                // refreshing the route alone would leave the dialog open.
+                await update();
                 router.refresh();
               })
             }

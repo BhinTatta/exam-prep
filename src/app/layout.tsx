@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Schibsted_Grotesk } from "next/font/google";
+import { Geist, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { Providers } from "@/components/providers";
@@ -10,11 +10,6 @@ import { NavProgress } from "@/components/nav-progress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -35,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${schibsted.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${schibsted.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Providers>

@@ -1,13 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 
 export async function startAttempt(
   testId: string,
   utm?: { source?: string; medium?: string; campaign?: string }
 ) {
-  const session = await auth();
+  const session = await getSession();
 
   const attempt = await prisma.assessmentAttempt.create({
     data: {

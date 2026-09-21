@@ -4,6 +4,9 @@ import { PageHeader } from "@/components/page-header";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { Card, CardContent } from "@/components/ui/card";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "My profile" };
 
 export default async function ProfilePage() {

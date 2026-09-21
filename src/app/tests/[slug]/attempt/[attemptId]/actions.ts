@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 import { scoreAttempt, type ScoredAnswer } from "@/lib/assessment/scoring";
 import { generateStudyPlan } from "@/lib/ai/study-plan";
 import { recommendMentors } from "@/lib/assessment/mentor-match";
@@ -74,7 +74,7 @@ export async function submitAttempt(attemptId: string, answers: ScoredAnswer[]) 
  * repeatedly (idempotent) — only claims attempts that are still unclaimed.
  */
 export async function claimAttempt(attemptId: string) {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user) return;
 
   await prisma.assessmentAttempt.updateMany({

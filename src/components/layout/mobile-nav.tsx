@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { navLinks, siteConfig } from "@/config/site";
 import { hasRole } from "@/lib/roles";
 
-export function MobileNav({ isSignedIn, role }: { isSignedIn: boolean; role?: string }) {
+export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const role = session?.user?.role;
+  const isSignedIn = !!session?.user;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
