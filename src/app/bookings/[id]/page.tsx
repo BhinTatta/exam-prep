@@ -17,6 +17,9 @@ import { siteConfig } from "@/config/site";
 import { DAYS } from "@/lib/days";
 import { Video, IndianRupee, ShieldCheck } from "lucide-react";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireUser();

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth-helpers";
 import { cn } from "@/lib/utils";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 const links = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/tests", label: "Assessment tests" },

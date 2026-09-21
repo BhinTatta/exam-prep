@@ -1,26 +1,19 @@
 import Link from "next/link";
-import { auth, signOut } from "@/auth";
+import { GraduationCap } from "lucide-react";
 import { siteConfig, navLinks, navCta } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { hasRole } from "@/lib/auth-helpers";
-import { Calendar, GraduationCap, LayoutDashboard, LogOut, ShieldCheck, User } from "lucide-react";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { NavRoleLinks } from "@/components/layout/nav-role-links";
+import { NavUser } from "@/components/layout/nav-user";
 
-export async function Navbar() {
-  const session = await auth();
-  const user = session?.user;
-
+/**
+ * Deliberately free of `auth()`. This renders in the root layout, so any
+ * cookie read here would make every route in the app dynamic — including the
+ * landing page, which has no per-user content at all. The auth-dependent
+ * pieces are isolated in NavRoleLinks and NavUser and resolve on the client.
+ */
+export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
@@ -37,20 +30,7 @@ export async function Navbar() {
                 </Button>
               </Link>
             ))}
-            {user && hasRole(user.role, "ADMIN") && (
-              <Link href="/admin">
-                <Button variant="ghost" size="sm">
-                  Admin
-                </Button>
-              </Link>
-            )}
-            {user && hasRole(user.role, "MODERATOR") && !hasRole(user.role, "ADMIN") && (
-              <Link href="/moderator">
-                <Button variant="ghost" size="sm">
-                  Moderate
-                </Button>
-              </Link>
-            )}
+            <NavRoleLinks />
           </nav>
         </div>
 
@@ -59,78 +39,8 @@ export async function Navbar() {
             <Link href={navCta.href}>{navCta.label}</Link>
           </Button>
           <ThemeToggle />
-          {!user ? (
-            <Link href="/sign-in">
-              {/* Ghost, so the one filled button in the header is the funnel
-                  entry and not the account prompt. */}
-              <Button size="sm" variant="ghost">
-                Sign in
-              </Button>
-            </Link>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
-                    <AvatarFallback>{(user.name ?? "U").slice(0, 1).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="flex flex-col gap-1">
-                  <span className="font-medium">{user.name}</span>
-                  <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
-                    <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-                      {user.role}
-                    </Badge>
-                  </span>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile">
-                    <User className="mr-2 size-4" /> My profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/bookings">
-                    <Calendar className="mr-2 size-4" /> My sessions
-                  </Link>
-                </DropdownMenuItem>
-                {hasRole(user.role, "MENTOR") && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/mentor/dashboard">
-                      <LayoutDashboard className="mr-2 size-4" /> Mentor dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                {hasRole(user.role, "ADMIN") && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/admin">
-                      <ShieldCheck className="mr-2 size-4" /> Admin dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem asChild>
-                  <Link href="/mentors/apply">Become a mentor</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <form
-                  action={async () => {
-                    "use server";
-                    await signOut({ redirectTo: "/" });
-                  }}
-                >
-                  <DropdownMenuItem asChild>
-                    <button type="submit" className="w-full">
-                      <LogOut className="mr-2 size-4" /> Sign out
-                    </button>
-                  </DropdownMenuItem>
-                </form>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          <MobileNav isSignedIn={!!user} role={user?.role} />
+          <NavUser />
+          <MobileNav />
         </div>
       </div>
     </header>

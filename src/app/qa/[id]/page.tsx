@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
-import { hasRole } from "@/lib/auth-helpers";
+import { getSession, hasRole } from "@/lib/auth-helpers";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,9 +15,12 @@ import { formatDistanceToNow } from "date-fns";
 import { Bot, Lock, Pin } from "lucide-react";
 import Link from "next/link";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export default async function QuestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const session = await auth();
+  const session = await getSession();
 
   const question = await prisma.question.findUnique({
     where: { id },

@@ -11,6 +11,9 @@ import { Calendar, IndianRupee, Star } from "lucide-react";
 import { DAYS } from "@/lib/days";
 import { formatDistanceToNow } from "date-fns";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "My sessions" };
 
 export default async function BookingsPage() {

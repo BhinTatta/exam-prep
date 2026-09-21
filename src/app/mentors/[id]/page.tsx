@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function MentorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const session = await auth();
+  const session = await getSession();
 
   // Put slots from abandoned checkouts back on sale before listing availability.
   await expireStaleHolds();

@@ -16,6 +16,9 @@ import { DAYS } from "@/lib/days";
 import { siteConfig } from "@/config/site";
 import { formatDistanceToNow } from "date-fns";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Mentor dashboard" };
 
 const REVIEWS_ON_DASHBOARD = 3;

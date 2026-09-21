@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
-import { hasRole } from "@/lib/auth-helpers";
+import { getSession, hasRole } from "@/lib/auth-helpers";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,9 @@ import { resourceCategories } from "@/config/site";
 import { BookMarked, ExternalLink, Plus, Pin, Star } from "lucide-react";
 import type { Prisma } from "@prisma/client";
 
+// Per-user data behind an auth guard: never prerender or cache this.
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Resources" };
 
 export default async function ResourcesPage({
@@ -23,7 +25,7 @@ export default async function ResourcesPage({
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const { category, q } = await searchParams;
-  const session = await auth();
+  const session = await getSession();
   const canWrite = hasRole(session?.user?.role, "MODERATOR");
   const isAdmin = hasRole(session?.user?.role, "ADMIN");
 

@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 import { claimAttempt } from "@/app/tests/[slug]/attempt/[attemptId]/actions";
 import { ResultsReport } from "@/components/assessment/results-report";
 import { listBookableMentors } from "@/lib/mentors/list";
@@ -25,7 +25,7 @@ export default async function ResultsPage({
   params: Promise<{ slug: string; attemptId: string }>;
 }) {
   const { slug, attemptId } = await params;
-  const session = await auth();
+  const session = await getSession();
 
   if (session?.user) {
     await claimAttempt(attemptId);

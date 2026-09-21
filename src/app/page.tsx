@@ -20,7 +20,22 @@ import {
   Wallet,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+// ISR. The page is prerendered and served from the CDN as static HTML, then
+// regenerated in the background at most once an hour — nobody waits on a
+// database round-trip to see the landing page.
+//
+// An hour is set by the most perishable thing here: the mentor cards show
+// each mentor's soonest open slot, computed against the clock. A booked slot
+// can therefore linger on this page for up to an hour. That is safe — the
+// mentor page is dynamic and authoritative, and bookSlot() takes the slot
+// atomically — but it is why this is an hour rather than a day.
+//
+// The hourly timer is the only thing refreshing this today. To push a change
+// out immediately instead of waiting for it, call revalidateHomePage() from
+// src/lib/cache.ts — that file documents exactly what it does to the cached
+// copy and where it can be called from. Nothing calls it yet, deliberately:
+// who appears here is a curation call, not a consequence of mentor approval.
+export const revalidate = 3600;
 
 const MENTORS_ON_HOME = 3;
 

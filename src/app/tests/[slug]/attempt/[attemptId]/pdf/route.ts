@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth-helpers";
 import { siteConfig } from "@/config/site";
 import { renderStudyPlanPdf } from "@/lib/assessment/study-plan-pdf";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string; attemptId: string }> }
 ) {
   const { slug, attemptId } = await params;
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user) return new Response("Sign in required", { status: 401 });
 
   const attempt = await prisma.assessmentAttempt.findUnique({
