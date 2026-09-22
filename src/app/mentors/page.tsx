@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { MentorCard } from "@/components/mentors/mentor-card";
-import { listBookableMentors } from "@/lib/mentors/list";
+import { MentorBrowser } from "@/components/mentors/mentor-browser";
+import { listRankedMentors } from "@/lib/mentors/list";
+import { expireStaleHolds } from "@/lib/payments/sync";
 import { Users, ShieldCheck, Wallet, Undo2 } from "lucide-react";
 
 export const metadata = {
@@ -13,7 +14,15 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function MentorsPage() {
-  const mentors = await listBookableMentors();
+  // Put slots from abandoned checkouts back on sale before we read
+  // availability, so a slot someone walked away from fifteen minutes ago is
+  // not still showing as taken. The profile page does the same.
+  await expireStaleHolds();
+
+  // Ordered by weighted rating in Postgres. The sort toggle and day filter run
+  // in the browser over exactly this data — see MentorBrowser for why that is
+  // cheaper than a search param.
+  const mentors = await listRankedMentors({ order: "rating" });
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
@@ -50,16 +59,7 @@ export default async function MentorsPage() {
           />
         </div>
       ) : (
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {mentors.map(({ mentor, nextSlot }, i) => (
-            <MentorCard
-              key={mentor.id}
-              mentor={mentor}
-              nextSlot={nextSlot}
-              highlight={i === 0 && !!nextSlot}
-            />
-          ))}
-        </div>
+        <MentorBrowser mentors={mentors} />
       )}
 
       <div className="mt-14 flex flex-col items-center gap-3 border-t pt-10 text-center">

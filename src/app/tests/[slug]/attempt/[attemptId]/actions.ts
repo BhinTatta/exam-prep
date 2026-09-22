@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth-helpers";
 import { scoreAttempt, type ScoredAnswer } from "@/lib/assessment/scoring";
 import { generateStudyPlan } from "@/lib/ai/study-plan";
-import { recommendMentors } from "@/lib/assessment/mentor-match";
 import { parseQuestionOptions } from "@/lib/assessment/types";
 
 export async function submitAttempt(attemptId: string, answers: ScoredAnswer[]) {
@@ -28,22 +27,25 @@ export async function submitAttempt(attemptId: string, answers: ScoredAnswer[]) 
     return [{ questionId: q.id, selectedOptionIds: answer.selectedOptionIds, isCorrect: null, marksAwarded: null }];
   });
 
-  // Mentors are shown to everyone regardless of sign-in — see ResultsReport.
-  // The study plan is generated for everyone too (its headline is the free
-  // hook; the full topic-by-topic breakdown and PDF export are what's
-  // gated behind sign-in — see the results page).
-  const [recommendedMentors, studyPlan] = await Promise.all([
-    recommendMentors(),
-    generateStudyPlan({
-      testTitle: attempt.test.title,
-      totalScore: scoring.totalScore,
-      maxScore: scoring.maxScore,
-      topicBreakdown: scoring.topicBreakdown,
-      strengths: scoring.strengths,
-      weaknesses: scoring.weaknesses,
-      profile,
-    }),
-  ]);
+  // No mentors are recorded against the attempt. They used to be — the three
+  // newest verified profiles, frozen into the result row here — which meant a
+  // student opening their result three weeks later still saw whoever happened
+  // to be newest on test day, and saw fewer of them (sometimes none) once one
+  // was unverified. The results page and the PDF both pick mentors at view
+  // time now, from the same ranked listing the rest of the site uses.
+  //
+  // The study plan is generated for everyone, signed in or not: its headline
+  // is the free hook, and the full topic-by-topic breakdown and the PDF export
+  // are what's gated behind sign-in — see the results page.
+  const studyPlan = await generateStudyPlan({
+    testTitle: attempt.test.title,
+    totalScore: scoring.totalScore,
+    maxScore: scoring.maxScore,
+    topicBreakdown: scoring.topicBreakdown,
+    strengths: scoring.strengths,
+    weaknesses: scoring.weaknesses,
+    profile,
+  });
 
   await prisma.$transaction([
     prisma.attemptResponse.createMany({
@@ -63,7 +65,6 @@ export async function submitAttempt(attemptId: string, answers: ScoredAnswer[]) 
         weaknesses: scoring.weaknesses,
         profileAnswers: profile,
         studyPlan,
-        recommendedMentorIds: recommendedMentors.map((m) => m.id),
       },
     }),
   ]);

@@ -2,7 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth-helpers";
 import { siteConfig } from "@/config/site";
 import { renderStudyPlanPdf } from "@/lib/assessment/study-plan-pdf";
+import { listRankedMentors } from "@/lib/mentors/list";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
+
+const MENTORS_IN_PDF = 3;
 
 export async function GET(
   _request: Request,
@@ -22,12 +25,11 @@ export async function GET(
   }
   if (attempt.userId !== session.user.id) return new Response("This result belongs to a different account", { status: 403 });
 
-  const mentors = attempt.result.recommendedMentorIds.length
-    ? await prisma.mentorProfile.findMany({
-        where: { id: { in: attempt.result.recommendedMentorIds } },
-        include: { user: { select: { name: true } } },
-      })
-    : [];
+  // The same mentors the results page would show right now, rather than the
+  // set frozen against this attempt when it was submitted. A study plan
+  // downloaded weeks later should point at mentors who are still verified and
+  // still taking sessions.
+  const mentors = await listRankedMentors({ limit: MENTORS_IN_PDF, order: "soonest" });
 
   const bytes = await renderStudyPlanPdf({
     siteName: siteConfig.name,
@@ -36,7 +38,11 @@ export async function GET(
     maxScore: attempt.result.maxScore,
     topicBreakdown: attempt.result.topicBreakdown as unknown as TopicStat[],
     studyPlan: attempt.result.studyPlan as unknown as StudyPlan,
-    mentors: mentors.map((m) => ({ name: m.user.name ?? "Mentor", institute: m.institute, rate: m.rate })),
+    mentors: mentors.map(({ mentor }) => ({
+      name: mentor.user.name ?? "Mentor",
+      institute: mentor.institute,
+      rate: mentor.rate,
+    })),
   });
 
   return new Response(Buffer.from(bytes), {
