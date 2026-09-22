@@ -35,12 +35,17 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button asChild size="sm" emphasis="lift">
             <Link href={navCta.href}>{navCta.label}</Link>
           </Button>
           <ThemeToggle />
-          <NavUser />
+          {/* Below md the account menu lives inside MobileNav — identity card,
+              role links and sign out — so a second avatar dropdown here would
+              be a duplicate surface crowding a 360px header. */}
+          <div className="hidden md:flex">
+            <NavUser />
+          </div>
           <MobileNav />
         </div>
       </div>
