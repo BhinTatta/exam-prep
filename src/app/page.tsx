@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MentorCard } from "@/components/mentors/mentor-card";
-import { listBookableMentors } from "@/lib/mentors/list";
+import { listRankedMentors } from "@/lib/mentors/list";
 import { siteConfig, exams } from "@/config/site";
 import {
   BookOpen,
@@ -24,17 +24,19 @@ import {
 // regenerated in the background at most once an hour — nobody waits on a
 // database round-trip to see the landing page.
 //
-// An hour is set by the most perishable thing here: the mentor cards show
-// each mentor's soonest open slot, computed against the clock. A booked slot
-// can therefore linger on this page for up to an hour. That is safe — the
-// mentor page is dynamic and authoritative, and bookSlot() takes the slot
-// atomically — but it is why this is an hour rather than a day.
+// Nothing on this page is perishable any more. The mentor cards deliberately
+// carry no availability: this is a showcase, not a booking surface, and a page
+// cached for an hour has no business printing a clock time that a booking can
+// falsify ten minutes later. What is left — who the best-rated mentors are,
+// their price, their session count — moves slowly enough that an hour old is
+// indistinguishable from live.
 //
-// The hourly timer is the only thing refreshing this today. To push a change
-// out immediately instead of waiting for it, call revalidateHomePage() from
-// src/lib/cache.ts — that file documents exactly what it does to the cached
-// copy and where it can be called from. Nothing calls it yet, deliberately:
-// who appears here is a curation call, not a consequence of mentor approval.
+// So the hourly timer carries this page on its own, and each regeneration
+// picks up the current ranking without anyone having to remember to bust a
+// cache. The one exception is curation: setFeaturedRank() in
+// app/admin/actions.ts calls revalidateMentorPages(), because an admin who
+// pins a mentor for a campaign should not be told to wait up to an hour to see
+// it. src/lib/cache.ts documents what that does to the stored copy.
 export const revalidate = 3600;
 
 const MENTORS_ON_HOME = 3;
@@ -46,7 +48,11 @@ export default async function Home() {
       orderBy: { createdAt: "desc" },
       select: { slug: true, durationMinutes: true },
     }),
-    listBookableMentors({ limit: MENTORS_ON_HOME }),
+    // Featured first (an admin's call), then the weighted rating. Explicitly
+    // NOT the soonest available: an empty calendar is what a mentor who signed
+    // up yesterday has, so ranking on it put the newest profile on the front
+    // page every time — the opposite of a showcase.
+    listRankedMentors({ limit: MENTORS_ON_HOME, order: "featured" }),
   ]);
 
   // Straight to the test when there's one to take — the listing page is a hop
@@ -126,21 +132,23 @@ export default async function Home() {
 
           {mentors.length > 0 && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {mentors.map(({ mentor, nextSlot }, i) => (
-                <MentorCard
-                  key={mentor.id}
-                  mentor={mentor}
-                  nextSlot={nextSlot}
-                  highlight={i === 0 && !!nextSlot}
-                />
+              {/* No `slots` and no pill. Three cards that are all "our best"
+                  do not need one of them singled out, and any label we could
+                  put there — "soonest", "top rated" — would be a claim this
+                  cached page cannot keep true. */}
+              {mentors.map(({ mentor }) => (
+                <MentorCard key={mentor.id} mentor={mentor} />
               ))}
             </div>
           )}
 
           <div className="flex flex-col items-center gap-3">
-            <Button asChild size="xl" variant={mentors.length > 0 ? "outline" : "default"} emphasis={mentors.length > 0 ? "none" : "glow"}>
+            {/* Big, but not glowing: the diagnostic in the hero is the one
+                CTA on this page allowed to glow, and two competing halos make
+                the choice harder rather than more obvious. */}
+            <Button asChild size="hero" emphasis="lift">
               <Link href="/mentors">
-                {mentors.length > 0 ? "See all verified mentors" : "Meet the mentors"} <ArrowRight />
+                {mentors.length > 0 ? "Find more mentors" : "Meet the mentors"} <ArrowRight />
               </Link>
             </Button>
             <p className="flex items-center gap-1.5 text-center text-xs text-muted-foreground">

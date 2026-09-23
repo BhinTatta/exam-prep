@@ -6,6 +6,7 @@ import { requireRole } from "@/lib/auth-helpers";
 import { createRefund, fetchOrderPayments } from "@/lib/razorpay/client";
 import { applyPaymentEntity, applyRefundEntity } from "@/lib/payments/sync";
 import { formatInr } from "@/lib/razorpay/money";
+import { revalidateMentorPages } from "@/lib/cache";
 import type { Role } from "@prisma/client";
 
 export async function verifyMentor(mentorProfileId: string, approve: boolean) {
@@ -26,6 +27,35 @@ export async function verifyMentor(mentorProfileId: string, approve: boolean) {
 
   revalidatePath("/admin/mentors");
   revalidatePath("/admin");
+}
+
+/**
+ * Pin a mentor to the home page, or unpin them.
+ *
+ * `rank` is an ordering, not a flag: the home page shows three cards and which
+ * one leads is a marketing decision. null clears the pin and drops the mentor
+ * back into the weighted-rating order with everyone else.
+ *
+ * This is the one mentor change the home page is not allowed to discover an
+ * hour late. Ratings and session counts can ride the ISR timer — an admin who
+ * pins someone for a campaign is watching the page, so bust the cached copy
+ * here. src/lib/cache.ts documents what that costs (one visitor pays for one
+ * re-render).
+ */
+export async function setFeaturedRank(mentorProfileId: string, rank: number | null) {
+  await requireRole("ADMIN");
+
+  if (rank !== null && (!Number.isInteger(rank) || rank < 1 || rank > 99)) {
+    throw new Error("Featured rank must be a whole number between 1 and 99");
+  }
+
+  await prisma.mentorProfile.update({
+    where: { id: mentorProfileId },
+    data: { featuredRank: rank },
+  });
+
+  revalidatePath("/admin/mentors");
+  revalidateMentorPages();
 }
 
 /**

@@ -4,17 +4,20 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUser, requireRole } from "@/lib/auth-helpers";
+import { applyRatingDelta } from "@/lib/mentors/rollup";
 import { MAX_COMMENT_LENGTH, MAX_RATING, MIN_RATING } from "@/lib/reviews";
 
 /**
  * Session feedback.
  *
  * Every write in here moves two things at once: the review row and the
- * mentor's rating rollup (MentorProfile.reviewCount / ratingSum). They are
- * always written in the same transaction with `increment`/`decrement`, which
- * is atomic in Postgres — two students rating the same mentor in the same
- * second cannot lose each other's stars the way a read-then-write average
- * would. This file is the only place those two columns are ever touched.
+ * mentor's rating rollup (reviewCount / ratingSum / ratingScore). The rollup
+ * always moves through applyRatingDelta() in lib/mentors/rollup.ts, in the
+ * same transaction as the review itself — one atomic UPDATE, so two students
+ * rating the same mentor in the same second cannot lose each other's stars the
+ * way a read-then-write average would, and the weighted score can never drift
+ * from the counts it is derived from. This file is the only place those three
+ * columns are ever touched.
  */
 
 const reviewSchema = z.object({
@@ -67,9 +70,9 @@ export async function submitReview(input: ReviewInput) {
       // A hidden review is out of the rollup, so editing it must not add the
       // delta back in — it re-enters only if a moderator restores it.
       if (existing.published && rating !== existing.rating) {
-        await tx.mentorProfile.update({
-          where: { id: booking.mentorId },
-          data: { ratingSum: { increment: rating - existing.rating } },
+        await applyRatingDelta(tx, booking.mentorId, {
+          countDelta: 0,
+          sumDelta: rating - existing.rating,
         });
       }
     } else {
@@ -82,10 +85,7 @@ export async function submitReview(input: ReviewInput) {
           comment: body,
         },
       });
-      await tx.mentorProfile.update({
-        where: { id: booking.mentorId },
-        data: { reviewCount: { increment: 1 }, ratingSum: { increment: rating } },
-      });
+      await applyRatingDelta(tx, booking.mentorId, { countDelta: 1, sumDelta: rating });
     }
 
     if (booking.status === "CONFIRMED") {
@@ -119,6 +119,7 @@ export async function setReviewVisibility(reviewId: string, published: boolean) 
   if (!review) throw new Error("We couldn't find that review");
   if (review.published === published) return;
 
+  const sign = published ? 1 : -1;
   await prisma.$transaction([
     prisma.sessionReview.update({
       where: { id: review.id },
@@ -128,11 +129,9 @@ export async function setReviewVisibility(reviewId: string, published: boolean) 
         hiddenBy: published ? null : moderator.id,
       },
     }),
-    prisma.mentorProfile.update({
-      where: { id: review.mentorId },
-      data: published
-        ? { reviewCount: { increment: 1 }, ratingSum: { increment: review.rating } }
-        : { reviewCount: { decrement: 1 }, ratingSum: { decrement: review.rating } },
+    applyRatingDelta(prisma, review.mentorId, {
+      countDelta: sign,
+      sumDelta: sign * review.rating,
     }),
   ]);
 

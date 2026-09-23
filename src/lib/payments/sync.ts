@@ -2,6 +2,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { jitsiRoomUrl } from "@/config/site";
+import { decrementPaidSessions, incrementPaidSessions } from "@/lib/mentors/rollup";
 import {
   capturePayment,
   createRefund,
@@ -40,6 +41,13 @@ const SLOT_HOLDING_STATUSES: BookingStatus[] = [
 
 /** Booking states where money arriving means "too late, refund it". */
 const DEAD_STATUSES: BookingStatus[] = ["EXPIRED", "CANCELLED", "REFUNDED"];
+
+/**
+ * Booking states a captured payment has already counted towards
+ * MentorProfile.paidSessions. Reaching any of these means the increment below
+ * has run, so a later refund has something to take back off.
+ */
+const COUNTED_PAID_STATUSES: BookingStatus[] = ["CONFIRMED", "COMPLETED", "DISPUTED"];
 
 /**
  * Release a slot, unless another live booking has since claimed it.
@@ -246,7 +254,7 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
   }
 
   // Captured — the only state where it is safe to hand over the session.
-  await prisma.booking.updateMany({
+  const confirmed = await prisma.booking.updateMany({
     where: { id: booking.id, status: { in: ["PENDING_PAYMENT", "PAYMENT_PROCESSING"] } },
     data: {
       status: "CONFIRMED",
@@ -254,6 +262,14 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
       expiresAt: null,
     },
   });
+
+  // This is where a paid session starts counting towards the mentor's public
+  // session count. It hangs off `confirmed.count` rather than off reaching this
+  // line, because the updateMany above is conditional: a webhook Razorpay
+  // delivers three times moves the booking once and so counts once.
+  if (confirmed.count > 0) {
+    await incrementPaidSessions(prisma, booking.mentorId);
+  }
 }
 
 /** Reconcile a refund entity into our Refund + Payment + Booking rows. */
@@ -263,7 +279,7 @@ export async function applyRefundEntity(
 ): Promise<void> {
   const payment = await prisma.payment.findUnique({
     where: { razorpayPaymentId: entity.payment_id },
-    include: { booking: { select: { id: true, status: true, slotId: true } } },
+    include: { booking: { select: { id: true, status: true, slotId: true, mentorId: true } } },
   });
 
   if (!payment) {
@@ -321,6 +337,14 @@ export async function applyRefundEntity(
 
   if (moved.count > 0) {
     await releaseSlot(payment.booking.slotId, payment.booking.id);
+
+    // Take the session back off the mentor's count, but only if it was ever on
+    // it. CONFIRMED and DISPUTED are the two states above that a capture can
+    // have counted; a booking refunded straight out of PENDING_PAYMENT or
+    // PAYMENT_PROCESSING was never counted and must not go negative.
+    if (COUNTED_PAID_STATUSES.includes(payment.booking.status)) {
+      await decrementPaidSessions(prisma, payment.booking.mentorId);
+    }
   }
 }
 

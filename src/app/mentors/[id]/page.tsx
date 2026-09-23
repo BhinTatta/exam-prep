@@ -14,6 +14,7 @@ import { daysUntilSlot, formatSlotWhen } from "@/lib/days";
 import { bookSlot } from "@/app/mentors/actions";
 import { expireStaleHolds } from "@/lib/payments/sync";
 import { getMentorProfile, REVIEWS_ON_PROFILE } from "@/lib/mentors/profile";
+import { MIN_SESSIONS_TO_SHOW } from "@/lib/mentors/rank";
 import { averageRating, formatRating } from "@/lib/reviews";
 import { siteConfig } from "@/config/site";
 import {
@@ -24,6 +25,7 @@ import {
   ListOrdered,
   Undo2,
   CalendarClock,
+  Users,
   ArrowRight,
 } from "lucide-react";
 
@@ -88,7 +90,25 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
               <p className="mt-1 text-sm text-muted-foreground">
                 {mentor.currentRole || mentor.institute}
               </p>
-              <RatingChip rollup={mentor} className="mt-1.5 text-sm" />
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                <RatingChip rollup={mentor} />
+                {/* Sessions taken, next to the rating and before anything else
+                    on the page: "forty students have paid to talk to this
+                    person" is the single strongest thing we can say about a
+                    mentor, and it is stronger than any number of stars from a
+                    handful of raters. Hidden below MIN_SESSIONS_TO_SHOW — a
+                    profile advertising "1 session booked" is arguing against
+                    itself. */}
+                {mentor.paidSessions >= MIN_SESSIONS_TO_SHOW && (
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <Users className="size-3.5" />
+                    <span className="font-medium text-foreground tabular-nums">
+                      {mentor.paidSessions}
+                    </span>{" "}
+                    sessions booked
+                  </span>
+                )}
+              </div>
             </div>
             {/* Sharing sits with the identity, not with the booking controls —
                 a student forwards "this person", not "this checkout". */}

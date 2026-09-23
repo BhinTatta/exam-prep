@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MentorCard } from "@/components/mentors/mentor-card";
-import type { BookableMentor } from "@/lib/mentors/list";
+import type { MentorListEntry } from "@/lib/mentors/list";
 import { StudyPlanSection } from "@/components/assessment/study-plan-section";
 import { cn } from "@/lib/utils";
 import type { TopicStat, StudyPlan } from "@/lib/assessment/types";
@@ -42,7 +42,7 @@ export function ResultsReport({
   maxScore: number;
   topicBreakdown: TopicStat[];
   studyPlan: StudyPlan | null;
-  mentors: BookableMentor[];
+  mentors: MentorListEntry[];
   canViewFullPlan: boolean;
   attemptId: string;
 }) {
@@ -69,11 +69,13 @@ export function ResultsReport({
         )}
       </header>
 
-      {/* The conversion block sits here — directly under the score, while the
-          gap is still fresh — and not four sections down past the study plan.
-          This is the moment the student is most motivated to fix something. */}
-      <ConversionBlock mentors={mentors} topWeakness={topWeakness} />
-
+      {/* The breakdown before the pitch, not after it.
+          The conversion block opens with "you now know {topWeakness} is
+          costing you marks" — which was being read before the student had seen
+          a single bar proving it. The claim arrived ahead of the evidence.
+          These bars are short, they are visual, and a red 31% next to a topic
+          name is the moment the gap stops being a number and starts being a
+          problem. The pitch lands on top of that, one section later. */}
       <section className="flex flex-col gap-3">
         <h2 className="font-heading text-xl font-semibold">Topic breakdown</h2>
         <div className="flex flex-col gap-3">
@@ -82,6 +84,8 @@ export function ResultsReport({
           ))}
         </div>
       </section>
+
+      <ConversionBlock mentors={mentors} topWeakness={topWeakness} />
 
       <StudyPlanSection
         studyPlan={studyPlan}
@@ -108,7 +112,7 @@ function ConversionBlock({
   mentors,
   topWeakness,
 }: {
-  mentors: BookableMentor[];
+  mentors: MentorListEntry[];
   topWeakness?: string;
 }) {
   const cheapest = mentors.length ? Math.min(...mentors.map((m) => m.mentor.rate)) : null;
@@ -155,12 +159,12 @@ function ConversionBlock({
       {mentors.length > 0 ? (
         <>
           <div className="grid gap-4 sm:grid-cols-2">
-            {mentors.map(({ mentor, nextSlot }, i) => (
+            {mentors.map(({ mentor, slots, soonestInMinutes }, i) => (
               <MentorCard
                 key={mentor.id}
                 mentor={mentor}
-                nextSlot={nextSlot}
-                highlight={i === 0 && !!nextSlot}
+                slots={slots}
+                highlightLabel={i === 0 && soonestInMinutes !== null ? "Soonest" : undefined}
               />
             ))}
           </div>

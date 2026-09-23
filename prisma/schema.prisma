@@ -225,7 +225,38 @@ model MentorProfile {
   reviewCount Int @default(0) // published reviews only
   ratingSum   Int @default(0) // sum of those reviews' stars
 
+  // The number a listing actually sorts on: a Bayesian-weighted rating, not
+  // ratingSum/reviewCount. A raw average lets one 5-star review outrank fifty
+  // 4.8s, which is how a brand-new mentor ends up on the front page — exactly
+  // the bug this column exists to kill. See src/lib/mentors/rank.ts for the
+  // formula and the constants.
+  //
+  // Written in the SAME statement as the two columns above (one UPDATE, in
+  // src/lib/mentors/rollup.ts) so it can never drift from them, and indexed
+  // so ORDER BY happens in Postgres rather than over an array in Node.
+  ratingScore Float @default(4.5) // = RATING_PRIOR_MEAN for a mentor with no reviews
+
+  // --- Social proof --------------------------------------------------------
+  // Paid bookings, counted once when the payment is captured and uncounted
+  // only on a full refund. Deliberately NOT "sessions the mentee confirmed
+  // happened": that confirmation is a button most students never press, so
+  // counting it would show "4 sessions" for a mentor who has taken thirty.
+  // Money changing hands is the honest, cheap signal — and it is one integer
+  // on this row rather than an aggregate over Booking on every card render.
+  paidSessions Int @default(0)
+
+  // --- Curation ------------------------------------------------------------
+  // Hand-picked placement on the home page. null = not featured; lower sorts
+  // earlier. An Int rather than a boolean because the home page shows three
+  // cards and which one leads is a marketing decision, not an alphabetical
+  // accident. Set from /admin/mentors.
+  featuredRank Int?
+
   @@index([verified])
+  // The two orderings every listing uses. Both lead with `verified` because
+  // no public listing ever reads an unverified mentor.
+  @@index([verified, ratingScore(sort: Desc)])
+  @@index([verified, featuredRank])
 }
 
 model Availability {
@@ -622,6 +653,13 @@ model AttemptResult {
   // anonymous test-takers who never sign up never cost an AI call.
   // Never the source of truth for the score itself. See src/lib/ai/study-plan.ts.
   studyPlan            Json?
+
+  // DEPRECATED — no longer read or written. Mentors used to be frozen into
+  // this column at submit time, which meant a result opened three weeks later
+  // still advertised whoever happened to be newest on test day, and silently
+  // showed fewer (or none) once one of them was unverified. The results page
+  // and the PDF both pick mentors at view time now. Kept only so dropping it
+  // is a separate, deliberate migration.
   recommendedMentorIds String[] @default([])
 
   generatedAt DateTime @default(now())
