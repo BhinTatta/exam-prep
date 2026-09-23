@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { RatingChip } from "@/components/reviews/rating-summary";
@@ -49,24 +49,34 @@ function firstNameOf(name: string | null) {
  * what it buys.
  *
  * ---------------------------------------------------------------------------
- * Why the hover lift is on a wrapper and not on the card
+ * Why the link is a separate overlay and not the CTA
  * ---------------------------------------------------------------------------
- * The whole card is one link: the CTA's `::after` is stretched over it, so
- * there is a single tab stop with a single accessible name. That overlay is a
- * child of the anchor, which makes it very easy to build a cursor that
- * flickers, and this card used to do exactly that in two separate ways.
+ * The whole card is one link, so it is a single tab stop with a single
+ * accessible name. The obvious way to build that is a `::after` stretched off
+ * the CTA — and it does not work here, because `::after` is positioned against
+ * the nearest *positioned* ancestor, and any transform on an element makes it
+ * a containing block for its own absolute descendants.
  *
- * First, hovering the *moving* element. If the element that lifts is also the
- * element the `:hover` is on, then at its bottom edge the lift slides it out
- * from under the pointer — hover is lost, it drops back, hover returns, and it
- * oscillates for as long as the cursor rests there. So the hover target is the
- * static wrapper below, and only the card inside it moves.
+ * The CTA is a Button, and `buttonVariants` carries `active:translate-y-px`.
+ * So the instant the pointer went down, the anchor gained a transform, its
+ * `::after` stopped resolving against the card and collapsed onto the button's
+ * own 277x44 box. Mouseup then landed on a plain div, the browser dispatched
+ * `click` at the common ancestor instead of the link, and the card did nothing
+ * — anywhere outside the button itself. The DOM told the story plainly:
+ * `mousedown:A, mouseup:DIV, click:DIV`.
  *
- * Second, two nested lifts. The CTA carried `emphasis="lift"`, so the anchor
- * rose 2px relative to the card, taking its `::after` with it and uncovering a
- * strip along the bottom where the cursor fell through to the card and reverted
- * from a pointer to an arrow. Inside a card the CTA is painted, not lifted —
- * the card does the moving, once.
+ * The same mechanism, via hover rather than active, is what used to make the
+ * cursor flicker: an overlay that moves relative to the card uncovers a strip
+ * where the cursor falls through, reverts to an arrow and bounces back.
+ *
+ * So the link is its own element now, a sibling of the card that covers it,
+ * and the CTA is painted rather than interactive. Nothing that transforms owns
+ * the hit area any more. Two rules keep it that way:
+ *
+ *   1. The hover target is the static wrapper; only the card inside it moves.
+ *      Lifting the element that carries the `:hover` slides it out from under
+ *      the pointer at its own bottom edge and oscillates.
+ *   2. Nothing inside the card is interactive. One link, one tab stop.
  */
 export function MentorCard({
   mentor,
@@ -96,8 +106,14 @@ export function MentorCard({
 
   return (
     // Static: it catches the hover and anchors nothing that moves.
-    // `cursor-pointer` because every pixel of it opens the profile.
-    <div className={cn("group h-full cursor-pointer", className)}>
+    // `cursor-pointer` because every pixel of it opens the profile, and
+    // `min-w-0` because this is a grid item whose automatic minimum size is
+    // its content — and the name and role below are `truncate`, which is
+    // `white-space: nowrap`. Without it a mentor called "MSc Mathematical
+    // Statistics, Indian Institute of Technology Kharagpur" stretches the
+    // grid track to fit their title on one line and pushes the whole page
+    // sideways on a phone. Measured: 159px of horizontal overflow at 412px.
+    <div className={cn("group relative h-full min-w-0 cursor-pointer", className)}>
       <Card
         className={cn(
           "relative flex h-full flex-col transition-all duration-200",
@@ -207,23 +223,35 @@ export function MentorCard({
               </div>
             </div>
 
-            <Button
-              asChild
-              size="xl"
-              // Never `lift` or `glow` here: an emphasis that transforms would
-              // move the stretched overlay relative to the card. See above.
-              emphasis="none"
-              className="w-full justify-between"
+            {/* Painted, not interactive — the real link is the overlay below
+                the card. It still reacts to the pointer, through the wrapper,
+                so it behaves like the button it looks like. */}
+            <span
+              aria-hidden="true"
+              className={cn(
+                buttonVariants({ size: "xl", emphasis: "none" }),
+                "w-full justify-between group-active:translate-y-px"
+              )}
             >
-              {/* Stretched link: covers the card so the whole thing is clickable. */}
-              <Link href={`/mentors/${mentor.id}`} className="after:absolute after:inset-0">
-                {bookedOut ? `See ${firstName}'s slots` : `Talk to ${firstName}`}
-                <ArrowRight />
-              </Link>
-            </Button>
+              {bookedOut ? `See ${firstName}'s slots` : `Talk to ${firstName}`}
+              <ArrowRight />
+            </span>
           </div>
         </CardContent>
       </Card>
+
+      {/* The card's one link, covering the card rather than hanging off
+          something inside it. Last in the DOM so it sits above the content,
+          and the only focusable thing here — so the focus ring belongs to it
+          and is drawn around the whole card. */}
+      <Link
+        href={`/mentors/${mentor.id}`}
+        className="absolute inset-0 z-10 rounded-xl focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+      >
+        <span className="sr-only">
+          {bookedOut ? `See ${firstName}'s slots` : `Talk to ${firstName}`}
+        </span>
+      </Link>
     </div>
   );
 }
