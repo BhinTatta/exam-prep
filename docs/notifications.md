@@ -182,6 +182,29 @@ cron-job.org → new cronjob:
 
 ## Operating it
 
+### The admin page
+
+`/admin/notifications` is the first place to look. It shows which transport is
+live, the from/reply-to addresses, whether `CRON_SECRET` is set, when mail last
+went out, and counts for due / scheduled / sent / skipped / failed, over the
+last 50 rows of activity with their error text.
+
+Three buttons:
+
+- **Send test** — one message straight through the provider, skipping the queue,
+  so it isolates "can we send at all?" (key, domain verification, DNS) from
+  "is the queue moving?". It renders through the same layout as real mail, so
+  what you see is what students will see. Each one costs a send against the
+  free tier's 100/day.
+- **Run a tick now** — the same code path the pinger drives. If this clears the
+  backlog, the problem is the pinger, not the code.
+- **Retry failed** — see below.
+
+`FAILED` rows also surface as a tile on the admin overview, because nobody
+thinks to check whether email works until somebody complains they were never
+told.
+
+
 Without `RESEND_API_KEY`, development logs emails to the console
 (`ConsoleTransport`) and production fails them loudly rather than marking them
 sent having gone nowhere. That is also how you exercise the flow before DNS
@@ -208,8 +231,8 @@ row `FAILED` with a reason.
 
 `FAILED` is not permanent — it just means nothing will retry on its own. If the
 cause was environmental (a missing `RESEND_API_KEY` burns through all five
-attempts in about half an hour), fix the cause and hand the rows back to the
-drain:
+attempts in about half an hour), fix the cause and press **Retry failed** on
+`/admin/notifications`, or do the same thing by hand:
 
 ```sql
 UPDATE "Notification"
@@ -234,6 +257,18 @@ createdb examprep_check
 DATABASE_URL=... DIRECT_URL=... npx prisma migrate deploy
 DATABASE_URL=... DIRECT_URL=... npx tsx scripts/verify-notifications.ts
 ```
+
+## Why there are no templates in the Resend dashboard
+
+There deliberately are none. Every message is rendered in
+`src/lib/notifications/render.ts`, which means the copy is reviewed in pull
+requests, versioned with the code that sends it, and type-checked against the
+data it interpolates — a template editor in a dashboard gets none of that, and
+drifts from the code the moment somebody edits it. Resend's template and
+broadcast features are aimed at marketing email, which this is not.
+
+The one cost is that changing wording needs a deploy. That is the right trade
+for transactional mail.
 
 ## Next: Telegram
 

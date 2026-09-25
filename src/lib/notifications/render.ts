@@ -103,6 +103,33 @@ function plain(block: Block): string {
 }
 
 /**
+ * A diagnostic message, for the "send a test email" button in the admin area.
+ *
+ * Deliberately rendered through the same `layout()` as every real notification:
+ * a test that looks nothing like production mail tells you the API key works and
+ * nothing about whether your email actually reads well or renders correctly in
+ * Gmail.
+ */
+export function renderTestEmail(opts: { transport: string; from: string; sentAt: Date }): RenderedEmail {
+  const block: Block = {
+    heading: "Your email setup works",
+    paragraphs: [
+      `If you are reading this, ${escapeHtml(siteConfig.name)} can send email: the API key is valid, the sending domain is verified, and DKIM and SPF passed well enough to reach an inbox.`,
+      `Transport: <strong>${escapeHtml(opts.transport)}</strong><br>From: ${escapeHtml(opts.from)}<br>Sent: ${escapeHtml(formatIstDateTime(opts.sentAt))}`,
+      "This is the same layout every booking confirmation and reminder uses, so whatever this looks like in your mail client is what your students and mentors will see.",
+      "Worth checking while you are here: that it did not land in spam or the Promotions tab, that the sender name reads correctly, and that replying to it reaches a real inbox.",
+    ],
+    cta: { label: "Open the site", href: siteConfig.url },
+  };
+
+  return {
+    subject: `Test email from ${siteConfig.name}`,
+    html: layout(block),
+    text: plain(block),
+  };
+}
+
+/**
  * Turn one queued notification into a message.
  *
  * Rendering happens here, at send time, and never at enqueue time. That is what

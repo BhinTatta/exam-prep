@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserCheck, CreditCard, ShieldAlert, Calendar, Users } from "lucide-react";
+import { UserCheck, CreditCard, ShieldAlert, Calendar, Users, MailX } from "lucide-react";
 
 export const metadata = { title: "Admin" };
 
@@ -16,7 +16,8 @@ function countCapturedLast24h() {
 }
 
 export default async function AdminOverviewPage() {
-  const [pendingMentors, capturedToday, needsAttention, sessions, totalUsers] = await Promise.all([
+  const [pendingMentors, capturedToday, needsAttention, sessions, totalUsers, emailFailures] =
+    await Promise.all([
     prisma.mentorProfile.count({ where: { verified: false } }),
     countCapturedLast24h(),
     // Things only a human can clear: cancellation requests, and webhooks that
@@ -27,6 +28,9 @@ export default async function AdminOverviewPage() {
     ]).then(([a, b]) => a + b),
     prisma.booking.count({ where: { status: { in: ["CONFIRMED", "COMPLETED"] } } }),
     prisma.user.count(),
+    // Nobody thinks to check whether email is working until someone complains
+    // they were never told, so it gets a tile of its own.
+    prisma.notification.count({ where: { status: "FAILED" } }),
   ]);
 
   const cards = [
@@ -35,6 +39,12 @@ export default async function AdminOverviewPage() {
     { label: "Captured in last 24h", value: capturedToday, href: "/admin/payments?status=CAPTURED", icon: CreditCard },
     { label: "Active + completed sessions", value: sessions, href: "/admin/sessions", icon: Calendar },
     { label: "Total users", value: totalUsers, href: "/admin/users", icon: Users },
+    {
+      label: "Email failures",
+      value: emailFailures,
+      href: "/admin/notifications",
+      icon: MailX,
+    },
   ];
 
   return (

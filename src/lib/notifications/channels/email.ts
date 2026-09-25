@@ -105,3 +105,19 @@ export function emailTransport(): EmailTransport {
   }
   return cached;
 }
+
+/**
+ * What the admin area shows about email configuration.
+ *
+ * Reports whether a key is present, never what it is: this is rendered into a
+ * page, and a secret that reaches the browser has stopped being a secret.
+ */
+export function emailTransportStatus() {
+  return {
+    transport: emailTransport().name,
+    from: FROM,
+    replyTo: REPLY_TO ?? null,
+    hasApiKey: Boolean(process.env.RESEND_API_KEY),
+    cronSecretSet: Boolean(process.env.CRON_SECRET),
+  };
+}
