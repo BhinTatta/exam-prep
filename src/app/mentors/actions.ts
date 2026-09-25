@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadFile } from "@/lib/supabase";
 import { subjects, mentorLanguages, examCredentials } from "@/config/site";
+import { resolveSlotOccurrence } from "@/lib/days";
 import { expireStaleHolds, holdDeadline } from "@/lib/payments/sync";
 
 // Everything here is required. A half-filled mentor profile converts nobody,
@@ -106,11 +107,15 @@ export async function bookSlot(mentorId: string, slotId: string) {
   if (mentor.userId === user.id) throw new Error("You can't book your own slot");
 
   const booking = await prisma.$transaction(async (tx) => {
-    const slot = await tx.availability.updateMany({
+    const claimed = await tx.availability.updateMany({
       where: { id: slotId, mentorId, isBooked: false },
       data: { isBooked: true },
     });
-    if (slot.count === 0) throw new Error("That slot was just booked — pick another one.");
+    if (claimed.count === 0) throw new Error("That slot was just booked — pick another one.");
+
+    // Read after claiming: the updateMany above is the lock, so this row is
+    // ours to snapshot now.
+    const slot = await tx.availability.findUniqueOrThrow({ where: { id: slotId } });
 
     return tx.booking.create({
       data: {
@@ -119,6 +124,12 @@ export async function bookSlot(mentorId: string, slotId: string) {
         slotId,
         amount: mentor.rate,
         expiresAt: holdDeadline(),
+        // Pin the recurring weekly slot to the one instant it next falls on,
+        // here and only here. Reminders, the meeting-link window and the
+        // completion sweep all compare this against now(); re-deriving it
+        // later would roll a finished session forward to next week.
+        scheduledStartAt: resolveSlotOccurrence(slot.dayOfWeek, slot.startTime),
+        durationMinutes: slot.duration,
       },
     });
   });

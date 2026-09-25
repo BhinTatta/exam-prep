@@ -101,6 +101,7 @@ model User {
   assessmentAttempts AssessmentAttempt[]
   sessionReviews     SessionReview[]     @relation("ReviewAuthor")
   reviewsHidden      SessionReview[]     @relation("ReviewModerator")
+  notifications      Notification[]
 
   @@index([role])
 }
@@ -302,6 +303,27 @@ model Booking {
 
   meetLink String?
 
+  /// The one absolute instant this booking's session happens, stored in UTC.
+  ///
+  /// `Availability` is a recurring weekly pattern ("Thursdays at 18:00 IST"),
+  /// which is the right shape for a mentor setting their hours and the wrong
+  /// shape for everything downstream: reminders, the meeting-link window and
+  /// the completion sweep all have to compare against `now()`, and a weekday
+  /// plus "HH:mm" is not a point in time. Resolved exactly once, at booking
+  /// creation, by resolveSlotOccurrence() in src/lib/days.ts.
+  ///
+  /// Never re-derive this from the slot. Re-deriving answers "when does that
+  /// weekly slot next fall?", which silently rolls a finished session forward
+  /// to next week the moment it passes.
+  ///
+  /// Nullable only for the bookings that predate this column.
+  scheduledStartAt DateTime?
+
+  /// Snapshot of the slot's length, in minutes, as it was when booked. The
+  /// mentor can edit or delete the Availability row afterwards; what somebody
+  /// already paid for must not change underneath them.
+  durationMinutes Int?
+
   // Deadline for the mentee to pay. Past this, the booking is swept to EXPIRED
   // and the slot is released — see expireStaleHolds() in src/lib/payments/sync.ts.
   expiresAt DateTime?
@@ -316,14 +338,17 @@ model Booking {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  payments Payment[]
-  payout   Payout?
-  review   SessionReview?
+  payments      Payment[]
+  payout        Payout?
+  review        SessionReview?
+  notifications Notification[]
 
   @@index([status])
   @@index([menteeId])
   @@index([mentorId])
   @@index([status, expiresAt])
+  // Drives the completion sweep and the "sessions starting soon" queries.
+  @@index([status, scheduledStartAt])
 }
 
 // ---------- Session feedback ----------
@@ -663,4 +688,85 @@ model AttemptResult {
   recommendedMentorIds String[] @default([])
 
   generatedAt DateTime @default(now())
+}
+
+// ---------- Notifications ----------
+
+enum NotificationChannel {
+  EMAIL
+  TELEGRAM // not wired yet — the column exists so adding it is additive
+}
+
+enum NotificationEvent {
+  BOOKING_CONFIRMED
+  SESSION_REMINDER_24H
+  SESSION_REMINDER_30M
+  SESSION_FEEDBACK
+}
+
+enum NotificationStatus {
+  PENDING // queued, not yet handed to a provider
+  SENT
+  FAILED // gave up after MAX_ATTEMPTS — see src/lib/notifications/dispatch.ts
+  SKIPPED // deliberately not sent: no address on this channel, or no longer relevant
+}
+
+/// One outbound message we intend to send, queued in our own database.
+///
+/// This is a transactional outbox, and the shape is deliberate: the row is
+/// written inside the same transaction as the booking change that warrants it,
+/// so the two cannot disagree — no confirmed booking without its notification
+/// queued, and no notification for a booking that rolled back.
+///
+/// Nothing here ever talks to an email provider. A cron tick drains the table
+/// afterwards (src/app/api/cron/notifications/route.ts), which is what keeps a
+/// provider outage away from the booking flow entirely: if Resend is down, rows
+/// sit here and are retried. Email is not allowed to fail a booking, block a
+/// user, or roll anything back.
+///
+/// Delivery is at-least-once, not exactly-once. A process that dies between
+/// "provider accepted" and "row marked SENT" will retry; the provider-side
+/// idempotency key in dispatch.ts is what stops that becoming a duplicate
+/// inbox entry.
+model Notification {
+  id String @id @default(cuid())
+
+  event   NotificationEvent
+  channel NotificationChannel
+  status  NotificationStatus @default(PENDING)
+
+  /// Who to tell — a user, never an address. Addresses are resolved at send
+  /// time, so a mentee who adds their email after booking still gets the
+  /// reminder, and a changed address is honoured rather than frozen in.
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// What it is about. Nullable so account-level notifications can live here
+  /// later without a schema change.
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  /// Earliest this may be sent. `now()` for an immediate message; a future
+  /// timestamp is the entire scheduling mechanism — a T-30m reminder is just a
+  /// row with `sendAfter = scheduledStartAt - 30 minutes`.
+  sendAfter DateTime @default(now())
+
+  /// Doubles as an optimistic lock: the drain claims a row by incrementing
+  /// this conditionally, so two overlapping ticks cannot both send it.
+  attempts Int @default(0)
+
+  lastError String?   @db.Text
+  sentAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// The idempotency guard. A Razorpay webhook delivered three times tries to
+  /// enqueue the same confirmation three times; this makes the second and third
+  /// a no-op instead of three emails. Rows with a null bookingId do not collide
+  /// under Postgres NULL semantics, which is what leaves room for
+  /// account-level notifications later.
+  @@unique([bookingId, userId, event, channel])
+  /// The drain query rides this: PENDING rows whose sendAfter has passed.
+  @@index([status, sendAfter])
 }

@@ -8,14 +8,15 @@ import { Button } from "@/components/ui/button";
 import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
 import { RazorpayCheckoutButton } from "@/components/bookings/razorpay-checkout-button";
 import { HoldCountdown } from "@/components/bookings/hold-countdown";
+import { JoinCallButton } from "@/components/bookings/join-call-button";
 import { RequestCancellationForm } from "@/components/bookings/request-cancellation";
 import { CancelBookingButton, DidNotHappenButton } from "@/components/bookings/booking-buttons";
 import { ReviewForm } from "@/components/reviews/review-form";
 import { expireStaleHolds, reconcileBookingPayments } from "@/lib/payments/sync";
 import { formatInr } from "@/lib/razorpay/money";
 import { siteConfig } from "@/config/site";
-import { DAYS } from "@/lib/days";
-import { Video, IndianRupee, ShieldCheck } from "lucide-react";
+import { DAYS, formatIstDateTime } from "@/lib/days";
+import { IndianRupee, ShieldCheck } from "lucide-react";
 
 // Per-user data behind an auth guard: never prerender or cache this.
 export const dynamic = "force-dynamic";
@@ -77,9 +78,16 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Slot</span>
+            <span className="text-muted-foreground">Session</span>
             <span className="font-medium">
-              {DAYS[booking.slot.dayOfWeek]} {booking.slot.startTime} ({booking.slot.duration} min)
+              {/* The booking's own resolved date where we have one. The slot is
+                  a recurring weekly pattern, so rendering it directly answers
+                  "when does that slot next fall?" rather than "when is this
+                  session?" — the same thing on the day it was booked, wrong
+                  every day after. */}
+              {booking.scheduledStartAt
+                ? `${formatIstDateTime(booking.scheduledStartAt)} (${booking.durationMinutes ?? booking.slot.duration} min)`
+                : `${DAYS[booking.slot.dayOfWeek]} ${booking.slot.startTime} (${booking.slot.duration} min)`}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
@@ -132,11 +140,11 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
           {booking.status === "CONFIRMED" && (
             <div className="flex flex-col gap-3">
-              <a href={booking.meetLink ?? "#"} target="_blank" rel="noopener noreferrer">
-                <Button className="w-full gap-1.5">
-                  <Video className="size-4" /> Join video call
-                </Button>
-              </a>
+              <JoinCallButton
+                meetLink={booking.meetLink}
+                scheduledStartAt={booking.scheduledStartAt?.toISOString() ?? null}
+                durationMinutes={booking.durationMinutes ?? booking.slot.duration}
+              />
               {isMentee && (
                 <>
                   <Separator />

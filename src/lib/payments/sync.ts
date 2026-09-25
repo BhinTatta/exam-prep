@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { jitsiRoomUrl } from "@/config/site";
 import { decrementPaidSessions, incrementPaidSessions } from "@/lib/mentors/rollup";
+import { planBookingNotifications } from "@/lib/notifications/enqueue";
 import {
   capturePayment,
   createRefund,
@@ -269,6 +270,26 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
   // delivers three times moves the booking once and so counts once.
   if (confirmed.count > 0) {
     await incrementPaidSessions(prisma, booking.mentorId);
+
+    // Tell both sides that this is happening.
+    //
+    // Wrapped, and deliberately so: the money has moved and the session is real
+    // whether or not an email ever goes out, so notifications get no veto over
+    // payment processing. Nothing below this line may throw upwards, fail a
+    // capture, or roll anything back.
+    //
+    // That is safe rather than lossy because the outbox is repaired on every
+    // cron tick — planMissingNotifications() re-queues any confirmed booking
+    // that ended up with no rows, so losing this call delays the email, it does
+    // not drop it.
+    try {
+      await planBookingNotifications(booking.id);
+    } catch (error) {
+      console.error("notifications: could not queue for a confirmed booking", {
+        bookingId: booking.id,
+        error,
+      });
+    }
   }
 }
 

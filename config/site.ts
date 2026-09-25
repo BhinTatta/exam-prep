@@ -9,7 +9,7 @@ export const siteConfig = {
   description:
     "A free, no-ads, community-first platform for physics entrance exam prep — resources, community Q&A, and a mentor marketplace.",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-  supportEmail: "support@example.com",
+  supportEmail: "support@iitjambuddy.com",
   ogImage: "/og.png",
 } as const;
 
