@@ -258,6 +258,53 @@ DATABASE_URL=... DIRECT_URL=... npx prisma migrate deploy
 DATABASE_URL=... DIRECT_URL=... npx tsx scripts/verify-notifications.ts
 ```
 
+## The templates
+
+All five messages share one shell in `src/lib/notifications/render.ts`: logo,
+eyebrow label, heading, lead, a stacked detail panel, a call to action, and an
+optional coloured note. Templates supply structured content (`EmailBlock`) and
+never raw HTML, so the plain-text half is built from the same data rather than
+by stripping tags out of the markup.
+
+What a reader is told depends on who they are. A mentee sees the mentor's
+credentials; a mentor sees the mentee's year and college — enough to walk in
+prepared, and deliberately *not* their email address, which the mentor
+dashboard does not show either. Rows with no value are dropped, so nobody gets
+"College: —". Detail depth tapers with urgency: the confirmation carries full
+credentials, the 24-hour reminder one line of context, and the 30-minute
+reminder only the name and the time, because anything else is between the
+reader and the join button.
+
+Three constraints worth knowing before editing:
+
+- **Colours are hex, not tokens.** `globals.css` defines the palette in
+  `oklch()`, which no email client understands — one `oklch()` in a style
+  attribute and the element renders with no colour at all. The Lattice palette
+  is converted once at the top of `render.ts` and kept in step by hand.
+- **Tables, not divs.** Outlook on Windows renders through Word, which ignores
+  most of the box model. The 600px container is fluid (`width:100%` +
+  `max-width`) with an MSO conditional wrapper for Outlook; a `width="600"`
+  *attribute* would beat `max-width` and push the layout off the right edge of
+  every phone.
+- **No webfont.** The site sets headings in Schibsted Grotesk, but Gmail strips
+  both `@font-face` and `<link>`. The identity carries on the logo, the indigo
+  and the layout instead.
+
+The logo is `/brand/logo-light.png` referenced absolutely off
+`NEXT_PUBLIC_APP_URL`, so that variable has to be right in production or every
+email shows a broken image.
+
+### Previewing without sending
+
+```
+npx tsx scripts/preview-emails.ts       # writes .preview-emails/index.html
+```
+
+Renders every template with representative data, HTML and text, so template
+work costs nothing against the 100/day. A browser is not an email client
+though — it confirms copy, hierarchy and wrapping, and tells you nothing about
+Outlook. For that, send one to yourself from `/admin/notifications`.
+
 ## Why there are no templates in the Resend dashboard
 
 There deliberately are none. Every message is rendered in
