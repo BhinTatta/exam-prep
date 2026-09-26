@@ -15,7 +15,7 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { planBookingNotifications, planBookingEmails, planMissingNotifications } from "@/lib/notifications/enqueue";
+import { planBookingNotifications, planMissingNotifications } from "@/lib/notifications/enqueue";
 import { drainNotifications } from "@/lib/notifications/dispatch";
 import { meetingWindow } from "@/lib/bookings/meeting";
 

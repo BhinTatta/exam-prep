@@ -3,8 +3,9 @@ import "server-only";
 import type { BookingStatus, NotificationEvent } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
+import { academicStatusLabel } from "@/lib/academic-status";
 import { emailTransport } from "./channels/email";
-import { renderEmail, type RenderContext } from "./render";
+import { renderEmail, type CounterpartDetails, type RenderContext } from "./render";
 
 /** Give up after this many tries and leave the row FAILED for inspection. */
 const MAX_ATTEMPTS = 5;
@@ -133,8 +134,22 @@ async function deliver(
           scheduledStartAt: true,
           durationMinutes: true,
           menteeId: true,
-          mentee: { select: { name: true } },
-          mentor: { select: { userId: true, user: { select: { name: true } } } },
+          // Enough about each side for the other to walk in prepared: a mentee
+          // sees who they are meeting and what they cleared, a mentor sees who
+          // they are teaching and roughly where they are. Not the mentee's
+          // email address — the mentor dashboard does not show it either, and
+          // a notification is a bad place to widen what the product discloses.
+          mentee: { select: { name: true, academicStatus: true, collegeName: true } },
+          mentor: {
+            select: {
+              userId: true,
+              institute: true,
+              currentRole: true,
+              examCleared: true,
+              examYear: true,
+              user: { select: { name: true } },
+            },
+          },
         },
       },
     },
@@ -175,12 +190,28 @@ async function deliver(
   }
 
   const audience = row.userId === booking.menteeId ? "MENTEE" : "MENTOR";
+  const counterpart: CounterpartDetails =
+    audience === "MENTEE"
+      ? {
+          name: booking.mentor.user.name ?? "your mentor",
+          currentRole: booking.mentor.currentRole || null,
+          institute: booking.mentor.institute,
+          examCleared: booking.mentor.examCleared || null,
+          // Defaulted to 0 on rows that predate the conversion fields, and
+          // "Cleared: JAM Physics · 0" would read worse than saying nothing.
+          examYear: booking.mentor.examYear || null,
+        }
+      : {
+          name: booking.mentee.name ?? "your mentee",
+          academicStatus: academicStatusLabel(booking.mentee.academicStatus),
+          collegeName: booking.mentee.collegeName,
+        };
+
   const context: RenderContext = {
     event: row.event,
     audience,
     recipientName: row.user.name,
-    counterpartName:
-      (audience === "MENTEE" ? booking.mentor.user.name : booking.mentee.name) ?? "your session partner",
+    counterpart,
     startsAt: booking.scheduledStartAt,
     durationMinutes: booking.durationMinutes ?? 30,
     meetLink: booking.meetLink,
