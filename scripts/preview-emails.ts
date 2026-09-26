@@ -25,7 +25,6 @@ const OUT = ".preview-emails";
 const base = {
   startsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
   durationMinutes: 60,
-  meetLink: "https://meet.jit.si/example-booking",
   bookingUrl: "https://www.iitjambuddy.com/bookings/example",
   amount: 500,
 };

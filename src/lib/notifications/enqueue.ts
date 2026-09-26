@@ -8,10 +8,11 @@ type Db = PrismaClient | Prisma.TransactionClient;
 
 const LEAD_TIMES = [
   { event: "SESSION_REMINDER_24H", leadMs: 24 * 60 * 60 * 1000 },
-  // The 30-minute lead has to match JOIN_OPENS_BEFORE_MS in
-  // src/lib/bookings/meeting.ts, because this is the email that carries the
-  // join button: send it any earlier and it links to a call the session page
-  // still refuses to open.
+  // Deliberately earlier than the call opens (5 minutes before the start for a
+  // mentee, 10 for a mentor — see src/lib/bookings/meeting.ts). This email is a
+  // "go and open the page" nudge, not a way in: it carries no room link, so the
+  // two numbers no longer have to agree, and the reminder can arrive early
+  // enough to be useful to somebody who has lost track of the time.
   { event: "SESSION_REMINDER_30M", leadMs: 30 * 60 * 1000 },
 ] as const;
 

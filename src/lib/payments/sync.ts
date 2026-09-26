@@ -259,6 +259,13 @@ export async function applyPaymentEntity(entity: RazorpayPayment): Promise<void>
     where: { id: booking.id, status: { in: ["PENDING_PAYMENT", "PAYMENT_PROCESSING"] } },
     data: {
       status: "CONFIRMED",
+      // A record of which room this booking's call happens in, not a link
+      // anybody is given. Nothing renders or emails this column any more:
+      // /bookings/[id]/join derives the same room name (meetingRoomName() in
+      // src/lib/bookings/jitsi.ts) and mints an address for one person, inside
+      // the join window. It is still written because an admin debugging a call
+      // wants to see the room, and because the derivation has to keep matching
+      // what sessions confirmed before that route existed are already using.
       meetLink: jitsiRoomUrl(booking.mentorId.slice(0, 8), booking.id),
       expiresAt: null,
     },

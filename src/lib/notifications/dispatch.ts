@@ -130,7 +130,6 @@ async function deliver(
           id: true,
           status: true,
           amount: true,
-          meetLink: true,
           scheduledStartAt: true,
           durationMinutes: true,
           menteeId: true,
@@ -214,7 +213,6 @@ async function deliver(
     counterpart,
     startsAt: booking.scheduledStartAt,
     durationMinutes: booking.durationMinutes ?? 30,
-    meetLink: booking.meetLink,
     bookingUrl: `${siteConfig.url}/bookings/${booking.id}`,
     amount: booking.amount,
   };

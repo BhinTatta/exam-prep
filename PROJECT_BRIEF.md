@@ -15,7 +15,9 @@ sideloaded APK later (not Play Store, due to third-party coaching material).
 - **ORM**: Prisma
 - **Auth**: NextAuth.js — Google provider + Telegram Login Widget (custom provider)
 - **File storage**: Supabase Storage (S3-compatible, portable) — for mentor proof docs, uploaded notes
-- **Video calls**: Jitsi Meet (jitsi.org, free, no API key) — room per booking: `meet.jit.si/{shortName}-{bookingId}`
+- **Video calls**: Jitsi Meet (free, no API key) — room per booking: `meet.jit.si/{shortName}-{bookingId}`,
+  handed out only inside the join window and only to the two people in the session. Optionally 8x8 JaaS
+  (free tier, JWT) to make the mentor the moderator rather than whoever clicks first — see `docs/video-calls.md`
 - **Deploy**: Vercel (frontend/backend) + Neon (DB) + Supabase (storage) — all free tier
 - **Domain**: user-owned, pointed at Vercel
 
@@ -65,7 +67,8 @@ Moderators: content only. Never money or role management (least-privilege by des
 - Mentor signup: institute, rank/AIR proof upload, subjects, rate, availability
 - Admin manually verifies mentor before going live
 - Mentee books slot → sees UPI ID/QR + amount → submits UTR/screenshot
-- Admin manually confirms payment → booking → `confirmed` → Jitsi link generated
+- Admin manually confirms payment → booking → `confirmed` → Jitsi room assigned (the URL itself is
+  minted per person, per request, inside the join window)
 - Post-session: mentee prompted "did this happen?"
 - Admin dashboard: pending payment verifications, pending mentor approvals, sessions, manual payout checklist
 - **Built so `Booking.status` is the single state machine** — swapping in Cashfree/Razorpay Route

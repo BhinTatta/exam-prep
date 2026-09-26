@@ -8,7 +8,11 @@
  *
  *   createdb examprep_check
  *   DATABASE_URL=... DIRECT_URL=... npx prisma migrate deploy
- *   DATABASE_URL=... DIRECT_URL=... npx tsx scripts/verify-notifications.ts
+ *   DATABASE_URL=... DIRECT_URL=... npx tsx --conditions=react-server scripts/verify-notifications.ts
+ *
+ * The `--conditions=react-server` is not optional: the modules under test are
+ * marked "server-only", and that package resolves to a module which throws
+ * unless the importer is resolving server conditions the way Next.js does.
  *
  * It TRUNCATES every table it touches, so it refuses to run anywhere that does
  * not look local. Do not point it at a database you care about.
@@ -17,7 +21,9 @@
 import { PrismaClient } from "@prisma/client";
 import { planBookingNotifications, planMissingNotifications } from "@/lib/notifications/enqueue";
 import { drainNotifications } from "@/lib/notifications/dispatch";
-import { meetingWindow } from "@/lib/bookings/meeting";
+import { meetingWindow, type MeetingRole } from "@/lib/bookings/meeting";
+import { buildJoinUrl, isJaasConfigured, isModeratorRole, meetingRoomName } from "@/lib/bookings/jitsi";
+import { recordJoin, summarizeAttendance } from "@/lib/bookings/attendance";
 
 const db = new PrismaClient();
 
@@ -162,16 +168,101 @@ async function main() {
 
   console.log("\n=== 9. The meeting-link window ===");
   const now = new Date("2026-10-01T12:30:00Z");
-  const w = (offsetMs: number) => meetingWindow({
-    scheduledStartAt: new Date(now.getTime() + offsetMs), durationMinutes: 60, now,
+  // `offsetMs` is how far ahead the session starts, so 30 * 60_000 reads as
+  // "half an hour before it begins".
+  const w = (offsetMs: number, role: MeetingRole = "MENTEE") => meetingWindow({
+    scheduledStartAt: new Date(now.getTime() + offsetMs), durationMinutes: 60, role, now,
   }).state;
-  check("closed 35 min before", w(35 * 60_000) === "TOO_EARLY");
-  check("open 30 min before (when the reminder goes out)", w(30 * 60_000 - 1) === "OPEN");
+  check("mentee: shut 30 min before (when the reminder goes out)", w(30 * 60_000) === "TOO_EARLY");
+  check("mentee: shut 6 min before", w(6 * 60_000) === "TOO_EARLY");
+  check("mentee: open 5 min before", w(5 * 60_000 - 1) === "OPEN");
+  check("mentor: still shut 11 min before", w(11 * 60_000, "MENTOR") === "TOO_EARLY");
+  check("mentor: open 10 min before, ahead of the mentee",
+    w(10 * 60_000 - 1, "MENTOR") === "OPEN" && w(10 * 60_000 - 1, "MENTEE") === "TOO_EARLY");
+  check("admin shares the mentor's door", w(10 * 60_000 - 1, "ADMIN") === "OPEN");
   check("open mid-session", w(-30 * 60_000) === "OPEN");
   check("open 59 min after it ends", w(-(60 + 59) * 60_000) === "OPEN");
   check("closed 61 min after it ends", w(-(60 + 61) * 60_000) === "CLOSED");
   check("legacy booking stays joinable",
-    meetingWindow({ scheduledStartAt: null, durationMinutes: null, now }).state === "UNSCHEDULED");
+    meetingWindow({ scheduledStartAt: null, durationMinutes: null, role: "MENTEE", now }).state === "UNSCHEDULED");
+  check("only the mentor moderates",
+    isModeratorRole("MENTOR") && !isModeratorRole("MENTEE") && !isModeratorRole("ADMIN"));
+  check("the room is the one already baked into old meetLinks",
+    meetingRoomName({ id: "bk1", mentorId: "mp1abcdefgh" }) === "mp1abcde-bk1");
+
+  console.log("\n=== 10. Attendance ===");
+  await reset();
+  const attended = await makeBooking(20 * 60_000, "bk8");
+  await recordJoin({ bookingId: attended.id, userId: "mentoru", role: "MENTOR", moderator: true,
+    scheduledStartAt: attended.scheduledStartAt, now: new Date(attended.scheduledStartAt!.getTime() - 8 * 60_000) });
+  await recordJoin({ bookingId: attended.id, userId: "mentoru", role: "MENTOR", moderator: true,
+    scheduledStartAt: attended.scheduledStartAt, now: new Date(attended.scheduledStartAt!.getTime() + 60_000) });
+  const mentorRow = await db.meetingAttendance.findFirst({ where: { bookingId: attended.id } });
+  check("a rejoin is one attendee, not two", mentorRow?.joins === 2, `joins=${mentorRow?.joins}`);
+  check("keeps the first arrival, 8 min early",
+    mentorRow?.joinedOffsetSeconds === -480, `offset=${mentorRow?.joinedOffsetSeconds}`);
+  check("one side joined is not both",
+    !summarizeAttendance(await db.meetingAttendance.findMany({ where: { bookingId: attended.id } })).bothSidesJoined);
+  await recordJoin({ bookingId: attended.id, userId: "mentee1", role: "MENTEE", moderator: false,
+    scheduledStartAt: attended.scheduledStartAt });
+  const both = summarizeAttendance(await db.meetingAttendance.findMany({ where: { bookingId: attended.id } }));
+  check("both sides joined", both.bothSidesJoined && both.mentor?.moderator === true && both.mentee?.moderator === false);
+
+  console.log("\n=== 11. JaaS moderator tokens ===");
+  // The one piece of this that is security-critical and has no visible failure
+  // mode: a token that does not verify still looks like a URL. So: a throwaway
+  // key pair, mint both sides' tokens through the real code path, and check the
+  // signature and the claims that decide who runs the call.
+  const { generateKeyPairSync, createVerify } = await import("node:crypto");
+  const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+  process.env.JITSI_APP_ID = "vpaas-magic-cookie-test";
+  process.env.JITSI_API_KEY_ID = "key-1";
+  process.env.JITSI_PRIVATE_KEY = privateKey
+    .export({ type: "pkcs8", format: "pem" })
+    .toString()
+    // Written back the way a hosting dashboard stores a PEM, to prove the
+    // literal-backslash-n unescaping in jitsi.ts is doing its job.
+    .replace(/\n/g, "\\n");
+
+  const jaasBooking = {
+    id: "bk9",
+    mentorId: "mp1abcdefgh",
+    scheduledStartAt: new Date(Date.now() + 5 * 60_000),
+    durationMinutes: 60,
+  };
+  const url = (role: MeetingRole) =>
+    buildJoinUrl({ booking: jaasBooking, role, displayName: "Dr Verma", email: "v@x.com", userId: "u1" });
+
+  check("configured JaaS is detected", isJaasConfigured());
+  const mentorUrl = url("MENTOR");
+  check("points at the JaaS app, not public Jitsi",
+    mentorUrl.startsWith("https://8x8.vc/vpaas-magic-cookie-test/mp1abcde-bk9?jwt="), mentorUrl.slice(0, 80));
+
+  const jwt = new URL(mentorUrl).searchParams.get("jwt")!;
+  const [h, pl, sig] = jwt.split(".");
+  const verified = createVerify("RSA-SHA256").update(`${h}.${pl}`).verify(publicKey, Buffer.from(sig, "base64url"));
+  check("signature verifies against the public key", verified);
+
+  const header = JSON.parse(Buffer.from(h, "base64url").toString());
+  const claims = JSON.parse(Buffer.from(pl, "base64url").toString());
+  check("kid is app id + key id", header.kid === "vpaas-magic-cookie-test/key-1", header.kid);
+  check("scoped to this one room", claims.room === "mp1abcde-bk9" && claims.aud === "jitsi" && claims.sub === "vpaas-magic-cookie-test");
+  check("the mentor is the moderator", claims.context.user.moderator === "true");
+  check("expires after the window closes, not in a week",
+    claims.exp > Date.now() / 1000 && claims.exp < Date.now() / 1000 + 3 * 60 * 60);
+  check("recording and streaming are off",
+    claims.context.features.recording === "false" && claims.context.features.livestreaming === "false");
+
+  const claimsFor = (role: MeetingRole) =>
+    JSON.parse(
+      Buffer.from(new URL(url(role)).searchParams.get("jwt")!.split(".")[1], "base64url").toString()
+    );
+  check("the mentee is not", claimsFor("MENTEE").context.user.moderator === "false");
+  check("nor is an admin looking in", claimsFor("ADMIN").context.user.moderator === "false");
+
+  delete process.env.JITSI_APP_ID;
+  check("without credentials it falls back to public Jitsi",
+    !isJaasConfigured() && url("MENTOR").startsWith("https://meet.jit.si/mp1abcde-bk9#"));
 
   console.log(failures === 0 ? "\nALL PASSED\n" : `\n${failures} FAILED\n`);
   process.exit(failures === 0 ? 0 : 1);

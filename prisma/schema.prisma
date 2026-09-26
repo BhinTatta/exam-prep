@@ -102,6 +102,7 @@ model User {
   sessionReviews     SessionReview[]     @relation("ReviewAuthor")
   reviewsHidden      SessionReview[]     @relation("ReviewModerator")
   notifications      Notification[]
+  meetingAttendance  MeetingAttendance[]
 
   @@index([role])
 }
@@ -342,6 +343,7 @@ model Booking {
   payout        Payout?
   review        SessionReview?
   notifications Notification[]
+  attendance    MeetingAttendance[]
 
   @@index([status])
   @@index([menteeId])
@@ -677,7 +679,7 @@ model AttemptResult {
   // see the results page). Generated on demand, not at submit time, so
   // anonymous test-takers who never sign up never cost an AI call.
   // Never the source of truth for the score itself. See src/lib/ai/study-plan.ts.
-  studyPlan            Json?
+  studyPlan Json?
 
   // DEPRECATED — no longer read or written. Mentors used to be frozen into
   // this column at submit time, which meant a result opened three weeks later
@@ -733,7 +735,7 @@ model Notification {
 
   event   NotificationEvent
   channel NotificationChannel
-  status  NotificationStatus @default(PENDING)
+  status  NotificationStatus  @default(PENDING)
 
   /// Who to tell — a user, never an address. Addresses are resolved at send
   /// time, so a mentee who adds their email after booking still gets the
@@ -769,4 +771,75 @@ model Notification {
   @@unique([bookingId, userId, event, channel])
   /// The drain query rides this: PENDING rows whose sendAfter has passed.
   @@index([status, sendAfter])
+}
+
+// ---------- Video call attendance ----------
+
+enum MeetingParticipantRole {
+  MENTEE
+  MENTOR
+  ADMIN // support looking in on a call; never counted as a party to the session
+}
+
+/// One person's arrival at one booking's video call.
+///
+/// The question this answers is the unglamorous one that decides whether the
+/// product works: of the sessions people paid for, how many did both sides
+/// actually turn up to? Reviews only ever come from the calls that went well,
+/// and a "did this happen?" prompt is a self-report; this is the one signal
+/// nobody has to volunteer.
+///
+/// What it records is the moment we handed this person a room URL — the click
+/// on "Join video call", written by src/app/bookings/[id]/join/route.ts, which
+/// is the only route through which a room URL is ever minted. That makes it
+/// exact about intent to join and silent about what happened next: it cannot
+/// see whether their camera worked, how long they stayed, or whether they sat
+/// in the room alone. Presence inside the call is a different mechanism (the
+/// Jitsi iframe API, reporting back from inside the room) and would sit
+/// alongside these columns rather than replace them.
+///
+/// One row per person per booking — the timestamps and the counter carry the
+/// repeats, because a call rejoined three times after a dropped connection is
+/// one person attending, not three.
+model MeetingAttendance {
+  id String @id @default(cuid())
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Which side of the session this person was on, as of their first join.
+  /// Snapshotted rather than re-derived, so a mentor who later loses their
+  /// profile does not turn every call they ran into a mentee's.
+  role MeetingParticipantRole
+
+  /// First and most recent arrival. The gap between the two is the closest
+  /// thing to "how long were they around for" that a join click can give.
+  firstJoinedAt DateTime @default(now())
+  lastJoinedAt  DateTime @default(now())
+
+  /// Arrivals, including rejoins. A high count on a short session usually
+  /// means a bad connection, which is worth being able to see.
+  joins Int @default(1)
+
+  /// Whether this person was handed the room as its moderator. Always true for
+  /// the mentor on JaaS; on public Jitsi it records our intent, since the
+  /// instance itself decides by arrival order.
+  moderator Boolean @default(false)
+
+  /// How early they arrived, relative to the session's start — negative for
+  /// before it, positive for after. Kept as a number rather than recomputed on
+  /// read so the "how many mentors show up late?" question survives a booking
+  /// being rescheduled.
+  joinedOffsetSeconds Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// One row per person per call — the upsert in
+  /// src/lib/bookings/attendance.ts turns a rejoin into an increment.
+  @@unique([bookingId, userId])
+  @@index([bookingId])
 }

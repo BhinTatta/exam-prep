@@ -9,6 +9,7 @@ import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
 import { RazorpayCheckoutButton } from "@/components/bookings/razorpay-checkout-button";
 import { HoldCountdown } from "@/components/bookings/hold-countdown";
 import { JoinCallButton } from "@/components/bookings/join-call-button";
+import type { MeetingRole } from "@/lib/bookings/meeting";
 import { RequestCancellationForm } from "@/components/bookings/request-cancellation";
 import { CancelBookingButton, DidNotHappenButton } from "@/components/bookings/booking-buttons";
 import { ReviewForm } from "@/components/reviews/review-form";
@@ -63,6 +64,11 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   const isMentor = booking.mentor.userId === user.id;
   const isAdmin = hasRole(user.role, "ADMIN");
   if (!isMentee && !isMentor && !isAdmin) notFound();
+
+  // Which door this viewer gets. The mentor's opens first so that they are the
+  // one who opens the room — on public Jitsi that is what makes them its
+  // moderator. Checked again, on the same rule, inside /bookings/[id]/join.
+  const meetingRole: MeetingRole = isMentee ? "MENTEE" : isMentor ? "MENTOR" : "ADMIN";
 
   const mentorFirstName = booking.mentor.user.name?.trim().split(/\s+/)[0] ?? "your mentor";
   const settled = booking.payments.find((p) => p.status === "CAPTURED" || p.status === "REFUNDED");
@@ -141,7 +147,8 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           {booking.status === "CONFIRMED" && (
             <div className="flex flex-col gap-3">
               <JoinCallButton
-                meetLink={booking.meetLink}
+                bookingId={booking.id}
+                role={meetingRole}
                 scheduledStartAt={booking.scheduledStartAt?.toISOString() ?? null}
                 durationMinutes={booking.durationMinutes ?? booking.slot.duration}
               />

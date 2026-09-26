@@ -78,18 +78,19 @@ immediately. And a reminder is skipped at send time if the booking stopped being
 `CONFIRMED`, or if the session has already started. See `RELEVANT_STATUSES` in
 `src/lib/notifications/dispatch.ts`.
 
-## The meeting link window
+## No email ever carries a room link
 
-The Jitsi URL is derived from the booking id and never changes, so a room is
-only as private as the last person who saw its link. The join button therefore
-opens 30 minutes before the session and closes an hour after it ends
-(`src/lib/bookings/meeting.ts`). Bookings predating `scheduledStartAt` resolve to
-`UNSCHEDULED` and keep the old always-available behaviour, because tightening a
-rule should not strand a session somebody already paid for.
+It used to. The `SESSION_REMINDER_30M` email had a "Join the video call" button
+pointing straight at the Jitsi room, which meant the room URL — permanent, and
+derived from the booking id — was sitting in two inboxes forever, and the door
+had to be propped open for half an hour so that the button was not a lie.
 
-`JOIN_OPENS_BEFORE_MS` must stay equal to the `SESSION_REMINDER_30M` lead time:
-that email carries a join button, so opening the door later would email people a
-link the page refuses to honour.
+Both are gone. Emails link to the session page and nothing else; the join button
+lives there, appears 5 minutes before the session (10 for the mentor), and the
+address behind it is minted per person per request. See `docs/video-calls.md`.
+
+The T-30m reminder is now a nudge rather than a way in — "open the page and
+leave it open" — which is why its lead time no longer has to match anything.
 
 ## Why the cron is designed for a sloppy scheduler
 

@@ -3,6 +3,10 @@ import "server-only";
 import type { NotificationEvent } from "@prisma/client";
 import { siteConfig } from "@/config/site";
 import { formatIstDateTime } from "@/lib/days";
+import {
+  MENTEE_JOIN_OPENS_BEFORE_MINUTES,
+  MENTOR_JOIN_OPENS_BEFORE_MINUTES,
+} from "@/lib/bookings/meeting";
 
 /**
  * The Lattice palette, in hex.
@@ -276,7 +280,15 @@ export type RenderContext = {
   counterpart: CounterpartDetails;
   startsAt: Date;
   durationMinutes: number;
-  meetLink: string | null;
+  /**
+   * The session page, which is the only address any email carries.
+   *
+   * There is no meetLink here on purpose. A booking's Jitsi room is derived
+   * from its id and so never changes, which makes it exactly the wrong thing to
+   * put in an inbox: it would still open that room weeks later, for anyone the
+   * mail was forwarded to. Rooms are minted per person, per request, inside the
+   * join window — see src/app/bookings/[id]/join/route.ts.
+   */
   bookingUrl: string;
   amount: number;
 };
@@ -333,8 +345,22 @@ function whenRows(ctx: RenderContext): DetailRow[] {
   ]);
 }
 
-const JOIN_NOTE =
-  "The video call button on the session page unlocks 30 minutes before the start time, and we email it to you again at that point. It stays shut until then so nobody ends up sitting in an empty room.";
+/**
+ * What we tell people about the door, ahead of the day.
+ *
+ * Quoting the numbers from meeting.ts rather than writing them out: this
+ * sentence is a promise about what a button will do, and the page is what
+ * actually decides. One of them being wrong is a support email.
+ *
+ * The mentor is told about their head start on purpose — it is how they end up
+ * being the one who opens the room, and on public Jitsi whoever opens the room
+ * runs it. A mentor who knows that turns up first.
+ */
+function joinNote(ctx: RenderContext): string {
+  return ctx.audience === "MENTOR"
+    ? `The join button on the session page appears ${MENTOR_JOIN_OPENS_BEFORE_MINUTES} minutes before the start — ${MENTOR_JOIN_OPENS_BEFORE_MINUTES - MENTEE_JOIN_OPENS_BEFORE_MINUTES} minutes ahead of your mentee, so the room is yours to open and yours to run. Until then there is nothing to click, for either of you.`
+    : `The join button on the session page appears ${MENTEE_JOIN_OPENS_BEFORE_MINUTES} minutes before the start time. Until then there is nothing to click — it stays shut so nobody ends up sitting in an empty room, and so the link cannot be reused later by anyone it was passed to.`;
+}
 
 // ---------------------------------------------------------------------------
 // Templates
@@ -370,7 +396,7 @@ export function renderEmail(ctx: RenderContext): RenderedEmail {
             ],
           },
           cta: { label: "View your session", href: ctx.bookingUrl },
-          note: { tone: "info", text: JOIN_NOTE },
+          note: { tone: "info", text: joinNote(ctx) },
           footnotes: [
             "We will remind you the day before, and again half an hour before it starts.",
             "Come with specific questions if you can — a session where you know what you want to ask is worth three where you do not.",
@@ -389,7 +415,7 @@ export function renderEmail(ctx: RenderContext): RenderedEmail {
           rows: [...menteeRows(ctx.counterpart), ...whenRows(ctx)],
         },
         cta: { label: "View the session", href: ctx.bookingUrl },
-        note: { tone: "info", text: JOIN_NOTE },
+        note: { tone: "info", text: joinNote(ctx) },
         footnotes: [
           "We will remind you the day before, and again half an hour before it starts.",
           "If something comes up and you cannot make it, say so as early as you can — a student who finds out late has usually planned their day around this.",
@@ -412,7 +438,7 @@ export function renderEmail(ctx: RenderContext): RenderedEmail {
           rows: [...briefCounterpartRows(ctx), ...whenRows(ctx)],
         },
         cta: { label: "View the session", href: ctx.bookingUrl },
-        note: { tone: "info", text: JOIN_NOTE },
+        note: { tone: "info", text: joinNote(ctx) },
         footnotes:
           ctx.audience === "MENTEE"
             ? ["Worth five minutes tonight: write down the two or three things you most want out of this."]
@@ -422,20 +448,26 @@ export function renderEmail(ctx: RenderContext): RenderedEmail {
     }
 
     case "SESSION_REMINDER_30M": {
+      // No room link in here, deliberately. This email goes out half an hour
+      // ahead, and the call does not open for another twenty-odd minutes — a
+      // "join now" button at this point either lies or hands over a permanent
+      // room URL that outlives the session. It points at the session page, and
+      // the button appears there, on its own, when it is time.
+      const opensInMinutes =
+        30 -
+        (ctx.audience === "MENTOR"
+          ? MENTOR_JOIN_OPENS_BEFORE_MINUTES
+          : MENTEE_JOIN_OPENS_BEFORE_MINUTES);
       const block: EmailBlock = {
-        preheader: `${other} is expecting you at ${when}. The call is open.`,
+        preheader: `${other} is expecting you at ${when}. Keep this tab handy.`,
         eyebrow: "Starting soon",
         heading: "Your session starts in 30 minutes",
-        lead: `Hi ${hello}, ${other} is expecting you at ${when}.${
-          ctx.meetLink ? " The video call is open now — the button below goes straight in." : ""
-        }`,
+        lead: `Hi ${hello}, ${other} is expecting you at ${when}. Open the session page now and leave it open — the join button appears on it in about ${opensInMinutes} minutes.`,
         details: {
           title: "Right now",
           rows: [counterpartNameRow(ctx), { label: "Starts", value: when }],
         },
-        cta: ctx.meetLink
-          ? { label: "Join the video call", href: ctx.meetLink }
-          : { label: "Open the session page", href: ctx.bookingUrl },
+        cta: { label: "Open the session page", href: ctx.bookingUrl },
         note: {
           tone: "urgent",
           text: "If you cannot make it after all, open the session page and say so now rather than leaving them waiting.",
