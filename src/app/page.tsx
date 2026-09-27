@@ -121,7 +121,7 @@ export default async function Home() {
               You&apos;ve messaged seniors. Most never replied.
             </h2>
             <p className="text-pretty text-muted-foreground">
-              The one who did sent two sentences. A 45-minute call with someone who cleared the exact
+              The one who did sent two sentences. A 30-minute call with someone who cleared the exact
               exam you&apos;re preparing for is a different thing — they look at where you&apos;re
               losing marks and tell you what to drop, what to drill, and in what order.
             </p>

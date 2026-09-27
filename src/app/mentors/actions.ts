@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadFile } from "@/lib/supabase";
-import { subjects, mentorLanguages, examCredentials } from "@/config/site";
+import { mentorSubjects, mentorLanguages, examCredentials, sessionPricing } from "@/config/site";
 import { resolveSlotOccurrence } from "@/lib/days";
 import { expireStaleHolds, holdDeadline } from "@/lib/payments/sync";
 
@@ -20,8 +20,7 @@ const applySchema = z.object({
   currentRole: z.string().min(2).max(120),
   languages: z.array(z.enum(mentorLanguages as unknown as [string, ...string[]])).min(1),
   story: z.string().min(60).max(400),
-  subjects: z.array(z.enum(subjects.map((s) => s.slug) as [string, ...string[]])).min(1),
-  rate: z.coerce.number().int().min(0).max(100000),
+  subjects: z.array(z.enum(mentorSubjects.map((s) => s.slug) as [string, ...string[]])).min(1),
   upiId: z.string().min(3).max(80),
   bio: z.string().min(40).max(2000),
 });
@@ -41,7 +40,6 @@ export async function applyAsMentor(formData: FormData) {
     languages: formData.getAll("languages"),
     story: formData.get("story"),
     subjects: formData.getAll("subjects"),
-    rate: formData.get("rate"),
     upiId: formData.get("upiId"),
     bio: formData.get("bio"),
   });
@@ -54,7 +52,11 @@ export async function applyAsMentor(formData: FormData) {
 
   await prisma.$transaction([
     prisma.mentorProfile.create({
-      data: { ...parsed, userId: user.id, proofUrl },
+      // The rate comes from config, never from the form. Applicants don't set a
+      // price (that unlocks after verification), so a `rate` in this payload
+      // could only have been forged — a hidden input is editable by anyone with
+      // devtools, and this one decides what a mentee is charged.
+      data: { ...parsed, rate: sessionPricing.studentPays, userId: user.id, proofUrl },
     }),
     // USER -> MENTOR so they get dashboard access while awaiting verification.
     // Moderators/admins keep their higher-privilege role.
@@ -71,7 +73,9 @@ export async function applyAsMentor(formData: FormData) {
 const availabilitySchema = z.object({
   dayOfWeek: z.coerce.number().int().min(0).max(6),
   startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
-  duration: z.coerce.number().int().min(15).max(180),
+  // A session is `sessionPricing.durationMinutes` at minimum — mentors are free
+  // to run over, but they can't offer a slot shorter than what a mentee paid for.
+  duration: z.coerce.number().int().min(sessionPricing.durationMinutes).max(180),
 });
 
 export async function addAvailability(formData: FormData) {

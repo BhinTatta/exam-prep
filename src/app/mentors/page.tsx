@@ -31,7 +31,7 @@ export default async function MentorsPage() {
           Talk to someone who was exactly where you are
         </h1>
         <p className="max-w-xl text-pretty text-muted-foreground">
-          Every mentor here sat the same exam you&apos;re preparing for — and cleared it. One 45-minute
+          Every mentor here sat the same exam you&apos;re preparing for — and cleared it. One 30-minute
           video call is usually worth more than another month of guessing what matters.
         </p>
       </header>

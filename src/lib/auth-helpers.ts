@@ -17,17 +17,34 @@ export { hasRole };
  */
 export const getSession = cache(async () => auth());
 
-/** Server-side guard for pages that require sign-in. Redirects to /sign-in otherwise. */
-export async function requireUser() {
+/**
+ * Sign-in URL that returns the visitor to where they were headed.
+ *
+ * Without this, a signed-out visitor who clicks "Become a mentor" signs in and
+ * lands on the homepage, having lost both the page and whatever convinced them
+ * to click. The sign-in page already reads `callbackUrl`; nothing was passing it.
+ *
+ * There is no request-path header to derive this from, so a caller that cares
+ * passes its own path. Callers that don't stay as they were.
+ */
+function signInUrl(callbackUrl?: string) {
+  return callbackUrl ? `/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/sign-in";
+}
+
+/**
+ * Server-side guard for pages that require sign-in. Redirects to /sign-in
+ * otherwise, coming back to `callbackUrl` after a successful sign-in.
+ */
+export async function requireUser(callbackUrl?: string) {
   const session = await getSession();
-  if (!session?.user) redirect("/sign-in");
+  if (!session?.user) redirect(signInUrl(callbackUrl));
   return session.user;
 }
 
 /** Server-side guard for role-gated pages. Redirects to / if the role bar isn't met. */
-export async function requireRole(min: AppRole) {
+export async function requireRole(min: AppRole, callbackUrl?: string) {
   const session = await getSession();
-  if (!session?.user) redirect("/sign-in");
+  if (!session?.user) redirect(signInUrl(callbackUrl));
   if (!hasRole(session.user.role, min)) redirect("/");
   return session.user;
 }

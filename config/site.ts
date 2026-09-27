@@ -57,8 +57,22 @@ export type Subject = {
   label: string;
 };
 
-// Physics only in v1. Add entries here (and nowhere else) to expand.
+// What the site has content for. Physics only in v1 — this drives the subject
+// picker on resources, Q&A and tests, so adding an entry here opens a filter
+// that students expect to find something behind.
 export const subjects: Subject[] = [{ slug: "physics", label: "Physics" }];
+
+// What a mentor is allowed to offer, which deliberately runs ahead of the list
+// above. Supply has to exist before a subject is worth opening to students, so a
+// Maths mentor can sign up today while /resources and /qa stay Physics-only.
+// Nothing student-facing reads this yet: it is collected at application time and
+// shown on the mentor's own profile. Fold an entry into `subjects` once there is
+// content to go with it.
+export const mentorSubjects: Subject[] = [
+  { slug: "physics", label: "Physics" },
+  { slug: "mathematics", label: "Mathematics" },
+  { slug: "chemistry", label: "Chemistry" },
+];
 
 export type Exam = {
   slug: string;
@@ -90,10 +104,26 @@ export const mentorLanguages = [
 ] as const;
 
 // What a mentor can claim to have cleared — built from the exams above so
-// adding an exam in one place adds it everywhere.
+// adding an exam in one place adds it everywhere. Crossed with `mentorSubjects`
+// rather than `subjects`: someone who cleared JAM Mathematics can say so and be
+// verified on it, even while the student-facing side is Physics-only.
 export const examCredentials = exams.flatMap((exam) =>
-  subjects.map((subject) => `${exam.label} ${subject.label}`)
+  mentorSubjects.map((subject) => `${exam.label} ${subject.label}`)
 );
+
+// The session economics, in one place.
+//
+// `studentPays` is what the mentee is charged, and it is what lands in
+// `MentorProfile.rate` when an application is created — mentors do not name a
+// price at application time, so this is the server-side source of truth for a
+// new profile and the price must never be read back off the apply form.
+// The gap between the two numbers pays the payment gateway, GST, hosting and
+// the refund we cover out of pocket when a mentor misses a call.
+export const sessionPricing = {
+  studentPays: 350,
+  mentorReceives: 250,
+  durationMinutes: 30,
+} as const;
 
 export const resourceCategories = [
   { slug: "institute", label: "Institute Material" },
