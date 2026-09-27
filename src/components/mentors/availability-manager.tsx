@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import { DAYS } from "@/lib/days";
+import { sessionPricing } from "@/config/site";
 import { addAvailability, removeAvailability } from "@/app/mentors/actions";
 
 type Slot = { id: string; dayOfWeek: number; startTime: string; duration: number; isBooked: boolean };
@@ -53,7 +54,16 @@ export function AvailabilityManager({ slots }: { slots: Slot[] }) {
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor="duration">Duration (min)</Label>
-            <Input id="duration" name="duration" type="number" min={15} step={15} defaultValue={30} className="w-24" required />
+            <Input
+              id="duration"
+              name="duration"
+              type="number"
+              min={sessionPricing.durationMinutes}
+              step={15}
+              defaultValue={sessionPricing.durationMinutes}
+              className="w-24"
+              required
+            />
           </div>
           <Button type="submit" disabled={isPending}>
             Add slot

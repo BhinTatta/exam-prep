@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileInput } from "@/components/ui/file-input";
-import { subjects, mentorLanguages, examCredentials } from "@/config/site";
+import { mentorSubjects, mentorLanguages, examCredentials, sessionPricing } from "@/config/site";
 import { applyAsMentor } from "@/app/mentors/actions";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -37,6 +38,10 @@ export function MentorApplyForm() {
       try {
         await applyAsMentor(formData);
       } catch (e) {
+        // A successful application ends in redirect(), which works by throwing.
+        // Without this the catch below swallows it and greets the applicant with
+        // a "NEXT_REDIRECT" error toast at the exact moment they convert.
+        unstable_rethrow(e);
         toast.error(e instanceof Error ? e.message : "Couldn't submit application");
       }
     });
@@ -136,9 +141,13 @@ export function MentorApplyForm() {
             <div className="grid gap-2">
               <Label>Subjects you can mentor</Label>
               <div className="flex flex-wrap gap-4">
-                {subjects.map((s) => (
+                {mentorSubjects.map((s) => (
                   <label key={s.slug} className="flex items-center gap-2 text-sm">
-                    <Checkbox name="subjects" value={s.slug} defaultChecked={subjects.length === 1} />
+                    <Checkbox
+                      name="subjects"
+                      value={s.slug}
+                      defaultChecked={mentorSubjects.length === 1}
+                    />
                     {s.label}
                   </label>
                 ))}
@@ -155,15 +164,32 @@ export function MentorApplyForm() {
                 ))}
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="rate">Rate per session (INR)</Label>
-                <Input id="rate" name="rate" type="number" min={0} step={50} placeholder="300" required />
+            {/* Not an input. Applicants start on the standard rate and set their
+                own once they're verified, so there is nothing to fill in here —
+                only a number they deserve to see before they upload an ID.
+                Spelled out rather than tucked into a tooltip: most of this
+                audience is on a phone, where a hover tooltip never opens. */}
+            <div className="grid gap-2">
+              <p className="text-sm leading-none font-medium">What a session pays</p>
+              <div className="rounded-lg border bg-muted/40 p-3">
+                <p className="text-sm">
+                  <span className="font-semibold">₹{sessionPricing.studentPays} from the student</span>
+                  {" — "}
+                  <span className="font-semibold text-primary">
+                    ₹{sessionPricing.mentorReceives} to you
+                  </span>
+                  , per {sessionPricing.durationMinutes}-minute call.
+                </p>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  The ₹{sessionPricing.studentPays - sessionPricing.mentorReceives} covers the payment
+                  gateway&apos;s cut, GST, hosting, and the refund we pay out of pocket when a mentor
+                  misses a call. Nobody here takes a salary from it.
+                </p>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="upiId">UPI ID (for your payout)</Label>
-                <Input id="upiId" name="upiId" placeholder="you@upi" required />
-              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="upiId">UPI ID (for your payout)</Label>
+              <Input id="upiId" name="upiId" placeholder="you@upi" required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="proof">Proof (rank card, ID, certificate — image or PDF)</Label>

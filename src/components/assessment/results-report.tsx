@@ -147,7 +147,7 @@ function ConversionBlock({
           Months of unguided work, spent on topics that were never going to change your rank.
         </Point>
         <Point icon={Target}>
-          Or 45 minutes with someone who sat this exact exam and cleared it — what to drop, what to
+          Or 30 minutes with someone who sat this exact exam and cleared it — what to drop, what to
           drill, in what order.
         </Point>
       </ul>
