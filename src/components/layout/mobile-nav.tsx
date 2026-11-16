@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
  * an entry here falls back to a neutral icon instead of rendering a hole.
  */
 const navLinkIcons: Record<string, LucideIcon> = {
+  "/mock-tests": FileText,
   "/mentors": Users,
   "/resources": Library,
   "/qa": MessagesSquare,

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 220" width="380" height="220" font-family="Georgia, 'Times New Roman', serif" font-size="16">
+  <rect width="380" height="220" fill="#fff"/>
+  <!-- wedge: 30 degree incline, base 260, height 150.1 -->
+  <path d="M60 190 H320 L60 39.9 Z" fill="#f1f1f1" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+  <!-- block sitting on the slope -->
+  <g transform="translate(170 103.4) rotate(30)">
+    <rect x="-26" y="-36" width="52" height="36" fill="#d9d9d9" stroke="#111" stroke-width="2"/>
+    <text x="-7" y="-12" font-style="italic">m</text>
+  </g>
+  <!-- angle marker at the foot of the slope -->
+  <path d="M276 190 A44 44 0 0 1 281.9 168" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="238" y="183">30°</text>
+  <!-- direction of motion -->
+  <g stroke="#111" stroke-width="2" fill="#111">
+    <path d="M222 100 L262 123.1" fill="none"/>
+    <path d="M262 123.1 l-11.5 -1.2 l5 -8.6 z"/>
+  </g>
+  <text x="252" y="104" font-style="italic">a</text>
+  <path d="M30 190 H350" stroke="#111" stroke-width="2"/>
+</svg>

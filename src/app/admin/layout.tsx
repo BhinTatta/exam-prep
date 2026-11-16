@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 const links = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/tests", label: "Assessment tests" },
+  { href: "/admin/mock-tests", label: "Mock tests" },
   { href: "/admin/mentors", label: "Mentor approvals" },
   { href: "/admin/payments", label: "Payments" },
   { href: "/admin/moderation", label: "Moderation" },

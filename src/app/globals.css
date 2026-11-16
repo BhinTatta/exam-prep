@@ -193,3 +193,11 @@
     letter-spacing: -0.015em;
   }
 }
+
+/* react-katex renders with its own older copy of KaTeX, while the stylesheet
+   we load is the current one. The old renderer wraps \vec arrows in a
+   `.overlay` span that the current stylesheet no longer styles, so without
+   this the arrow drops below the letter. */
+.katex .overlay {
+  display: block;
+}
