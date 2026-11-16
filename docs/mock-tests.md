@@ -34,11 +34,21 @@ npm run mock:import -- content/mock-tests/jam-physics-2025.json
 #    (or pass --publish to step 2)
 ```
 
-The script uses `DATABASE_URL` from `.env`. To load into production, export the
-production `DATABASE_URL` and `DIRECT_URL` for that one command. Alternatively
-skip the script: `/admin/mock-tests` → **Import paper** takes the same JSON
-pasted or as a file. Diagrams still have to be deployed with the site (or be
-full `https://` URLs).
+**Production imports itself.** Every production deploy runs the importer over
+`content/mock-tests/*.json` right after migrations (`scripts/build.mjs`), so
+merging a paper file to the default branch is what puts it on the live site.
+Whether it is visible to students is the file's `"published"` field:
+
+- `"published": true` — live as soon as the deploy finishes.
+- left out — arrives as a draft; flip the switch at `/admin/mock-tests` when
+  it has been proof-read. A later deploy leaves that switch alone.
+- Note the flip side: a file that says `"published": true` re-publishes on
+  every deploy, so to take such a paper down, change the file as well.
+
+The `npm run mock:import` commands above are for your local database (they
+read `DATABASE_URL` from `.env`). `/admin/mock-tests` → **Import paper** also
+takes the same JSON pasted or as a file. A paper that exists only in the
+database has no backup and no history, so commit the file as well.
 
 **Editing a paper = edit the file and import it again.** The slug identifies the
 paper and the question number identifies the question, so a re-import updates

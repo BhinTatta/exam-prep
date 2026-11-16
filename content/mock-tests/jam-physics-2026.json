@@ -1,0 +1,867 @@
+{
+  "slug": "jam-physics-2026",
+  "title": "JAM Physics 2026",
+  "exam": "IIT JAM",
+  "subject": "physics",
+  "year": 2026,
+  "description": "The official JAM 2026 Physics (PH) paper, conducted by IIT Bombay on 15 February 2026 — all 60 questions, scored against the official master answer key.",
+  "durationMinutes": 180,
+  "calculator": true,
+  "published": true,
+  "sections": [
+    {
+      "name": "Section A",
+      "instructions": "Multiple Choice Questions (MCQ). Q.1 – Q.10 carry ONE mark each and Q.11 – Q.30 carry TWO marks each. Each question has four options, of which only one is correct. For a wrong answer, 1/3 mark is deducted on a one-mark question and 2/3 mark on a two-mark question.",
+      "questions": [
+        {
+          "number": 1,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "Light of wavelength $632\\ \\text{nm}$ is passing through an optically active medium of thickness $20\\ \\text{cm}$. The optical rotation exhibited by the medium is $18^\\circ$.\nWhich of the following options correctly states the magnitude of the difference in refractive indices corresponding to the left and the right circularly polarized light?",
+          "options": [
+            "$1.81 \\times 10^{-5}$",
+            "$3.16 \\times 10^{-7}$",
+            "$3.62 \\times 10^{-5}$",
+            "$6.32 \\times 10^{-7}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 2,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Consider an $n$-type silicon in which the fully ionized dopant concentration is $10^{17}\\ \\text{cm}^{-3}$. The intrinsic electron density is $1.5 \\times 10^{10}\\ \\text{cm}^{-3}$. Which of the following options correctly states the equilibrium hole concentration in $\\text{cm}^{-3}$?",
+          "options": [
+            "$2.25 \\times 10^{3}$",
+            "$1.55 \\times 10^{3}$",
+            "$3.01 \\times 10^{3}$",
+            "$4.52 \\times 10^{3}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 3,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "Consider the superposition of two electromagnetic waves with their electric field vectors given by $\\vec{E}_1(z,t) = \\hat{i} A_1 \\cos(kz - \\omega t)$ and $\\vec{E}_2(z,t) = \\hat{j} A_2 \\sin(kz - \\omega t + \\phi)$, where $A_1$ and $A_2$ are the amplitudes, $k$ is the wavenumber, $\\omega$ is the angular frequency, and $\\phi$ is the relative phase. Which of the following options represents a resultant elliptically polarized wave with its semi-major axis either along $\\hat{i}$ or $\\hat{j}$?",
+          "options": [
+            "$\\phi = 0$ and $A_1 \\neq A_2$",
+            "$\\phi = \\dfrac{\\pi}{2}$ and $A_1 = A_2$",
+            "$\\phi = \\dfrac{\\pi}{2}$ and $A_1 \\neq A_2$",
+            "$\\phi = 0$ and $A_1 = A_2$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Which of the following options represents the simplified form of the Boolean equation $Y = \\bar{A}\\bar{B}\\bar{C} + \\bar{A}B\\bar{C} + A\\bar{B}\\bar{C} + AB\\bar{C}$ ?",
+          "options": [
+            "$A\\bar{B}$",
+            "$\\bar{A}B\\bar{C}$",
+            "$\\bar{B}C$",
+            "$\\bar{C}$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 5,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "A quantum particle is confined in a one-dimensional space of $0 \\le x \\le 2$. Consider a normalized wavefunction of the particle as\n$$\\psi(x) = \\sqrt{p/5}\\,\\left[1 + \\cos(\\pi x/2)\\right] \\sin(\\pi x/2).$$\nWhich of the following options gives the correct value of $p$?",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "1"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 6,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "Consider the normalized superposed state $\\psi = c_0\\phi_0 + c_1\\phi_1$, where $\\phi_0$ and $\\phi_1$ are the ground and first excited states of a simple harmonic oscillator, respectively. $c_0$ and $c_1$ are imaginary superposition coefficients. Which of the following options is correct for the expectation value of $(\\langle x \\rangle + i\\,\\langle p \\rangle)$?",
+          "options": [
+            "Imaginary",
+            "Real",
+            "Zero",
+            "Complex with non-zero real and imaginary parts"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 7,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "The potential of a quantum harmonic oscillator is modified from $\\frac{1}{2}kx^2$ to $\\frac{1}{2}kx^2 + 3ax$, where $k$ and $a$ are constants and $x$ is the position variable. When, the values of $a = 2$ and $k = 1$, which of the following options gives the change in the ground state energy?\n\n($a$ and $k$ are in appropriate units)",
+          "options": [
+            "$-3$",
+            "$-6$",
+            "$-12$",
+            "$-18$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 8,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider the following linear second order differential equation\n$$\\frac{d^2y}{dt^2} + \\omega^2 y = 0,$$\nwhere $\\omega$ is a positive constant. The boundary conditions are $\\left.\\dfrac{dy}{dt}\\right|_{t=0} = 1$, and $y(t=0) = \\dfrac{1}{2}$.\n\nWhich of the following options gives the value of $y\\left(t = \\dfrac{\\pi}{2\\omega}\\right)$?",
+          "options": [
+            "$\\dfrac{1}{\\omega}$",
+            "$\\dfrac{2\\pi}{\\omega}$",
+            "0",
+            "1"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider the electrostatic potential in two dimensions $V(x,y) = x^8 y^9$. What is the line integral of the corresponding electric field along the path shown in the figure?",
+          "image": "q9.png",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "$\\dfrac{1}{2}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 10,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider the matrix\n$$A = \\begin{pmatrix} 0 & 1 & 1 \\\\ 0 & 0 & 1 \\\\ 1 & 0 & 0 \\end{pmatrix}.$$\nThe value of $\\det(A^{-1})$ is:",
+          "options": [
+            "4",
+            "1",
+            "$\\dfrac{1}{4}$",
+            "0"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 11,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Consider the circuit of the figure, the voltage $V_C$, in Volts, is:",
+          "image": "q11.png",
+          "options": [
+            "0",
+            "1.25",
+            "9.8",
+            "10"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 12,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle of mass $m$ moves in a potential given by\n$$V(x,y,z) = -k\\,\\frac{y}{(x^2 + y^2 + z^2)},$$\nwhere $k$ is a constant.\n\nWhich of the following statements is correct?",
+          "options": [
+            "The force corresponding to the potential is central",
+            "Angular momentum of the system is not conserved",
+            "Linear momentum along the $y$-direction is conserved",
+            "Energy of the system is not conserved"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 13,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "$(\\vec{E}, \\vec{B})$ are the electric and magnetic fields in a rest frame. $(\\vec{E}', \\vec{B}')$ represent the corresponding quantities in a reference frame moving with a constant velocity $\\vec{v}_0$. Using the invariance of Lorentz force $\\vec{F} = q\\,\\vec{E} + q\\,\\vec{v} \\times \\vec{B}$ under Galilean transformations, identify the correct relation.",
+          "options": [
+            "$\\vec{E}' = \\vec{E}$ and $\\vec{B}' = \\vec{B}$",
+            "$\\vec{E}' = \\vec{E} + \\vec{v}_0 \\times \\vec{B}$ and $\\vec{B}' = \\vec{B}$",
+            "$\\vec{E}' = \\vec{E}$ and $\\vec{v} \\times \\vec{B}' = (\\vec{v} + \\vec{v}_0) \\times \\vec{B}$",
+            "$\\vec{E}' = \\vec{v}_0 \\times \\vec{B}$ and $\\vec{v} \\times \\vec{B}' = \\vec{E} + \\vec{v} \\times \\vec{B}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 14,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "Which ONE of the following figures correctly represents the probability density, $P(x)$, of a particle undergoing simple harmonic oscillation as a function of position $x$?\nThe dashed line is for the classical case. The solid line is for the quantum case, where the system is in its ground state. The dotted vertical lines on the $x$ axis denote the classical turning points.",
+          "options": [
+            {
+              "label": "",
+              "image": "q14-a.png"
+            },
+            {
+              "label": "",
+              "image": "q14-b.png"
+            },
+            {
+              "label": "",
+              "image": "q14-c.png"
+            },
+            {
+              "label": "",
+              "image": "q14-d.png"
+            }
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 15,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "An observer $\\bar{O}(\\bar{t}, \\bar{x})$ moves with a constant velocity in the positive $x$-direction relative to an observer $O(t, x)$ at rest. In the frame of reference of $\\bar{O}(\\bar{t}, \\bar{x})$, a light-ray emitted at a point P at some time reaches the $\\bar{x}$-axis at the point Q. Then, on reflection it arrives at point R, as shown in the figure.\n\nWhich of the following options represents these events as observed by $O(t, x)$?",
+          "image": "q15.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q15-a.png"
+            },
+            {
+              "label": "",
+              "image": "q15-b.png"
+            },
+            {
+              "label": "",
+              "image": "q15-c.png"
+            },
+            {
+              "label": "",
+              "image": "q15-d.png"
+            }
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 16,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Consider a multilayered structure composed of thin films of refractive indices $n_o$, $n_1$, and $n_2$ as shown in the figure. A ray traveling in the first layer hits the interface at an angle of $20^\\circ$ with the horizontal. Which of the following options is correct?",
+          "image": "q16.png",
+          "options": [
+            "The ray emerges at an angle of $20^\\circ$ with the horizontal in the 4th layer",
+            "The ray emerges at an angle of $56^\\circ$ with the horizontal in the 4th layer",
+            "The ray would not enter the 3rd layer",
+            "The ray emerges at an angle of $44^\\circ$ with the horizontal in the 4th layer"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 17,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Consider a BCC lattice with one atom per lattice point.\n\nThe maximum packing fraction is close to:",
+          "options": [
+            "53 %",
+            "68 %",
+            "74 %",
+            "81 %"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 18,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The output voltage $V_0$ for the circuit shown in the figure is:",
+          "image": "q18.png",
+          "options": [
+            "$(V_1 - V_2)$",
+            "$(V_1 - 2V_2)$",
+            "$(V_2 - V_1)$",
+            "$2(V_1 - V_2)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 19,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "A quantum particle of mass $10^{-20}\\ \\text{kg}$ is confined within a length of $1\\ \\text{nm}$ in one-dimension. The minimum uncertainty in the measurement of velocity of the particle, in units of $\\mu\\text{m/s}$, rounded off to the nearest integer is:\n\n[Assume the minimum uncertainty product $\\Delta x\\,\\Delta p_x \\approx \\dfrac{\\hbar}{2}$, use Planck's constant $h = 6.64 \\times 10^{-34}\\ \\text{J s}$]",
+          "options": [
+            "2",
+            "5",
+            "10",
+            "1"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 20,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A thin ring of mass $m$ and radius $R$ has a total charge $Q$ distributed uniformly. The ring is rotating with a constant angular velocity $\\omega$ about an axis passing through its center and perpendicular to its plane.\n\nWhich of the following options is correct?",
+          "options": [
+            "The magnetic moment of the ring is $\\dfrac{Q\\omega R^2}{4}$",
+            "The ratio of the magnetic moment to angular momentum is $\\dfrac{Q}{2m}$",
+            "The magnetic moment of the ring is $\\dfrac{Q\\omega R^2}{6}$",
+            "The ratio of the magnetic moment to angular momentum is $\\dfrac{Q}{m}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 21,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "A mass attached to the bottom end of a vertical massless spring stretches the spring by $\\Delta x$. The system executes oscillation with a time period $T = 0.2\\ \\text{s}$. The value of $\\Delta x$, in cm, rounded off to the nearest integer is:\n\n[Assume the acceleration due to gravity $g = 9.8\\ \\text{m/s}^2$]",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "1"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 22,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle is rotating along a circular path with uniform speed $v$, as shown in the figure. While moving from the point $P$ to $Q$ subtending an angle $\\theta$, the magnitude of the change in its velocity is:",
+          "image": "q22.png",
+          "options": [
+            "Zero",
+            "$v\\cos\\theta$",
+            "$2v\\sin\\dfrac{\\theta}{2}$",
+            "$v\\cos\\dfrac{\\theta}{2}$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 23,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A series LCR circuit contains $L = 175\\ \\text{mH}$, $C = 62.5\\ \\mu\\text{F}$, and $R = 40\\ \\Omega$ and is connected to a source of voltage amplitude $E_0 = 50\\ \\text{V}$ and angular frequency $\\omega = 400\\ \\text{rad/s}$.\n\nWhich of the following statements is correct?",
+          "options": [
+            "The magnitude of the maximum voltage across the inductor is less than $50\\ \\text{V}$",
+            "The magnitude of the maximum voltage across the capacitor is more than $60\\ \\text{V}$",
+            "The magnitude of the maximum voltage across the resistor is $50\\ \\text{V}$",
+            "The magnitude of the maximum voltage across the capacitor equals the maximum voltage across the resistor"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 24,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "A piecewise regular function $f(x)$ is shown in the figure. It is expanded in Fourier series given by\n$$f(x) = \\frac{a_0}{2} + \\sum_{n=1}^{\\infty} a_n \\cos(nx) + \\sum_{n=1}^{\\infty} b_n \\sin(nx),$$\nwhere $a_0$, $a_n$, $b_n$'s are the Fourier coefficients.\n\nWhich of the following options is correct?",
+          "image": "q24.png",
+          "options": [
+            "$a_0 = 3\\pi$",
+            "All $a_n$ are zero",
+            "All $b_n$ are zero",
+            "$a_0 = \\dfrac{3\\pi}{2}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 25,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Using Taylor series, expand $f(x) = x^3 - \\dfrac{1}{8}$ around $x_0 = 1$ up to second order in $x$. The coefficient of $x$ is:",
+          "options": [
+            "$-2$",
+            "3",
+            "2",
+            "$-3$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 26,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider a $2 \\times 2$ matrix $A$. The determinant of $A$ is $-1$ and the $\\text{trace}(A) = 1$. Which of the following options gives the eigenvalues of $A$?",
+          "options": [
+            "$1,\\ 0$",
+            "$\\dfrac{1+\\sqrt{5}}{2},\\ \\dfrac{1-\\sqrt{5}}{2}$",
+            "$\\dfrac{1+\\sqrt{5}}{4},\\ \\dfrac{1-\\sqrt{5}}{4}$",
+            "$\\dfrac{\\sqrt{5}}{2},\\ 1 - \\dfrac{\\sqrt{5}}{2}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 27,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider the following vector $\\vec{V} = x\\,y\\,z\\,\\hat{k}$.\n\nWhich of the following statements is correct for the resultant vector $\\vec{\\nabla} \\times \\vec{\\nabla} \\times \\vec{V}$?",
+          "options": [
+            "It lies in $xy$ – plane",
+            "It lies in $yz$ – plane",
+            "It lies in $xz$ – plane",
+            "It is along the $x$ direction"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Two coherent plane waves having wavelength $\\lambda$ and wavevectors\n$$\\vec{k}_1 = \\frac{2\\pi}{\\lambda}\\left(\\frac{1}{2}\\hat{i} - \\frac{\\sqrt{3}}{2}\\hat{j}\\right) \\quad \\text{and} \\quad \\vec{k}_2 = \\frac{2\\pi}{\\lambda}\\left(-\\frac{1}{2}\\hat{i} - \\frac{\\sqrt{3}}{2}\\hat{j}\\right),$$\nare incident on a screen placed on the $xz$ – plane. The overlap of the waves on the plane of the screen produces interference fringes.\n\nThe fringe width (center-to-center spacing of bright fringes) will be:",
+          "options": [
+            "$\\dfrac{\\lambda}{2}$",
+            "$2\\lambda$",
+            "$\\dfrac{\\sqrt{3}\\lambda}{2}$",
+            "$\\lambda$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 29,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider a Carnot cycle as shown in the figure. The ideal gas expanded from volume $V_1$ to $V_2$ along the path AB. During this process, the temperature $T_1$ is constant and the entropy changes from $S_1$ to $S_2$. $T_2$ is the temperature of the cold bath.\n\nWhich of the following statements is correct?",
+          "image": "q29.png",
+          "options": [
+            "Work done along the path AB is $W_{AB} = -N R T_1 \\ln\\dfrac{V_2}{V_1}$",
+            "Work done along the path BC is $W_{BC} = 0$",
+            "Work done along the path CD is $W_{CD} = -N R T_1 \\ln\\dfrac{V_2}{V_1}$",
+            "Work done along the path DA is $W_{DA} = 0$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 30,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "The speed of an object of mass $20\\ \\text{kg}$ increases from $2\\ \\text{m/s}$ to $6\\ \\text{m/s}$ in $10\\ \\text{s}$.\n\nThe power required, in Watts, is:",
+          "options": [
+            "64",
+            "54",
+            "32",
+            "72"
+          ],
+          "answer": "C"
+        }
+      ]
+    },
+    {
+      "name": "Section B",
+      "instructions": "Multiple Select Questions (MSQ). Q.31 – Q.40 carry TWO marks each. One or more options are correct. Marks are awarded only if all the correct options and no wrong option are selected. There is no negative marking and no partial marking.",
+      "questions": [
+        {
+          "number": 31,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "The displacement of a vibrating string of finite length stretched along the $x$-axis is given by\n$$y(x,t) = 2A\\cos(kx)\\sin(\\omega t)$$\nwhere, $A$ is the amplitude, $k = 2\\pi/\\lambda$ is the wavenumber and $\\omega$ is the angular frequency.\n\nWhich of the following statements is/are correct for the standing wave?",
+          "options": [
+            "The nodes are at $x = n\\dfrac{\\lambda}{2}$, where $n$ is an integer",
+            "The antinodes are at $x = \\left(n + \\dfrac{1}{2}\\right)\\dfrac{\\lambda}{2}$, where $n$ is an integer",
+            "The nodes are at $x = \\left(n + \\dfrac{1}{2}\\right)\\dfrac{\\lambda}{2}$, where $n$ is an integer",
+            "The antinodes are at $x = n\\dfrac{\\lambda}{2}$, where $n$ is an integer"
+          ],
+          "answer": [
+            "C",
+            "D"
+          ]
+        },
+        {
+          "number": 32,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In the circuit shown in the figure, the Zener voltage $V_z$ is $20\\ \\text{V}$ and the maximum Zener current $I_{ZM}$ is $60\\ \\text{mA}$.\n\nFor what value(s) of the input voltage $V_i$, the Zener diode is in ON state?",
+          "image": "q32.png",
+          "options": [
+            "20 V",
+            "25 V",
+            "35 V",
+            "40 V"
+          ],
+          "answer": [
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 33,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Consider a particle of mass $m$ in a rotating frame. The force acting on the particle is expressed as $\\vec{F} = (F_1 + F_2)\\,\\hat{e}_r + (F_3 + F_4)\\,\\hat{e}_\\theta$, where $\\hat{e}_r$ and $\\hat{e}_\\theta$ are the radial and angular unit vectors, respectively, and $F_1 = m\\ddot{r}$, $F_2 = -mr\\dot{\\theta}^2$, $F_3 = mr\\ddot{\\theta}$, $F_4 = 2m\\dot{r}\\dot{\\theta}$.\n\nWhich of the following statements is/are correct?",
+          "options": [
+            "$\\hat{e}_r$ and $\\hat{e}_\\theta$ are not constant unit vectors",
+            "$F_1$ and $F_3$ are fictitious forces",
+            "$F_2$ and $F_4$ are fictitious forces",
+            "$F_1$ and $F_2$ are zero in uniform circular motion"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 34,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "The events are represented by coordinates $(ct, x, y, z)$ in some frame of reference. Which of the following statements is/are correct?\n\n[$c$ is the speed of light]",
+          "options": [
+            "Events $(1, 0, -10, 1)$ and $(-1, 1, -9, 1)$ are space-like separated",
+            "Events $(-1, 0, -9, 1)$ and $(1, 1, -10, 1)$ are space-like separated",
+            "Events $(-10, 0, 1, -1)$ and $(-9, 1, -1, -1)$ are light-like separated",
+            "Events $(9, -1, 1, -1)$ and $(-10, 1, 0, -1)$ are time-like separated"
+          ],
+          "answer": [
+            "D"
+          ]
+        },
+        {
+          "number": 35,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A ball of mass $m$ climbs the potential $U(x) = -\\frac{1}{2}kx^2$, as shown in the figure. Assuming that the total energy of the system $E = \\frac{1}{2}mv^2 + U(x)$ is conserved, which of the following correctly describe(s) the plot of velocity ($v$) as a function of position ($x$) of the system for $E < 0$?",
+          "image": "q35.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q35-a.png"
+            },
+            {
+              "label": "",
+              "image": "q35-b.png"
+            },
+            {
+              "label": "",
+              "image": "q35-c.png"
+            },
+            {
+              "label": "",
+              "image": "q35-d.png"
+            }
+          ],
+          "answer": [
+            "D"
+          ]
+        },
+        {
+          "number": 36,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "An LC oscillator circuit contains a capacitor of $4.0\\ \\mu\\text{F}$. The maximum potential difference across the capacitor is $2\\ \\text{V}$ and the maximum current through the inductor is $80\\ \\text{mA}$.\n\nWhich of the following statements is/are correct?",
+          "options": [
+            "The value of inductance is $2.5\\ \\text{mH}$",
+            "The frequency of oscillator is $3.2\\ \\text{kHz}$",
+            "The time for the charge in the capacitor to rise from zero to the maximum is nearly $0.157\\ \\text{ms}$",
+            "The maximum potential difference across the inductor is $2.0\\ \\text{V}$"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "D"
+          ]
+        },
+        {
+          "number": 37,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider an ideal gas of entropy $S$, molar specific heat $C_v$, pressure $P$ and volume $V$.\n\nWhich of the following options is/are true?",
+          "options": [
+            "Internal energy of the gas depends only on the temperature",
+            "$S \\propto \\ln V$, assuming $C_v$ is constant",
+            "$S = 0$",
+            "Internal energy of the gas depends both on temperature and pressure"
+          ],
+          "answer": [
+            "A"
+          ]
+        },
+        {
+          "number": 38,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Two small circular copper loops $P$ and $Q$ of radii $R_1$ and $R_2$, respectively, are coaxially placed along the $x$-axis as shown in the figure. The loops are at a distance $s$ apart, where $s \\gg R_1, R_2$. The loop $Q$ carrying a steady current $I$ is moving away along $x$-axis with a speed $v$.\n\nWhich of the following statements is/are correct?",
+          "image": "q38.png",
+          "options": [
+            "The magnetic field at the center of $P$ is $\\propto \\dfrac{1}{s^2}$",
+            "The magnetic flux through the loop $P$ is $\\propto \\dfrac{1}{s^2}$",
+            "The emf induced in the loop $P$ is $\\propto \\dfrac{1}{s^4}$",
+            "The emf induced in the loop $P$ is $\\propto v^2$"
+          ],
+          "answer": [
+            "C"
+          ]
+        },
+        {
+          "number": 39,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A charge $Q$ is distributed uniformly on the surface of a sphere of radius $R$. It is placed inside a concentric conducting hollow sphere of radius $2R$. The outer sphere is earthed.\n\nWhich of the following statements is/are correct?",
+          "options": [
+            "The charge on the inner surface of the outer sphere is $-Q$",
+            "The flux through a closed surface through the material of the outer sphere is $\\dfrac{Q}{\\epsilon_0}$",
+            "The charge on the outer surface of the outer sphere is zero",
+            "The potential at a radial distance $r$ between the two spheres, $R < r < 2R$, is $\\dfrac{1}{4\\pi\\epsilon_0}\\,\\dfrac{Q}{r}$"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 40,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Which of the following statements is/are true for a first order phase transition?\n\n[$C_p$ is the molar heat capacity, $T_c$ is the critical temperature and $S$ is the entropy]",
+          "options": [
+            "At the transition point $C_p \\to \\infty$",
+            "The derivative of the Gibbs function with respect to pressure changes continuously across the phase transition",
+            "The two thermodynamic states between which the transition takes place are distinct",
+            "Entropy changes discontinuously with temperature at $T_c$"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "D"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Section C",
+      "instructions": "Numerical Answer Type (NAT) questions. Q.41 – Q.50 carry ONE mark each and Q.51 – Q.60 carry TWO marks each. Enter the answer as a number using the keypad; no options are shown. There is no negative marking.",
+      "questions": [
+        {
+          "number": 41,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "Considering the diameter of the pupil of a human eye to be $2\\ \\text{mm}$, the angular resolution of the eye at a wavelength of $500\\ \\text{nm}$, in minute of arc, is ________.\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 1.01,
+            "max": 1.11
+          }
+        },
+        {
+          "number": 42,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider a $10\\ \\text{mW}$ laser beam focused using a biconvex lens to a circular spot of area $10^{-10}\\ \\text{m}^2$. The magnitude of the electric field in the focal plane of the lens, in $\\text{kV/m}$, is ________. (Rounded off to one decimal place)\n\n[Use permittivity of free space $\\epsilon_o = 8.854 \\times 10^{-12}\\ \\text{C}^2/(\\text{N m}^2)$, and speed of light $c = 3 \\times 10^{8}\\ \\text{m/s}$]",
+          "answer": {
+            "min": 273.0,
+            "max": 276.0
+          }
+        },
+        {
+          "number": 43,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "An OP-AMP has differential gain of $A_d = 4000$, two input voltages $V_{i1} = 120\\ \\mu\\text{V}$ and $V_{i2} = 80\\ \\mu\\text{V}$, and CMRR $= 100$. The output voltage, in mV, is ________.\n\n(Answer in integer)",
+          "answer": {
+            "min": 160,
+            "max": 170
+          }
+        },
+        {
+          "number": 44,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "A particle of mass $10^{-20}\\ \\text{kg}$ is moving along a circular orbit of radius $1\\ \\text{nm}$. The speed of the particle corresponds to the average thermal energy at temperature $10^{-6}\\ \\text{K}$. Assuming the Bohr's angular momentum quantization condition, the quantum number of the circular path of the particle is ________.\n\n(Answer in integer)\n\n[Use $h = 6.64 \\times 10^{-34}\\ \\text{J s}$ and $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$]",
+          "answer": 6
+        },
+        {
+          "number": 45,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "One mole of an ideal gas undergoes a reversible isothermal expansion from $V_i = 1.5 \\times 10^{-5}\\ \\text{m}^3$ to $V_f = 1.6 \\times 10^{-5}\\ \\text{m}^3$ at a temperature $273\\ \\text{K}$. The amount of heat transfer during the process is $\\alpha R$, where $R$ is the gas constant. The value of $\\alpha$ is ________.\n\n(Rounded off to one decimal place)",
+          "answer": {
+            "min": 16.5,
+            "max": 18.5
+          }
+        },
+        {
+          "number": 46,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "The value of $\\left(1 - i\\sqrt{3}\\right)^3$ is ________.\n\n(Answer in integer)",
+          "answer": -8
+        },
+        {
+          "number": 47,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Two thermodynamic systems separated by diathermic wall have the equations of state $U_1 = \\frac{3}{2} R N_1 T_1$ and $U_2 = \\frac{5}{2} R N_2 T_2$, where $R$ is the gas constant. $N_1, N_2$ and $T_1, T_2$ are the mole numbers and the temperature of the two systems, respectively. The composite system in equilibrium has the total energy $1.5 \\times 10^{3}$ Joule. If $N_1 = 3$ and $N_2 = 2$, then the internal energy $U_1$ of the system one is ________.\n\n(Answer in integer)",
+          "answer": {
+            "min": 709,
+            "max": 712
+          }
+        },
+        {
+          "number": 48,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "Light of wavelength $500\\ \\text{nm}$ is incident on the surface of Na metal for photoelectric emission. The corresponding threshold wavelength is $600\\ \\text{nm}$. The maximum kinetic energy of the emitted electron, in eV, is ________.\n\n(Rounded off to two decimal places)\n\n[Use Planck's constant $h = 6.625 \\times 10^{-34}\\ \\text{J s}$, speed of light $c = 3 \\times 10^{8}\\ \\text{m/s}$, charge of electron $e = 1.6 \\times 10^{-19}\\ \\text{C}$]",
+          "answer": {
+            "min": 0.38,
+            "max": 0.44
+          }
+        },
+        {
+          "number": 49,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The first order Bragg peak for (100) plane of a material with simple cubic structure is measured using an X-ray of wavelength $1\\ \\text{Å}$. If the lattice constant is $5\\ \\text{Å}$ then the Bragg peak is observed at an angle, in degrees, ________.\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 5.55,
+            "max": 5.95
+          }
+        },
+        {
+          "number": 50,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider an ensemble of hydrogen gas. The temperature, in K, at which the rms speed of the hydrogen molecule is twice the rms speed of the molecule at $300\\ \\text{K}$ is ________.\n\n(Answer in integer)",
+          "answer": 1200
+        },
+        {
+          "number": 51,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle of mass $m$ undergoes periodic motion in one-dimension with its total energy given as $E = \\frac{1}{2}m\\dot{x}^2 + \\frac{1}{4}kx^4$, where $k$ is a positive constant and $\\dot{x} = \\dfrac{dx}{dt}$. Assuming that $E$ is conserved, the time period $T$ has the relation $T \\propto E^{-1/n}$. The value of $n$ is ________.\n\n(Answer in integer)",
+          "answer": 4
+        },
+        {
+          "number": 52,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A spacecraft is placed $200\\ \\text{km}$ above Earth in a circular orbit. The minimum change in the speed required to place the spacecraft in a parabolic orbit, in $\\text{km/s}$, is ________.\n\n(Rounded off to one decimal place)\n\n[Use $G = 6.67 \\times 10^{-11}\\ \\text{N m}^2/\\text{kg}^2$, mass of Earth $= 6 \\times 10^{24}\\ \\text{kg}$, radius of Earth $= 6400\\ \\text{km}$]",
+          "answer": {
+            "min": 3.0,
+            "max": 3.5
+          }
+        },
+        {
+          "number": 53,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Consider a light source having a spectral linewidth of $10^{10}\\ \\text{Hz}$, used in a Michelson interferometer. The mirrors $M_1$ and $M_2$ are equidistant from the beam-splitter of negligible thickness as shown in the figure. The minimum distance $d_2$ that the mirror $M_1$ is to be moved for the interference pattern to completely disappear, in cm, is ________.\n\n(Rounded off to one decimal place)\n\n[Use speed of light to be $3 \\times 10^{8}\\ \\text{m/s}$]",
+          "image": "q53.png",
+          "answer": 1.5
+        },
+        {
+          "number": 54,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "Muons are unstable relativistic particles created at high altitudes above the Earth, having a lifetime of $2.2 \\times 10^{-6}\\ \\text{s}$ in their rest frame. As measured by an observer on the ground, the minimum velocity the muon requires to travel a distance of $6000\\ \\text{m}$ is $v$. The value of $v/c$ is ________.\n\n(Rounded off to three decimal places)\n\n[Speed of light $c = 3 \\times 10^{8}\\ \\text{m/s}$]",
+          "answer": {
+            "min": 0.992,
+            "max": 0.997
+          }
+        },
+        {
+          "number": 55,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "On the surface of a thin water film of refractive index $1.33$, two light beams of wavelength $\\lambda_1 = 0.64\\ \\mu\\text{m}$ and $\\lambda_2 = 0.40\\ \\mu\\text{m}$ are incident at an angle of $30^\\circ$. The light of wavelength $\\lambda_1$ exhibits maximum reflection, but that of wavelength $\\lambda_2$ is not reflected at all. The minimum thickness of the water film, in $\\mu\\text{m}$, is ________.\n\n(Rounded off to two decimal places)\n[Assume refractive index is independent of wavelength]",
+          "answer": {
+            "min": 0.61,
+            "max": 0.71
+          }
+        },
+        {
+          "number": 56,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "An electron is confined in a one-dimensional box of width $L = 10\\ \\text{Å}$. The electron in the first excited state de-excites to the ground state. The wavelength of the emitted radiation, in $\\mu\\text{m}$, is ________.\n\n(Rounded off to one decimal place)\n\n[Use the mass of the electron $m_e = 9.1 \\times 10^{-31}\\ \\text{kg}$, Planck's constant $h = 6.625 \\times 10^{-34}\\ \\text{J s}$, $c = 3 \\times 10^{8}\\ \\text{m/s}$]",
+          "answer": {
+            "min": 0.9,
+            "max": 1.3
+          }
+        },
+        {
+          "number": 57,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "An electron is accelerated through a potential of $200\\ \\text{V}$ and then it passes through a slit of width $1.0\\ \\text{nm}$ held normal to the path of the electron. Assuming the uncertainty relation $\\Delta x\\,\\Delta p_x \\approx \\hbar/2$, maximum scattering angle of the electron after the slit is $\\alpha \\times 10^{-3}$ radian.\n\nThe value of $\\alpha$ is ________.\n\n(Rounded off to nearest integer)\n\nGiven $\\hbar = 1.054 \\times 10^{-34}\\ \\text{J s}$",
+          "answer": {
+            "min": 6.6,
+            "max": 7.4
+          }
+        },
+        {
+          "number": 58,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A uniform electric field of $70\\ \\text{V/m}$ makes an angle of $60^\\circ$ with the positive $x$-axis, as shown in the figure. The potential difference between the points $P$ and $Q$ which are $2\\ \\text{m}$ and $\\sqrt{3}\\ \\text{m}$ away from the origin, in Volts, is ________.\n\n(Rounded off to one decimal place)",
+          "image": "q58.png",
+          "answer": {
+            "min": 34.5,
+            "max": 35.5
+          }
+        },
+        {
+          "number": 59,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Consider a simple pendulum of length $l$ and time period $T$. In a laboratory experiment, the time for $100$ oscillations is measured to be $80\\ \\text{s}$ using a stop-watch with least count $1\\ \\text{s}$. The gravitational constant is known with a percentage error of $2.5\\%$.\n\nThe percentage error in the measured length of the pendulum, in $\\%$, is ________.\n\n(Answer in integer)",
+          "answer": 5
+        },
+        {
+          "number": 60,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "A particle of mass $m$ in a potential $V(x) = \\frac{1}{2}kx^2$ is described by normalized wavefunction $\\displaystyle\\sum_{n=0}^{\\infty} \\left(\\sqrt{2}\\right)^{-(n+1)} \\phi_n(x)$, where $\\{\\phi_n\\}$ are the eigenstates of the particle. The energy corresponding to the wavefunction, in units of $\\dfrac{h}{\\pi}\\sqrt{\\dfrac{k}{m}}$, is ________.\n\n(Rounded off to two decimal places)\n\n[Given: $\\displaystyle\\sum_{n=0}^{\\infty} (a)^{-n} = \\dfrac{a}{a-1},\\ a > 1$]",
+          "answer": 0.75
+        }
+      ]
+    }
+  ]
+}
