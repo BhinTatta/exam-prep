@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { Calendar, LayoutDashboard, LogOut, ShieldCheck, User } from "lucide-react";
+import { BarChart3, Calendar, LayoutDashboard, LogOut, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -68,6 +68,11 @@ export function NavUser() {
             <DropdownMenuItem asChild>
               <Link href="/profile">
                 <User className="mr-2 size-4" /> My profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard">
+                <BarChart3 className="mr-2 size-4" /> My progress
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

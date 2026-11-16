@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
+  BarChart3,
   CalendarDays,
   Compass,
   FileText,
@@ -183,6 +184,13 @@ export function MobileNav() {
                   icon={User}
                   label="My profile"
                   active={isActivePath(pathname, "/profile")}
+                  onNavigate={close}
+                />
+                <NavItem
+                  href="/dashboard"
+                  icon={BarChart3}
+                  label="My progress"
+                  active={isActivePath(pathname, "/dashboard")}
                   onNavigate={close}
                 />
                 <NavItem

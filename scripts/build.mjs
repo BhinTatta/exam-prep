@@ -18,6 +18,7 @@
 // Use `npm run db:migrate` (dev) or `npm run db:deploy` (apply) by hand.
 
 import { spawnSync } from "node:child_process";
+import { readdirSync } from "node:fs";
 
 function run(command, args) {
   const result = spawnSync(command, args, {
@@ -50,6 +51,21 @@ if (target === "production") {
   }
   console.log("Applying database migrations (production deployment)…");
   run("npx", ["prisma", "migrate", "deploy"]);
+
+  // Mock test papers live in the repository (content/mock-tests/*.json), so a
+  // paper committed there should exist on the site once that commit is live —
+  // not wait for someone to remember a manual import against production.
+  // Importing is an in-place upsert: unchanged papers are rewritten to the same
+  // values and recorded attempts are untouched. A paper that fails validation
+  // fails the deploy, same as a failed migration, rather than going live broken.
+  const papers = readdirSync("content/mock-tests")
+    .filter((file) => file.endsWith(".json"))
+    .sort()
+    .map((file) => `content/mock-tests/${file}`);
+  if (papers.length > 0) {
+    console.log(`Importing ${papers.length} mock test paper(s)…`);
+    run("npx", ["tsx", "scripts/import-mock-test.ts", ...papers]);
+  }
 } else {
   console.log(
     `Skipping migrations (VERCEL_ENV=${target ?? "unset"}) — only production deployments migrate.`
