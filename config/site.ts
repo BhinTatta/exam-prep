@@ -136,6 +136,7 @@ export type ResourceCategory = (typeof resourceCategories)[number]["slug"];
 
 export const navLinks = [
   { href: "/mock-tests", label: "Mock tests" },
+  { href: "/rank-predictor", label: "Rank predictor" },
   { href: "/mentors", label: "Mentors" },
   { href: "/resources", label: "Resources" },
   { href: "/qa", label: "Q&A" },

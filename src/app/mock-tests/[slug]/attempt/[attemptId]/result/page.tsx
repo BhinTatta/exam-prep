@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth-helpers";
 import { canViewMockAttempt, finalizeIfExpired } from "@/lib/mock-tests/attempts";
 import { formatMarks } from "@/lib/mock-tests/scoring";
 import { analyseAttempt, formatDuration, getCohortStats } from "@/lib/mock-tests/analytics";
+import { isRankable, predictRank } from "@/lib/rank-predictor/predict";
 import { parseMockOptions } from "@/lib/mock-tests/types";
 import { AnalysisBoard } from "@/components/mock-tests/analysis/analysis-board";
 import { OptionContent, QuestionPrompt } from "@/components/mock-tests/question-content";
@@ -106,6 +107,11 @@ export default async function MockResultPage({
           analysis={analysis}
           cohort={cohort}
           isOwner={isOwner}
+          rank={
+            isRankable(attempt.test, maxScore)
+              ? { prediction: predictRank(score), paperYear: attempt.test.year }
+              : null
+          }
         />
       </div>
 
@@ -261,6 +267,9 @@ function loadAttempt(attemptId: string) {
         select: {
           slug: true,
           title: true,
+          exam: true,
+          subject: true,
+          year: true,
           durationMinutes: true,
           sections: { orderBy: { order: "asc" }, select: { id: true, name: true } },
           questions: { orderBy: { number: "asc" } },

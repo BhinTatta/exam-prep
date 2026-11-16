@@ -18,6 +18,7 @@ import {
   MessagesSquare,
   ShieldCheck,
   Sparkles,
+  Trophy,
   User,
   Users,
   X,
@@ -39,6 +40,7 @@ import { cn } from "@/lib/utils";
  */
 const navLinkIcons: Record<string, LucideIcon> = {
   "/mock-tests": FileText,
+  "/rank-predictor": Trophy,
   "/mentors": Users,
   "/resources": Library,
   "/qa": MessagesSquare,

@@ -1,7 +1,11 @@
 import { formatMarks } from "@/lib/mock-tests/scoring";
 import { formatDuration, scoreShare, type AttemptAnalysis, type CohortStats, type GroupStat } from "@/lib/mock-tests/analytics";
 import { cn } from "@/lib/utils";
-import { Lightbulb } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Lightbulb } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { RankByYear, RankDisclaimer, RankHeadline } from "@/components/rank-predictor/rank-breakdown";
+import type { RankPrediction } from "@/lib/rank-predictor/predict";
 import { MeterList, OutcomeBar, Panel, StatTile } from "./primitives";
 import { QuestionTimeChart } from "./question-time-chart";
 
@@ -37,6 +41,7 @@ export function AnalysisBoard({
   analysis,
   cohort,
   isOwner,
+  rank,
 }: {
   score: number;
   maxScore: number;
@@ -48,6 +53,8 @@ export function AnalysisBoard({
   analysis: AttemptAnalysis;
   cohort: CohortStats | null;
   isOwner: boolean;
+  /** Present only for papers on the scale the rank data covers (JAM Physics, 100 marks). */
+  rank: { prediction: RankPrediction; paperYear: number | null } | null;
 }) {
   const total = correct + incorrect + unattempted;
   const attempted = correct + incorrect;
@@ -107,6 +114,26 @@ export function AnalysisBoard({
           />
         )}
       </div>
+
+      {rank && (
+        <Panel
+          title="What rank is this score?"
+          subtitle={`${formatMarks(Math.max(0, score))} marks, set against the real exam's results in each of the last five years`}
+          action={
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/rank-predictor?marks=${Math.max(0, score)}`}>
+                Try other scores <ArrowRight />
+              </Link>
+            </Button>
+          }
+        >
+          <div className="grid gap-6 md:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] md:items-center">
+            <RankHeadline prediction={rank.prediction} className="[&_.text-6xl]:text-5xl" />
+            <RankByYear prediction={rank.prediction} highlightYear={rank.paperYear} />
+          </div>
+          <RankDisclaimer />
+        </Panel>
+      )}
 
       {analysis.insights.length > 0 && (
         <Panel title="What this paper is telling you">

@@ -191,6 +191,24 @@ rule never needs a backfill.
   apart with red-green colour blindness, every chart that uses them also names
   or marks the outcome (the dot / cross / dash under each column).
 
+## Rank predictor
+
+`/rank-predictor` turns a JAM Physics score into an estimated All India Rank:
+one average across the years on file, a row per year, and which IITs that
+rank usually reaches. The same estimate appears on the analysis board, but
+only for papers on the scale the data covers (exam "IIT JAM", subject
+"physics", 100 marks) — a 21-mark demo gets no rank.
+
+All of it reads from one file, `src/lib/rank-predictor/data.ts`: the
+marks-vs-rank anchor points for each year and the closing ranks by category.
+Add a year or correct a figure there and nothing else needs to change.
+
+That data is approximate. IITs do not publish marks-to-rank tables; the
+figures are a community reconstruction supplied by the site owner, not an
+official source. Between two anchor points a rank is interpolated (on a log
+scale, since ranks fall off exponentially with marks) and then rounded, so
+the page says "≈ 160", never "AIR 163".
+
 ## Who can see an attempt
 
 The student and admins. The rule lives in one function,
