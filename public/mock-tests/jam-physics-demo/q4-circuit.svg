@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 240" width="420" height="240" font-family="Georgia, 'Times New Roman', serif" font-size="16">
+  <rect width="420" height="240" fill="#fff"/>
+  <g fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <!-- battery on the left branch -->
+    <path d="M40 40 V105 M40 135 V200"/>
+    <path d="M22 105 H58" stroke-width="2.5"/>
+    <path d="M30 115 H50" stroke-width="4"/>
+    <path d="M22 125 H58" stroke-width="2.5"/>
+    <path d="M30 135 H50" stroke-width="4"/>
+    <!-- top wire with the 4 ohm resistor -->
+    <path d="M40 40 H110 l6 -10 l12 20 l12 -20 l12 20 l12 -20 l12 20 l6 -10 H250"/>
+    <!-- junction split -->
+    <path d="M250 40 H370 V80 M250 40 V80"/>
+    <!-- 6 ohm (left of the pair) -->
+    <path d="M250 80 l-10 6 l20 12 l-20 12 l20 12 l-20 12 l20 12 l-10 6 V200"/>
+    <!-- 3 ohm (right of the pair) -->
+    <path d="M370 80 l-10 6 l20 12 l-20 12 l20 12 l-20 12 l20 12 l-10 6 V200"/>
+    <!-- bottom wire -->
+    <path d="M40 200 H370"/>
+  </g>
+  <g fill="#111">
+    <circle cx="250" cy="40" r="3.5"/>
+    <circle cx="250" cy="200" r="3.5"/>
+    <text x="68" y="126">12 V</text>
+    <text x="146" y="22">4 Ω</text>
+    <text x="205" y="126">6 Ω</text>
+    <text x="325" y="126">3 Ω</text>
+  </g>
+</svg>

@@ -99,6 +99,7 @@ model User {
   payoutsPaid        Payout[]            @relation("PayoutAdmin")
   reports            Report[]
   assessmentAttempts AssessmentAttempt[]
+  mockAttempts       MockAttempt[]
   sessionReviews     SessionReview[]     @relation("ReviewAuthor")
   reviewsHidden      SessionReview[]     @relation("ReviewModerator")
   notifications      Notification[]
@@ -688,6 +689,166 @@ model AttemptResult {
   recommendedMentorIds String[] @default([])
 
   generatedAt DateTime @default(now())
+}
+
+// ---------- Mock tests (full-length exam simulations, e.g. "IIT JAM Physics 2025") ----------
+// Separate from the diagnostic engine above on purpose. A diagnostic is a short
+// anonymous funnel with one question type and integer marks; a mock is a
+// three-hour signed-in exam with sections, three question types, fractional
+// negative marking and progress that has to survive a refresh. Sharing tables
+// would have meant every diagnostic query filtering out mock rows and vice versa.
+//
+// Papers are authored as JSON files in content/mock-tests and loaded with
+// `npm run mock:import` (or pasted into /admin/mock-tests) — see
+// docs/mock-tests.md. The database copy is what attempts reference.
+
+enum MockQuestionType {
+  MCQ // one correct option
+  MSQ // one or more correct options; full marks only for the exact set
+  NAT // numerical answer typed in; correct if inside [natMin, natMax]
+}
+
+model MockTest {
+  id              String  @id @default(cuid())
+  slug            String  @unique
+  title           String
+  exam            String // "IIT JAM" — free text so GATE/NET mocks need no schema change
+  subject         String
+  year            Int? // set for previous-year papers
+  description     String? @db.Text
+  durationMinutes Int     @default(180)
+  calculator      Boolean @default(true) // show the on-screen scientific calculator
+  published       Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sections  MockSection[]
+  questions MockQuestion[]
+  attempts  MockAttempt[]
+
+  @@index([published])
+}
+
+model MockSection {
+  id           String   @id @default(cuid())
+  testId       String
+  test         MockTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  name         String // "Section A"
+  instructions String?  @db.Text
+  order        Int
+
+  questions MockQuestion[]
+
+  @@unique([testId, order])
+}
+
+model MockQuestion {
+  id        String      @id @default(cuid())
+  testId    String
+  test      MockTest    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  sectionId String
+  section   MockSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  // Question number as printed on the paper (1..60). Also the identity used
+  // when a paper is re-imported: the row for "Q17" is updated in place, so
+  // attempts already recorded against it keep pointing at the right question.
+  number Int
+  type   MockQuestionType
+  topic  String?
+
+  prompt   String  @db.Text // plain text with $LaTeX$
+  imageUrl String? // diagram shown under the prompt
+
+  // MCQ/MSQ: [{ id: "A", label: "...", imageUrl?: "..." }, ...]. Null for NAT.
+  options          Json?
+  correctOptionIds String[] @default([])
+
+  // NAT: inclusive accepted range, as in the official answer key.
+  natMin Float?
+  natMax Float?
+
+  marks         Float
+  negativeMarks Float   @default(0) // stored positive; 1/3 for a 1-mark JAM MCQ
+  explanation   String? @db.Text // optional worked solution shown after submission
+
+  responses MockResponse[]
+
+  @@unique([testId, number])
+  @@index([sectionId])
+}
+
+enum MockAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+}
+
+model MockAttempt {
+  id     String   @id @default(cuid())
+  testId String
+  test   MockTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  // Required, unlike a diagnostic attempt: mocks are for signed-in students,
+  // which is what lets a mentor later look at a specific person's paper.
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status    MockAttemptStatus @default(IN_PROGRESS)
+  startedAt DateTime          @default(now())
+  // startedAt + duration, fixed at creation. The server's clock is the only
+  // one that counts — the browser countdown is a display of this.
+  deadlineAt  DateTime
+  submittedAt DateTime?
+  // True when the clock ran out rather than the student pressing Submit.
+  autoSubmitted Boolean @default(false)
+
+  // Filled at submission. Null while in progress.
+  score            Float?
+  maxScore         Float?
+  correctCount     Int?
+  incorrectCount   Int?
+  unattemptedCount Int?
+  // MockSectionStat[] — see src/lib/mock-tests/types.ts
+  sectionBreakdown Json?
+
+  responses MockResponse[]
+
+  @@index([testId, status])
+  @@index([userId, testId])
+}
+
+// The palette state, exactly as the exam shows it. ANSWERED_MARKED counts for
+// evaluation, same as the real JAM interface.
+enum MockResponseStatus {
+  NOT_VISITED
+  NOT_ANSWERED
+  ANSWERED
+  MARKED
+  ANSWERED_MARKED
+}
+
+model MockResponse {
+  id         String       @id @default(cuid())
+  attemptId  String
+  attempt    MockAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  question   MockQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  selectedOptionIds String[] @default([])
+  // Kept as typed ("0.50", "-3") so a mentor sees what the student entered,
+  // not a float's idea of it.
+  numericAnswer String?
+
+  status           MockResponseStatus @default(NOT_VISITED)
+  timeSpentSeconds Int                @default(0)
+
+  // Filled at submission.
+  isCorrect    Boolean?
+  marksAwarded Float?
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([attemptId, questionId])
 }
 
 // ---------- Notifications ----------
