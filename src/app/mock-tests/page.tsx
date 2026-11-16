@@ -4,8 +4,9 @@ import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatMarks } from "@/lib/mock-tests/scoring";
-import { ArrowRight, Clock, FileText, ListChecks, Trophy } from "lucide-react";
+import { ArrowRight, BarChart3, Clock, FileText, ListChecks, Trophy } from "lucide-react";
 
 export const metadata = {
   title: "Free Mock Tests",
@@ -26,6 +27,13 @@ export default async function MockTestsPage() {
       <PageHeader
         title="Free mock tests"
         description="Full papers in the real exam interface — same sections, same marking, same clock. Sign in and sit one."
+        action={
+          <Button asChild variant="outline" size="lg">
+            <Link href="/dashboard">
+              <BarChart3 /> My progress
+            </Link>
+          </Button>
+        }
       />
 
       {tests.length === 0 ? (

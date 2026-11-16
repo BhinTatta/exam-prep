@@ -813,8 +813,11 @@ model MockAttempt {
 
   responses MockResponse[]
 
-  @@index([testId, status])
-  @@index([userId, testId])
+  // Ranking a score against everyone else's on the same paper ("ahead of 72%
+  // of attempts") is a range scan on this.
+  @@index([testId, status, score])
+  // A student's history, newest first — the progress dashboard.
+  @@index([userId, status, submittedAt])
 }
 
 // The palette state, exactly as the exam shows it. ANSWERED_MARKED counts for

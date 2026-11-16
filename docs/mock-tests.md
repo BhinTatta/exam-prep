@@ -13,7 +13,8 @@ tables, different code, nothing shared.
 | `/mock-tests` | List of published papers |
 | `/mock-tests/<slug>` | Pattern, instructions, the student's past attempts, Start |
 | `/mock-tests/<slug>/attempt/<id>` | The exam screen (owner only) |
-| `/mock-tests/<slug>/attempt/<id>/result` | Scorecard and question review (owner and admins) |
+| `/mock-tests/<slug>/attempt/<id>/result` | Analysis board and question review (owner and admins) |
+| `/dashboard` | The student's progress: score trend, topic strength, every attempt |
 | `/admin/mock-tests` | Import, publish/unpublish, delete, every student's attempts |
 
 ## Adding a paper
@@ -160,6 +161,26 @@ The standard JAM paper, for sanity-checking the totals the importer prints
 - The answer key never reaches the browser during an attempt — the exam page
   selects question columns explicitly.
 
+## Analysis and progress
+
+Nothing here is stored separately. The analysis board (after a paper) and the
+progress dashboard are both derived on read from `MockAttempt` and
+`MockResponse` by `src/lib/mock-tests/analytics.ts`, so a new chart or a changed
+rule never needs a backfill.
+
+- **Standing** ("#9 of 34, ahead of 76%") compares a score with every other
+  submitted attempt at the same paper. It is hidden until at least five other
+  attempts exist, because a rank among two people means nothing.
+- **Topic panels** only appear for papers whose questions carry a `topic`, so tag
+  topics when writing a paper file — it is what makes the analysis useful.
+- On the dashboard, scores are shown as a percentage of each paper's marks so
+  different papers share one axis, and topic accuracy counts only questions the
+  student attempted.
+- Charts live in `src/components/mock-tests/analysis/`. Correct/incorrect use
+  the theme's `--success` / `--destructive`; because those two are hard to tell
+  apart with red-green colour blindness, every chart that uses them also names
+  or marks the outcome (the dot / cross / dash under each column).
+
 ## Who can see an attempt
 
 The student and admins. The rule lives in one function,
@@ -178,6 +199,7 @@ right, marks, time spent per question, and how the attempt ended.
 | `src/lib/mock-tests/import.ts` | Paper → database (shared by script and admin) |
 | `src/lib/mock-tests/scoring.ts` | The scorer |
 | `src/lib/mock-tests/attempts.ts` | Finalizing, expiry, view permission |
+| `src/lib/mock-tests/analytics.ts` | Analysis board and dashboard numbers |
 | `src/lib/mock-tests/calculator.ts` | Calculator arithmetic |
 | `src/app/mock-tests/actions.ts` | start / save progress / submit |
 | `src/components/mock-tests/exam-runner.tsx` | The exam screen |
