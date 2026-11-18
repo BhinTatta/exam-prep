@@ -1,4 +1,5 @@
-import { COLLEGE_CLOSING_RANKS, RANK_EXAM, RANK_YEARS, type Category, type YearData } from "./data";
+import { COLLEGES, COLLEGE_YEARS, type Category, type RankRange } from "./colleges";
+import { RANK_EXAM, RANK_YEARS, type YearData } from "./data";
 
 export type YearEstimate = {
   year: number;
@@ -72,15 +73,67 @@ export function predictRank(rawMarks: number): RankPrediction {
   };
 }
 
-export type CollegeChance = "likely" | "borderline" | "unlikely";
+export type CollegeChance = "likely" | "borderline" | "unlikely" | "none";
 
-/** Where a rank sits against each institute's usual closing band, for one category. */
-export function collegeChances(rank: number, category: Category) {
-  return COLLEGE_CLOSING_RANKS.map(({ institute, closing }) => {
-    const [low, high] = closing[category];
-    const chance: CollegeChance = rank <= low ? "likely" : rank <= high ? "borderline" : "unlikely";
-    return { institute, low, high, chance };
+export type CollegeOutlook = {
+  code: string;
+  name: string;
+  jointPhd: boolean;
+  chance: CollegeChance;
+  /** Years with a seat in this category, and how many of them this score would have made. */
+  offeredYears: number;
+  madeYears: number;
+  years: {
+    year: number;
+    range: RankRange | null;
+    /** This score's estimated rank in that year's exam (null: below cutoff). */
+    estimate: number | null;
+    /** Null when there was no seat that year. */
+    made: boolean | null;
+  }[];
+};
+
+/**
+ * Within this margin past the closing rank still counts as "borderline". The
+ * rank estimate is rough and closing ranks drift round to round, so a near miss
+ * is not a no.
+ */
+const NEAR_MISS = 1.15;
+
+/**
+ * Where a score stands at every IIT, year by year. Each year is judged on its
+ * own: the score's estimated rank in that year's exam against that year's
+ * closing rank. That is fairer than one average rank against every year,
+ * because a tough paper pushes ranks and closing ranks together.
+ */
+export function collegeOutlook(prediction: RankPrediction, category: Category): CollegeOutlook[] {
+  const estimateFor = new Map(prediction.years.map((y) => [y.year, y.rank]));
+
+  const rows = COLLEGES.map((college): CollegeOutlook => {
+    const years = COLLEGE_YEARS.map((year) => {
+      const range = college.years[year]?.[category] ?? null;
+      const estimate = estimateFor.get(year) ?? null;
+      return { year, range, estimate, made: range === null ? null : estimate !== null && estimate <= range.closing };
+    });
+    const offered = years.filter((y) => y.range !== null);
+    const madeYears = offered.filter((y) => y.made).length;
+    const nearMiss = offered.some((y) => y.estimate !== null && y.estimate <= y.range!.closing * NEAR_MISS);
+
+    const chance: CollegeChance =
+      offered.length === 0
+        ? "none"
+        : madeYears === offered.length
+          ? "likely"
+          : madeYears > 0 || nearMiss
+            ? "borderline"
+            : "unlikely";
+    return { code: college.code, name: college.name, jointPhd: college.jointPhd, chance, offeredYears: offered.length, madeYears, years };
   });
+
+  // Hardest to get into first, by the most recent closing rank this category
+  // has; institutes with no seat for it go last.
+  const latestClosing = (r: CollegeOutlook) => r.years.find((y) => y.range)?.range?.closing ?? Infinity;
+  return rows.sort((a, b) => latestClosing(a) - latestClosing(b));
 }
 
 /** Does this paper use the scale the reference data is for? */

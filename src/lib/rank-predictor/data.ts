@@ -7,8 +7,9 @@
 // student "around AIR 150" versus "around AIR 900"; it is not good enough to
 // tell AIR 150 from AIR 170, and nothing built on it should pretend otherwise.
 //
-// To add a year or correct a figure, edit this file only — the calculator, the
-// result-page panel and the college list all read from here.
+// To add a year or correct a figure, edit this file only — the calculator and
+// the result-page panel both read from here. Opening and closing ranks for
+// each IIT live next door in colleges.ts.
 
 export const RANK_EXAM = { exam: "IIT JAM", subject: "physics", maxMarks: 100 } as const;
 
@@ -59,21 +60,4 @@ export const RANK_YEARS: YearData[] = [
     difficulty: "Easy to moderate",
     anchors: table([[65, 120], [60, 240], [55, 410], [50, 640], [45, 930], [40, 1300], [35, 1800], [30, 2450], [25, 3300]]),
   },
-];
-
-export const CATEGORIES = ["General", "EWS", "OBC-NCL", "SC", "ST"] as const;
-export type Category = (typeof CATEGORIES)[number];
-
-/**
- * Typical closing ranks for M.Sc. Physics, as a [low, high] band across recent
- * rounds and years. Approximate, from coaching-site counselling summaries.
- */
-export const COLLEGE_CLOSING_RANKS: { institute: string; closing: Record<Category, [number, number]> }[] = [
-  { institute: "IIT Bombay", closing: { General: [40, 55], EWS: [160, 210], "OBC-NCL": [150, 350], SC: [530, 880], ST: [1800, 2400] } },
-  { institute: "IIT Kanpur", closing: { General: [110, 225], EWS: [420, 500], "OBC-NCL": [390, 490], SC: [1150, 1350], ST: [2400, 2700] } },
-  { institute: "IIT Delhi", closing: { General: [140, 165], EWS: [400, 460], "OBC-NCL": [350, 435], SC: [1100, 1250], ST: [2350, 2450] } },
-  { institute: "IIT Kharagpur", closing: { General: [170, 200], EWS: [450, 520], "OBC-NCL": [420, 500], SC: [1200, 1400], ST: [2500, 2800] } },
-  { institute: "IIT Madras", closing: { General: [210, 230], EWS: [480, 550], "OBC-NCL": [450, 540], SC: [1300, 1500], ST: [2600, 3000] } },
-  { institute: "IIT Roorkee", closing: { General: [200, 235], EWS: [490, 560], "OBC-NCL": [460, 550], SC: [1350, 1550], ST: [2700, 3100] } },
-  { institute: "IIT Jodhpur", closing: { General: [550, 625], EWS: [900, 1100], "OBC-NCL": [850, 1050], SC: [2100, 2500], ST: [3500, 4200] } },
 ];

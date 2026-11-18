@@ -1,19 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Minus, X } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Panel } from "@/components/mock-tests/analysis/primitives";
-import { CATEGORIES, RANK_EXAM, type Category } from "@/lib/rank-predictor/data";
-import { collegeChances, formatRank, predictRank, type CollegeChance } from "@/lib/rank-predictor/predict";
-import { cn } from "@/lib/utils";
+import { RANK_EXAM } from "@/lib/rank-predictor/data";
+import { COLLEGES, COLLEGE_YEARS } from "@/lib/rank-predictor/colleges";
+import { predictRank } from "@/lib/rank-predictor/predict";
+import { CollegeList } from "./college-list";
 import { RankByYear, RankDisclaimer, RankHeadline } from "./rank-breakdown";
-
-const CHANCE: Record<CollegeChance, { label: string; icon: typeof Check; tone: string }> = {
-  likely: { label: "Within reach", icon: Check, tone: "text-success" },
-  borderline: { label: "Borderline", icon: Minus, tone: "text-highlight-foreground dark:text-highlight" },
-  unlikely: { label: "Usually closes earlier", icon: X, tone: "text-muted-foreground" },
-};
 
 /**
  * The stand-alone "what rank is this score?" tool: type a score or drag the
@@ -24,10 +18,8 @@ export function RankCalculator({ initialMarks }: { initialMarks: number }) {
   // The text box keeps its own string so "4", "45." and "" can all be typed on
   // the way to "45.5" without the field fighting back.
   const [text, setText] = useState(String(initialMarks));
-  const [category, setCategory] = useState<Category>("General");
 
   const prediction = useMemo(() => predictRank(marks), [marks]);
-  const colleges = prediction.average === null ? [] : collegeChances(prediction.average, category);
 
   function onType(value: string) {
     if (!/^\d{0,3}(\.\d{0,2})?$/.test(value)) return;
@@ -86,52 +78,12 @@ export function RankCalculator({ initialMarks }: { initialMarks: number }) {
 
       <Panel
         title="Which IITs does that reach?"
-        subtitle="M.Sc. Physics, comparing your average estimated rank with each institute's usual closing rank"
-        action={
-          <div role="radiogroup" aria-label="Category" className="flex flex-wrap justify-end gap-1.5">
-            {CATEGORIES.map((c) => (
-              <button
-                key={c}
-                type="button"
-                role="radio"
-                aria-checked={category === c}
-                onClick={() => setCategory(c)}
-                className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                  category === c ? "border-primary bg-primary text-primary-foreground" : "hover:bg-muted"
-                )}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        }
+        subtitle={`M.Sc. Physics at all ${COLLEGES.length} IITs, from the last ${COLLEGE_YEARS.length} years' final admission rounds`}
       >
-        {colleges.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Enter a qualifying score to see this.</p>
-        ) : (
-          <ul className="divide-y">
-            {colleges.map((c) => {
-              const { label, icon: Icon, tone } = CHANCE[c.chance];
-              return (
-                <li key={c.institute} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2.5 text-sm">
-                  <span className="font-medium">{c.institute}</span>
-                  <span className="flex items-center gap-4">
-                    <span className="text-muted-foreground tabular-nums">
-                      closes around {formatRank(c.low)}–{formatRank(c.high)}
-                    </span>
-                    <span className={cn("flex w-44 items-center gap-1.5 font-medium", tone)}>
-                      <Icon className="size-4 shrink-0" /> {label}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Closing ranks move every year and with every counselling round, and reserved-category seats are allotted on
-          category rank. Treat this as a first look, then check the official JOAPS opening and closing ranks.
+        <CollegeList prediction={prediction} />
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          A rough guide, not a guarantee. Closing ranks move every year and every round, and your real rank will not be
+          an exact match for this estimate. Check the official JAM opening and closing ranks before you decide.
         </p>
       </Panel>
 
