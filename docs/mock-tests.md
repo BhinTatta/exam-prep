@@ -199,9 +199,20 @@ rank usually reaches. The same estimate appears on the analysis board, but
 only for papers on the scale the data covers (exam "IIT JAM", subject
 "physics", 100 marks) — a 21-mark demo gets no rank.
 
-All of it reads from one file, `src/lib/rank-predictor/data.ts`: the
-marks-vs-rank anchor points for each year and the closing ranks by category.
-Add a year or correct a figure there and nothing else needs to change.
+The data is in code, not the database — it changes once a year and every
+visitor reads all of it:
+
+- `src/lib/rank-predictor/data.ts` — the marks-vs-rank anchor points per year.
+- `src/lib/rank-predictor/colleges.ts` — opening and closing ranks for M.Sc.
+  Physics at every IIT, per category, from each year's final admission round.
+  To add a year, paste its table in the same `code | General | EWS | OBC-NCL |
+  SC | ST` shape. Every line is checked when the module loads, so a typo
+  fails the build rather than showing a wrong rank.
+
+The IIT list judges each year on its own: the score's estimated rank in that
+year's exam against that year's closing rank. "Good chance" means it would
+have got in every year the seat existed; "Borderline" means some years, or
+within 15% of the closing rank; otherwise "Unlikely".
 
 That data is approximate. IITs do not publish marks-to-rank tables; the
 figures are a community reconstruction supplied by the site owner, not an
