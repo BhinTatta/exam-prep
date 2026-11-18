@@ -1,0 +1,879 @@
+{
+  "slug": "jam-physics-2025",
+  "title": "JAM Physics 2025",
+  "exam": "IIT JAM",
+  "subject": "physics",
+  "year": 2025,
+  "description": "The official JAM 2025 Physics (PH) paper, conducted by IIT Delhi — all 60 questions, scored against the official final answer key.",
+  "durationMinutes": 180,
+  "calculator": true,
+  "published": true,
+  "sections": [
+    {
+      "name": "Section A",
+      "instructions": "Multiple Choice Questions (MCQ). Q.1 – Q.10 carry ONE mark each and Q.11 – Q.30 carry TWO marks each. Each question has four options, of which only one is correct. For a wrong answer, 1/3 mark is deducted on a one-mark question and 2/3 mark on a two-mark question.",
+      "questions": [
+        {
+          "number": 1,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider a volume $V$ enclosed by a closed surface $S$ having unit surface normal $\\hat{n}$. For $\\mathbf{r} = x\\hat{\\imath} + y\\hat{\\jmath} + z\\hat{k}$, the value of the surface integral $$\\frac{1}{9}\\oiint_S \\mathbf{r}\\cdot\\hat{n}\\, dS$$ is",
+          "options": [
+            "$V$",
+            "$3V$",
+            "$\\dfrac{V}{3}$",
+            "$\\dfrac{V}{9}$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "Two point-particles having masses $m_1$ and $m_2$ approach each other in perpendicular directions with speeds $v_1$ and $v_2$, respectively, as shown in the figure below. After an elastic collision, they move away from each other in perpendicular directions with speeds $v_1'$ and $v_2'$, respectively.\n\nThe ratio $\\dfrac{v_2'}{v_1'}$ is",
+          "image": "q2.png",
+          "options": [
+            "$\\dfrac{m_1^2 v_1}{m_2^2 v_2}$",
+            "$\\dfrac{m_1 v_1}{m_2 v_2}$",
+            "$\\dfrac{m_1^2 v_2}{m_2^2 v_1}$",
+            "$\\dfrac{m_1 v_2}{m_2 v_1}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 3,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Which one of the following figures represents the vector field $\\mathbf{A} = y\\hat{\\imath}$?\n\n($\\hat{\\imath}$ is the unit vector along the $x$-direction)",
+          "options": [
+            {
+              "label": "",
+              "image": "q3-a.png"
+            },
+            {
+              "label": "",
+              "image": "q3-b.png"
+            },
+            {
+              "label": "",
+              "image": "q3-c.png"
+            },
+            {
+              "label": "",
+              "image": "q3-d.png"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "Two parallel light rays ① and ② are incident from air on a system consisting of media P, Q, and air, as shown in the figure below. The incident angle is $45^\\circ$. Ray ① passes through medium P, air and medium Q and ray ② passes through media P and Q before leaving the system. After passing through the system, the angular deviation (in radians) between the two rays is\n\n[The dimensions of the media and their refractive indices ($n_\\mathrm{a}$, $n_\\mathrm{P}$ and $n_\\mathrm{Q}$) are shown in the figure]",
+          "image": "q4.png",
+          "options": [
+            "$0$",
+            "$\\tan^{-1}\\sqrt{\\dfrac{3}{2}}$",
+            "$\\tan^{-1}\\sqrt{\\dfrac{2}{3}}$",
+            "$\\tan^{-1}\\sqrt{\\dfrac{1}{3}}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 5,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A charge $q$ is placed at the centre of the base of a square pyramid. The net outward electric flux across each of the slanted faces is\n\n(Consider permittivity as $\\varepsilon_0$)",
+          "image": "q5.png",
+          "options": [
+            "$\\dfrac{q}{\\varepsilon_0}$",
+            "$\\dfrac{q}{2\\varepsilon_0}$",
+            "$\\dfrac{q}{4\\varepsilon_0}$",
+            "$\\dfrac{q}{8\\varepsilon_0}$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 6,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider a parallel plate capacitor (distance between the plates $d$, and permittivity $\\varepsilon_0$) as shown in the figure below. The space charge density between the plates varies as $\\rho(x) = \\rho_0 e^{-x}$. Voltage $V = 0$ both at $x = 0$ and $x = d$.\n\nThe voltage $V(x)$ at point P between the plates is\n\n[$\\rho_0$ is a constant of appropriate dimensions]",
+          "image": "q6.png",
+          "options": [
+            "$\\dfrac{\\rho_0}{\\varepsilon_0}\\left[e^{-x} + \\dfrac{1 - e^{-d}}{d}\\,x - 1\\right]$",
+            "$\\dfrac{2\\rho_0}{\\varepsilon_0}\\left[e^{-x} + \\dfrac{1 - e^{-d}}{d}\\,x - 1\\right]$",
+            "$\\dfrac{\\rho_0}{2\\varepsilon_0}\\left[e^{-x} + \\dfrac{1 - e^{-d}}{d}\\,x - 1\\right]$",
+            "$\\dfrac{3\\rho_0}{\\varepsilon_0}\\left[e^{-x} + \\dfrac{1 - e^{-d}}{d}\\,x - 1\\right]$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 7,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider a metal sphere enclosed concentrically within a spherical shell. The inner sphere of radius $a$ carries charge $Q$. The outer shell of radius $2a$ also has charge $Q$. The variation of the magnitude $E$ of the electric field as a function of distance $r$ from the center O is",
+          "image": "q7.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q7-a.png"
+            },
+            {
+              "label": "",
+              "image": "q7-b.png"
+            },
+            {
+              "label": "",
+              "image": "q7-c.png"
+            },
+            {
+              "label": "",
+              "image": "q7-d.png"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 8,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "Consider radioactive decays $A \\to B$ with half-life $\\left(T_{1/2}\\right)_A$ and $B \\to C$ with half-life $\\left(T_{1/2}\\right)_B$. At any time $t$, the number of nuclides of $B$ is given by $$(N_B)_t = \\frac{\\lambda_A}{\\lambda_B - \\lambda_A}(N_A)_0\\left(e^{-\\lambda_A t} - e^{-\\lambda_B t}\\right),$$ where $(N_A)_0$ is the number of nuclides of $A$ at $t = 0$. The decay constants of $A$ and $B$ are $\\lambda_A$ and $\\lambda_B$, respectively.\n\nIf $\\left(T_{1/2}\\right)_B < \\left(T_{1/2}\\right)_A$, then the ratio $\\dfrac{(N_B)_t}{(N_A)_t}$ at time $t \\gg \\left(T_{1/2}\\right)_A$ is\n\n[$(N_A)_t$ is the number of nuclides of $A$ at time $t$]",
+          "options": [
+            "$\\dfrac{\\lambda_A}{\\lambda_B - \\lambda_A}$",
+            "$\\dfrac{\\lambda_B}{\\lambda_A}$",
+            "$\\dfrac{\\lambda_A}{\\lambda_B}$",
+            "$\\dfrac{\\lambda_B}{\\lambda_B - \\lambda_A}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "For a non-relativistic free particle, the ratio of phase velocity to group velocity is",
+          "options": [
+            "$2$",
+            "$\\dfrac{1}{2}$",
+            "$1$",
+            "$\\dfrac{1}{4}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 10,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "If the input voltage waveform $V_\\mathrm{IN}$ is a ramp function (as shown in the $V_\\mathrm{IN}$–$t$ plot below), then the output waveform ($V_\\mathrm{OUT}$) for the given circuit diagram having an ideal operational amplifier (Op-Amp) is",
+          "image": "q10.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q10-a.png"
+            },
+            {
+              "label": "",
+              "image": "q10-b.png"
+            },
+            {
+              "label": "",
+              "image": "q10-c.png"
+            },
+            {
+              "label": "",
+              "image": "q10-d.png"
+            }
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 11,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "In the circuit given below, the frequency of the input voltage $V_\\mathrm{IN}$ is $\\omega = 10^4\\ \\text{rad/s}$. The output voltage $V_\\mathrm{AB}$ leads $V_\\mathrm{IN}$ by",
+          "image": "q11.png",
+          "options": [
+            "$0^\\circ$",
+            "$45^\\circ$",
+            "$90^\\circ$",
+            "$-90^\\circ$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 12,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Given a function $f(x, y) = \\dfrac{x}{a}e^{y} + \\dfrac{y}{b}e^{x}$, where $x = at$ and $y = bt$ ($a$ and $b$ are non-zero constants), the value of $\\dfrac{df}{dt}$ at $t = 0$ is",
+          "options": [
+            "$-1$",
+            "$0$",
+            "$1$",
+            "$2$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 13,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "If the system of linear equations $$\\begin{aligned} x + my + az &= 0 \\\\ 2x + ay + mz &= 0 \\\\ ax + 2y - z &= 0 \\end{aligned}$$ with $m$ and $a$ as non-zero constants, admits a non-trivial solution, then which one of the following conditions is correct?",
+          "options": [
+            "$m^2 - a^2 = 3$",
+            "$m^2 - a^2 = -3$",
+            "$a^2 - 2m^2 = -3$",
+            "$m^2 - 2a^2 = 3$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 14,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "If $\\left(\\dfrac{1-i}{1+i}\\right)^{n/2} = -1$, where $i = \\sqrt{-1}$, one possible value of $n$ is",
+          "options": [
+            "$2$",
+            "$4$",
+            "$6$",
+            "$8$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 15,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "In Cartesian coordinates, consider the functions $u(x, y) = \\dfrac{1}{2}\\left(x^2 - y^2\\right)$ and $v(x, y) = xy$. If $(r, \\theta)$ are the polar coordinates, the Jacobian determinant $\\left|\\dfrac{\\partial(u, v)}{\\partial(r, \\theta)}\\right|$ is",
+          "options": [
+            "$r$",
+            "$\\dfrac{1}{r}$",
+            "$r^2$",
+            "$r^3$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 16,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Three particles of equal mass $M$, interacting via gravity, lie on the vertices of an equilateral triangle of side $d$, as shown in the figure below. The whole system is rotating with an angular velocity $\\omega$ about an axis perpendicular to the plane of the system and passing through the center of mass. The value of $\\omega$, for which the distance between the masses remains $d$, is\n\n($G$ is the universal gravitational constant)",
+          "image": "q16.png",
+          "options": [
+            "$\\sqrt{\\dfrac{2GM}{d^3}}$",
+            "$\\sqrt{\\dfrac{3GM}{d^3}}$",
+            "$\\sqrt{\\dfrac{GM}{3d^3}}$",
+            "$\\sqrt{\\dfrac{GM}{d^3}}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 17,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Two masses, $M_1$ and $M_2$, are connected through a massless spring of spring constant $k$, as shown in the figure below. The mass $M_1$ is at rest against a rigid wall. Both $M_1$ and $M_2$ are on a frictionless surface. The mass $M_2$ is pushed towards $M_1$ by a distance $x$ from its equilibrium position and then released. After $M_1$ leaves the wall, the speed of the center of mass of the composite system is",
+          "image": "q17.png",
+          "options": [
+            "$\\sqrt{\\dfrac{k}{M_2}}\\,x$",
+            "$\\sqrt{\\dfrac{k}{M_1 + M_2}}\\,x$",
+            "$\\dfrac{\\sqrt{kM_2}}{M_1 + M_2}\\,x$",
+            "$\\dfrac{\\sqrt{kM_1}}{M_1 + M_2}\\,x$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 18,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "One end of a long chain is lifted vertically from flat ground to a height $H$ with constant speed $v$ by a force of magnitude $F$. Assume that the length of the chain is greater than $H$ and that it has a uniform mass per unit length $\\rho$. The magnitude of the force $F$ at height $H$ is\n\n($g$ is the acceleration due to gravity)",
+          "options": [
+            "$\\rho\\left(gH + v^2\\right)$",
+            "$\\rho\\left(gH + 2v^2\\right)$",
+            "$\\rho\\left(2gH + v^2\\right)$",
+            "$\\dfrac{\\rho}{2}\\left(gH + v^2\\right)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 19,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "For a two-slit Fraunhofer diffraction, each slit is $0.1\\ \\text{mm}$ wide and separation between the two slits is $0.8\\ \\text{mm}$. The total number of interference minima between the first diffraction minima on both sides of the central maxima is",
+          "options": [
+            "$16$",
+            "$18$",
+            "$8$",
+            "$9$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 20,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "Consider the superposition of two orthogonal simple harmonic motions $y_1 = a\\cos 2\\omega t$ and $y_2 = b\\cos(\\omega t + \\phi)$. If $\\phi = \\pi$, the resultant motion will represent\n\n($a$, $b$ and $\\omega$ are constants with appropriate dimensions)",
+          "options": [
+            "a parabola",
+            "a hyperbola",
+            "an ellipse",
+            "a circle"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 21,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "An unpolarized light ray passing through air (refractive index $n_\\mathrm{a} = 1$) is incident on a glass slab (refractive index $n_\\mathrm{g} = \\sqrt{3}$) at an angle of $60^\\circ$, as shown in the figure below. The amplitude of the in-plane ($x$-$y$) electric field component of the incident light is $4\\ \\text{V/m}$ and amplitude of the out of plane ($z$) electric field component is $3\\ \\text{V/m}$. After passing through the glass slab, the electric field amplitude (in $\\text{V/m}$) of the light is",
+          "image": "q21.png",
+          "options": [
+            "$5$",
+            "$4$",
+            "$7$",
+            "$3$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 22,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider a slowly charging parallel plate capacitor (distance between the plates is $d$) having circular plates each with an area $A$, as shown in the figure below. An electric field of magnitude $E = E_0\\sin(\\omega t)$ exists between the plates while charging. The associated magnitude of the magnetic field $B$ at the periphery (outer edge) of the capacitor is\n\n(Neglect fringe effects)",
+          "image": "q22.png",
+          "options": [
+            "$\\dfrac{1}{2c^2}\\sqrt{\\dfrac{A}{\\pi}}\\,E_0\\,\\omega\\cos(\\omega t)$",
+            "$\\dfrac{1}{2c^2}\\sqrt{\\dfrac{A}{\\pi}}\\,E_0\\,\\omega\\sin(\\omega t)$",
+            "$\\dfrac{1}{c^2}\\sqrt{\\dfrac{A}{\\pi}}\\,E_0\\,\\omega\\cos(\\omega t)$",
+            "$\\dfrac{1}{c^2}\\sqrt{\\dfrac{A}{\\pi}}\\,E_0\\,\\omega\\sin(\\omega t)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 23,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A surface current density $K = ae^{-y}$ exists on a thin strip of width $b$, as shown in the figure below. The associated surface current is\n\n($a$ is a constant of appropriate dimensions)",
+          "image": "q23.png",
+          "options": [
+            "$a\\left(1 - e^{-b}\\right)$",
+            "$a\\left(1 + e^{-b}\\right)$",
+            "$a\\left(e^{-b} - 1\\right)$",
+            "$a\\left(e^{b} + e^{-b}\\right)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 24,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "For an electromagnetic wave, consider an electric field $\\mathbf{E} = E_0 e^{-i[a(x+y) - \\omega t]}\\,\\hat{k}$. The corresponding magnetic field $\\mathbf{B}$ is\n\n($E_0$, $a$, $\\omega$ are constants of appropriate dimensions and $c$ is the speed of light)",
+          "options": [
+            "$\\dfrac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y) - \\omega t]}\\left(\\hat{\\imath} - \\hat{\\jmath}\\right)$",
+            "$\\dfrac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y) - \\omega t]}\\left(\\hat{\\imath} + \\hat{\\jmath}\\right)$",
+            "$\\dfrac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y) - \\omega t]}\\left(-\\hat{\\imath} - \\hat{\\jmath}\\right)$",
+            "$\\dfrac{1}{c\\sqrt{2}}E_0 e^{-i[a(x+y) - \\omega t]}\\left(-\\hat{\\imath} + \\hat{\\jmath}\\right)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 25,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider Maxwell's relation $\\left(\\dfrac{\\partial S}{\\partial V}\\right)_T = \\left(\\dfrac{\\partial P}{\\partial T}\\right)_V$. The equation of state of a thermodynamic system is given as $P = \\dfrac{AT}{V^2} + \\dfrac{BT^3}{V}$, where $A$ and $B$ are constants of appropriate dimensions. Then $\\left(\\dfrac{\\partial C_V}{\\partial V}\\right)_T$ of the system varies with temperature as\n\n($C_V$ is the heat capacity at constant volume)",
+          "options": [
+            "$T^2$",
+            "$T$",
+            "$T^{-1}$",
+            "$T^3$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 26,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "Consider a relativistic particle of rest mass $2m$ moving with a speed $v$ along the $x$ direction. It collides with another relativistic particle of rest mass $m$ moving with the same speed but in the opposite direction. These two particles coalesce to form one particle whose rest mass $M$ is\n\n($\\beta = \\dfrac{v}{c}$, where $c$ is the speed of light)",
+          "options": [
+            "$m\\sqrt{\\dfrac{9 - \\beta^2}{1 - \\beta^2}}$",
+            "$2m\\sqrt{\\dfrac{3 - \\beta^2}{1 - \\beta^2}}$",
+            "$\\dfrac{m}{2}\\sqrt{\\dfrac{9 - \\beta^2}{2 - \\beta^2}}$",
+            "$\\dfrac{m}{4}\\sqrt{\\dfrac{1 - \\beta^2}{2 - \\beta^2}}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 27,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "A particle of mass $m$ is subjected to a potential $V(x)$. If its wavefunction is given by $$\\psi(x, t) = \\begin{cases} \\alpha x^2 e^{-\\beta x} e^{i\\gamma t/\\hbar}, & x > 0 \\\\ 0, & x \\le 0, \\end{cases}$$ then $V(x)$ is\n\n($\\alpha$, $\\beta$ and $\\gamma$ are constants of appropriate dimensions)",
+          "options": [
+            "$-\\gamma + \\dfrac{\\hbar^2}{2m}\\left(\\dfrac{2}{x^2} - \\dfrac{4\\beta}{x} + \\beta^2\\right)$",
+            "$-\\gamma + \\dfrac{\\hbar^2}{2m}\\left(\\dfrac{2}{x^2} + \\dfrac{4\\beta}{x} + \\beta^2\\right)$",
+            "$-\\gamma + \\dfrac{\\hbar^2}{2m}\\left(\\dfrac{2}{x^2} - \\dfrac{4\\beta}{x} - \\beta^2\\right)$",
+            "$-\\gamma + \\dfrac{\\hbar^2}{2m}\\left(-\\dfrac{2}{x^2} - \\dfrac{4\\beta}{x} + \\beta^2\\right)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Two non-relativistic particles with masses $m_1$ and $m_2$ move with momenta $\\mathbf{p}_1$ and $\\mathbf{p}_2$, respectively, in an inertial frame $S$. In another inertial frame $S'$, moving with a constant speed with respect to $S$, the same particles are observed to have momenta $\\mathbf{p}_1'$ and $\\mathbf{p}_2'$, respectively.\n\nGalilean invariance implies that",
+          "options": [
+            "$m_2\\mathbf{p}_1' - m_1\\mathbf{p}_2' = m_2\\mathbf{p}_1 - m_1\\mathbf{p}_2$",
+            "$m_2\\mathbf{p}_1' + m_1\\mathbf{p}_2' = m_2\\mathbf{p}_1 + m_1\\mathbf{p}_2$",
+            "$m_1\\mathbf{p}_1' - m_2\\mathbf{p}_2' = m_1\\mathbf{p}_1 - m_2\\mathbf{p}_2$",
+            "$m_1\\mathbf{p}_1' + m_2\\mathbf{p}_2' = m_1\\mathbf{p}_1 + m_2\\mathbf{p}_2$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 29,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "The binding energy $B(A, Z)$ of an atomic nucleus of mass number $A$, atomic number $Z$, and number of neutrons $N = A - Z$, can be expressed as $$B(A, Z) = a_1 A - a_2 A^{2/3} - a_3\\frac{Z^2}{A^{1/3}} - a_4\\frac{(A - 2Z)^2}{A},$$ where $a_1$, $a_2$, $a_3$, and $a_4$ are constants of appropriate dimensions. Let $B(A, Z')$ be the binding energy of a mirror nucleus (which has the same $A$, but the number of protons and neutrons are interchanged).\n\nThen, at constant $A$, $\\left[B(A, Z) - B(A, Z')\\right]$ is",
+          "options": [
+            "proportional to $Z^2$",
+            "proportional to $\\left(Z^2 - N^2\\right)$",
+            "proportional to $N^2$",
+            "constant"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 30,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A magnetic field is given by $\\mathbf{B} = \\nabla \\times \\mathbf{A}$ where $\\mathbf{A}$ is the magnetic vector potential. If $\\mathbf{A} = \\left(ax^2 + by^2\\right)\\hat{\\imath}$, the corresponding current density $\\mathbf{J}$ is\n\n($a$ and $b$ are non-zero constants)",
+          "options": [
+            "$-\\dfrac{1}{\\mu_0}(2a + 2b)\\,\\hat{\\imath}$",
+            "$\\dfrac{1}{\\mu_0}(2a + 2b)\\,\\hat{\\imath}$",
+            "$-\\dfrac{1}{\\mu_0}(2a)\\,\\hat{\\imath}$",
+            "$-\\dfrac{1}{\\mu_0}(2b)\\,\\hat{\\imath}$"
+          ],
+          "answer": "D"
+        }
+      ]
+    },
+    {
+      "name": "Section B",
+      "instructions": "Multiple Select Questions (MSQ). Q.31 – Q.40 carry TWO marks each. One or more options are correct. Marks are awarded only if all the correct options and no wrong option are selected. There is no negative marking and no partial marking.",
+      "questions": [
+        {
+          "number": 31,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In the logic circuit shown below, for which of the following combination(s) of inputs P and Q, the output Y will be 0?",
+          "image": "q31.png",
+          "options": [
+            "$\\mathrm{P} = 0,\\ \\mathrm{Q} = 0$",
+            "$\\mathrm{P} = 0,\\ \\mathrm{Q} = 1$",
+            "$\\mathrm{P} = 1,\\ \\mathrm{Q} = 0$",
+            "$\\mathrm{P} = 1,\\ \\mathrm{Q} = 1$"
+          ],
+          "answer": [
+            "D"
+          ]
+        },
+        {
+          "number": 32,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Two particles of masses $m_1$ and $m_2$, interacting via gravity, rotate in circular orbits about their common center of mass with the same angular velocity $\\omega$.\n\nFor masses $m_1$ and $m_2$, respectively,\n\n• $r_1$ and $r_2$ are the constant distances from the center of mass,\n• $L_1$ and $L_2$ are the magnitudes of the angular momenta about the center of mass, and\n• $K_1$ and $K_2$ are the kinetic energies.\n\nWhich of the following is(are) correct?\n\n($G$ is the universal gravitational constant)",
+          "options": [
+            "$\\dfrac{L_1}{L_2} = \\dfrac{m_2}{m_1}$",
+            "$\\dfrac{K_1}{K_2} = \\dfrac{m_2}{m_1}$",
+            "$\\omega = \\sqrt{\\dfrac{G(m_1 + m_2)}{(r_1 + r_2)^3}}$",
+            "$m_2 r_1 = m_1 r_2$"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 33,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Which of these cubic lattice plane pairs is(are) perpendicular to each other?",
+          "options": [
+            "$(100),\\ (010)$",
+            "$(220),\\ (001)$",
+            "$(110),\\ (010)$",
+            "$(112),\\ (220)$"
+          ],
+          "answer": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "number": 34,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "For a thin convex lens of focal length $f$, the image of an object at O is formed at I, as shown in the figure below. The distances of object and image from the two focal points ($\\mathrm{F_O}$ and $\\mathrm{F_I}$) are $x_\\mathrm{O}$ and $x_\\mathrm{I}$, respectively. Which of the following graphs correctly represent(s) the variation of the quantities shown in the figure?",
+          "image": "q34.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q34-a.png"
+            },
+            {
+              "label": "",
+              "image": "q34-b.png"
+            },
+            {
+              "label": "",
+              "image": "q34-c.png"
+            },
+            {
+              "label": "",
+              "image": "q34-d.png"
+            }
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 35,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "Identify which of the following wave functions describe(s) travelling wave(s).\n\n($A_0$, $B_0$, $a$, and $b$ are positive constants of appropriate dimensions)",
+          "options": [
+            "$\\psi(x, t) = A_0(x + t)^2$",
+            "$\\psi(x, t) = A_0\\sin\\left(ax^2 + bt^2\\right)$",
+            "$\\psi(x, t) = \\dfrac{A_0}{B_0(x - t)^2 + 1}$",
+            "$\\psi(x, t) = A_0\\,e^{(ax + bt)^2}$"
+          ],
+          "answer": [
+            "A",
+            "C",
+            "D"
+          ]
+        },
+        {
+          "number": 36,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A spherical ball having a uniformly distributed charge $Q$ and radius $R$ pulsates with frequency $\\omega$ such that the radius changes by $\\pm 10\\%$, as shown in the figure below. Which of the following is(are) correct?",
+          "image": "q36.png",
+          "options": [
+            "The net outward electric flux across a spherical surface of radius $r > 1.5R$ pulsates with a frequency $\\omega$",
+            "The net outward electric flux across a spherical surface of radius $r = 2R$ is $\\dfrac{Q}{\\varepsilon_0}$",
+            "The potential fluctuates with frequency $\\omega$ at $r = 2R$",
+            "The electric field inside the sphere at $r = 0.5R$ will not be time dependent"
+          ],
+          "answer": [
+            "B"
+          ]
+        },
+        {
+          "number": 37,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Which of the following relations is(are) valid for linear dielectrics?\n\n[$\\mathbf{E}$ = Electric field, $\\mathbf{P}$ = Polarization, $\\mathbf{D}$ = Electric displacement, $\\varepsilon_0$ = Permittivity of free space, $\\varepsilon$ = Dielectric permittivity, $\\chi_e$ = Electric susceptibility, $\\rho_f$ = Free charge density, $\\rho_b$ = Bound charge density]",
+          "options": [
+            "$\\mathbf{P} = \\varepsilon_0\\chi_e\\mathbf{E}$",
+            "$\\varepsilon = \\varepsilon_0(1 + \\chi_e)$",
+            "$\\mathbf{D} = \\varepsilon_0\\mathbf{E} + \\mathbf{P}$",
+            "$\\nabla\\cdot\\mathbf{D} = \\rho_f + \\rho_b$"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 38,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Three gaseous systems, $G_1$, $G_2$, and $G_3$ with pressure and volume $(P_1, V_1)$, $(P_2, V_2)$, and $(P_3, V_3)$, respectively, are such that\n\n(I) when $G_1$ and $G_2$ are in thermal equilibrium, $$P_1V_1 - P_2V_2 + \\alpha P_2 = 0$$ is satisfied, and\n\n(II) when $G_1$ and $G_3$ are in thermal equilibrium, $$P_3V_3 - P_1V_1 + \\frac{\\beta P_1V_1}{V_3} = 0$$ is satisfied.\n\nThe relation(s) valid at thermal equilibrium is(are)\n\n($\\alpha$ and $\\beta$ are constants of appropriate dimensions)",
+          "options": [
+            "$P_3V_3 - (P_2V_2 - \\alpha P_2)\\left(1 - \\dfrac{\\beta}{V_3}\\right) = 0$",
+            "$P_3V_3 + (P_2V_2 + \\alpha P_2)\\left(1 + \\dfrac{\\beta}{V_3}\\right) = 0$",
+            "$P_1V_1 = P_2V_2 = P_3V_3$",
+            "$P_3V_3 + P_1V_1\\left(\\dfrac{\\beta}{V_3} - 1\\right) = 0$"
+          ],
+          "answer": [
+            "A",
+            "D"
+          ]
+        },
+        {
+          "number": 39,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "An ideal mono-atomic gas is expanded adiabatically from A to B. It is then compressed in an isobaric process from B to C. Finally, the pressure is increased in an isochoric process from C to A. The cyclic process is shown in the figure below. For this system, which of the following is(are) correct?",
+          "image": "q39.png",
+          "options": [
+            "Work done along the path AB is $(P_1V_1 - P_2V_2)$",
+            "Total work done during the entire process is $\\dfrac{3}{2}(P_1V_1 - P_2V_2) + P_2(V_1 - V_2)$",
+            "Total heat absorbed during the entire process is $\\dfrac{3}{2}(P_1 - P_2)V_1$",
+            "Total change in internal energy during the entire process is $\\dfrac{5}{2}P_2(V_2 - V_1)$"
+          ],
+          "answer": [
+            "B"
+          ]
+        },
+        {
+          "number": 40,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "For a body centered cubic (bcc) system, the x-ray diffraction peaks are observed for the following $h^2 + k^2 + l^2$ value(s)\n\n[$h$, $k$, and $l$ are Miller indices]",
+          "options": [
+            "$3$",
+            "$4$",
+            "$5$",
+            "$7$"
+          ],
+          "answer": [
+            "B"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Section C",
+      "instructions": "Numerical Answer Type (NAT) questions. Q.41 – Q.50 carry ONE mark each and Q.51 – Q.60 carry TWO marks each. Enter the answer as a number using the keypad; no options are shown. There is no negative marking.",
+      "questions": [
+        {
+          "number": 41,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "Two solid cylinders of the same density are found to have the same moment of inertia about their respective principal axes. The length of the second cylinder is $16$ times that of the first cylinder. If the radius of the first cylinder is $4\\ \\text{cm}$, the radius of the second cylinder is ________ cm.\n\n(in integer)",
+          "answer": 2
+        },
+        {
+          "number": 42,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "The shortest distance between an object and its real image formed by a thin convex lens of focal length $20\\ \\text{cm}$ is ________ cm.\n\n(in integer)",
+          "answer": 80
+        },
+        {
+          "number": 43,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Consider two media 1 and 2 having permittivities $\\varepsilon_0$ and $\\varepsilon_1\\,(= 2\\varepsilon_0)$, respectively. The interface between the two media aligns with the $x$-$y$ plane. An electric field $\\mathbf{E}_1 = 4\\hat{\\imath} - 5\\hat{\\jmath} - \\hat{k}$ exists in medium 1. The magnitude of the displacement vector $\\mathbf{D}_2$ in medium 2 is ________ $\\varepsilon_0$.\n\n(up to two decimal places)",
+          "answer": {
+            "min": 12.65,
+            "max": 13.05
+          }
+        },
+        {
+          "number": 44,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "G1 and G2 are two ideal gases at temperatures $T_1$ and $T_2$, respectively. The molecular weight of the constituents of G1 is half that of G2. If the average speeds of the molecules of both gases are equal, then assuming Maxwell-Boltzmann distributions for the molecular speeds, the ratio $\\dfrac{T_2}{T_1}$ is ________.\n\n(in integer)",
+          "answer": 2
+        },
+        {
+          "number": 45,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "An ideal p-n junction diode (ideality factor $\\eta = 1$) is operating in forward bias at room temperature (thermal energy $= 26\\ \\text{meV}$). If the diode current is $26\\ \\text{mA}$ for an applied bias of $1.0\\ \\text{V}$, the dynamic resistance ($r_{ac}$) is ________ $\\Omega$.\n\n(up to two decimal places)",
+          "answer": {
+            "min": 0.95,
+            "max": 1.05
+          }
+        },
+        {
+          "number": 46,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "In a two-level atomic system, the excited state is $0.2\\ \\text{eV}$ above the ground state. Considering the Maxwell-Boltzmann distribution, the temperature at which $2\\%$ of the atoms will be in the excited state is ________ K.\n\n(Boltzmann constant $k_B = 8.62 \\times 10^{-5}\\ \\text{eV/K}$)\n\n(up to two decimal places)",
+          "answer": {
+            "min": 591.0,
+            "max": 597.0
+          }
+        },
+        {
+          "number": 47,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "Neutrons of energy $8\\ \\text{MeV}$ are incident on a potential step of height $48\\ \\text{MeV}$. As they penetrate the classically forbidden region, the distance at which the probability density of finding neutrons decreases by a factor of $100$ is ________ fm.\n\n(Take $\\hbar c = 200\\ \\text{MeV fm}$, and the rest mass energy of neutron $= 1\\ \\text{GeV}$.)\n\n(up to two decimal places)",
+          "answer": {
+            "min": 1.55,
+            "max": 1.7
+          }
+        },
+        {
+          "number": 48,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "At a particular temperature $T$, Planck's energy density of black body radiation in terms of frequency is $\\rho_T(\\nu) = 8 \\times 10^{-18}\\ \\dfrac{\\text{J/m}^3}{\\text{Hz}}$ at $\\nu = 3 \\times 10^{14}\\ \\text{Hz}$. Then Planck's energy density $\\rho_T(\\lambda)$ at the corresponding wavelength ($\\lambda$) has the value ________ $\\times 10^{2}\\ \\dfrac{\\text{J/m}^3}{\\text{m}}$.\n\n[Speed of light $c = 3 \\times 10^8\\ \\text{m/s}$]\n\n(in integer)",
+          "answer": 24
+        },
+        {
+          "number": 49,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The ratio of the density of atoms between the $(111)$ and $(110)$ planes in a simple cubic (sc) lattice is ________.\n\n(up to two decimal places)",
+          "answer": {
+            "min": 0.8,
+            "max": 0.84
+          }
+        },
+        {
+          "number": 50,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The packing fraction for a two-dimensional hexagonal lattice having sides $2r$ with atoms of radii $r$ placed at each vertex and at the center is ________.\n\n(up to two decimal places)\n\n[Enter the packing fraction as a fraction between 0 and 1, not as a percentage.]",
+          "answer": {
+            "min": 0.89,
+            "max": 0.93
+          }
+        },
+        {
+          "number": 51,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "A NPN bipolar junction transistor (BJT) is connected in common emitter (CE) configuration as shown in the circuit diagram below. The amplifier is operating in the saturation regime. The collector-emitter saturation voltage ($V_\\mathrm{CE}^\\mathrm{sat}$) is $0.2\\ \\text{V}$. The current gain $\\beta = 100$. The maximum value of base resistance $R_\\mathrm{BB}$ is ________ $\\text{k}\\Omega$.\n\n(in integer)",
+          "image": "q51.png",
+          "answer": 20
+        },
+        {
+          "number": 52,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "For a Zener diode as shown in the circuit diagram below, the Zener voltage $V_Z$ is $3.7\\ \\text{V}$. For a load resistance ($R_L$) of $1\\ \\text{k}\\Omega$, a current $I_1$ flows through the load. If $R_L$ is decreased to $500\\ \\Omega$, the current changes to $I_2$.\n\nThe ratio $\\dfrac{I_2}{I_1}$ is ________.\n\n(up to two decimal places)",
+          "image": "q52.png",
+          "answer": {
+            "min": 1.78,
+            "max": 1.82
+          }
+        },
+        {
+          "number": 53,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "One kg of water at $27^\\circ\\text{C}$ is brought in contact with a heat reservoir kept at $37^\\circ\\text{C}$. Upon reaching thermal equilibrium, this mass of water is brought in contact with another heat reservoir kept at $47^\\circ\\text{C}$. The final temperature of water is $47^\\circ\\text{C}$. The change in entropy of the whole system in this entire process is ________ cal/K.\n\n[Take specific heat at constant pressure of water as $1\\ \\text{cal/(g K)}$]\n\n(up to two decimal places)",
+          "answer": {
+            "min": 0.9,
+            "max": 1.1
+          }
+        },
+        {
+          "number": 54,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Consider a vector $\\mathbf{F} = \\dfrac{1}{\\pi}\\left[-\\sin y\\,\\hat{\\imath} + x(1 - \\cos y)\\,\\hat{\\jmath}\\right]$. The value of the integral $\\oint \\mathbf{F}\\cdot d\\mathbf{r}$ over a circle $x^2 + y^2 = 1$ evaluated in the anti-clockwise direction is ________.\n\n(in integer)",
+          "answer": 1
+        },
+        {
+          "number": 55,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle is moving with a constant angular velocity $2\\ \\text{rad/s}$ in an orbit on a plane. The radial distance of the particle from the origin at time $t$ is given by $r = r_0 e^{2\\beta t}$ where $r_0$ and $\\beta$ are positive constants. The radial component of the acceleration vanishes for $\\beta =$ ________ rad/s.\n\n(in integer)",
+          "answer": 1
+        },
+        {
+          "number": 56,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A planet rotates in an elliptical orbit with a star situated at one of the foci. The distance from the center of the ellipse to any foci is half of the semi-major axis. The ratio of the speed of the planet when it is nearest (perihelion) to the star to that at the farthest (aphelion) is ________.\n\n(in integer)",
+          "answer": 3
+        },
+        {
+          "number": 57,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "A light beam given by $\\mathbf{E}(z, t) = E_{01}\\sin(kz - \\omega t)\\,\\hat{\\imath} + E_{02}\\sin\\left(kz - \\omega t + \\dfrac{\\pi}{6}\\right)\\hat{\\jmath}$ passes through an ideal linear polarizer whose transmission axis is tilted by $60^\\circ$ from $x$-axis (in $x$-$y$ plane). If $E_{01} = 4\\ \\text{V/m}$ and $E_{02} = 2\\ \\text{V/m}$, the electric field amplitude of the emerging light beam from the polarizer is ________ V/m.\n\n(up to two decimal places)",
+          "answer": {
+            "min": 3.59,
+            "max": 3.63
+          }
+        },
+        {
+          "number": 58,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "A wedge-shaped thin film is formed using soap-water solution. The refractive index of the film is $1.25$. At near normal incidence, when the film is illuminated by a monochromatic light of wavelength $600\\ \\text{nm}$, $10$ interference fringes per cm are observed. The wedge angle (in radians) is ________ $\\times 10^{-5}$.\n\n(in integer)",
+          "answer": 24
+        },
+        {
+          "number": 59,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In an orthorhombic crystal, the lattice constants are $3.0\\ \\text{Å}$, $3.2\\ \\text{Å}$, and $4.0\\ \\text{Å}$. The distance $d_{101}$ between the successive $(101)$ planes is ________ Å.\n\n(up to one decimal place)",
+          "answer": {
+            "min": 2.3,
+            "max": 2.5
+          }
+        },
+        {
+          "number": 60,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider a chamber at room temperature ($27^\\circ\\text{C}$) filled with a gas having a molecular diameter of $0.35\\ \\text{nm}$. The pressure (in Pascal) to which the chamber needs to be evacuated so that the molecules have a mean free path of $1\\ \\text{km}$ is ________ $\\times 10^{-5}\\ \\text{Pa}$.\n\n(Boltzmann constant $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$)\n\n(up to two decimal places)",
+          "answer": {
+            "min": 0.7,
+            "max": 1.2
+          }
+        }
+      ]
+    }
+  ]
+}
