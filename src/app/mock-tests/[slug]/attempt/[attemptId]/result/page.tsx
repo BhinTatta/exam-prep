@@ -167,7 +167,14 @@ export default async function MockResultPage({
                         state === "unattempted" && "bg-muted text-muted-foreground"
                       )}
                     >
-                      {state === "correct" ? "Correct" : state === "incorrect" ? "Incorrect" : "Not attempted"} ·{" "}
+                      {q.marksToAll
+                        ? "Marks to all"
+                        : state === "correct"
+                          ? "Correct"
+                          : state === "incorrect"
+                            ? "Incorrect"
+                            : "Not attempted"}{" "}
+                      ·{" "}
                       {formatMarks(r?.marksAwarded ?? 0, { sign: true })} / {formatMarks(q.marks)}
                     </span>
                   </span>
@@ -175,20 +182,29 @@ export default async function MockResultPage({
 
                 <QuestionPrompt number={q.number} prompt={q.prompt} imageUrl={q.imageUrl} />
 
+                {q.marksToAll && (
+                  <p className="mt-3 rounded-lg border border-dashed px-3 py-2 text-sm text-muted-foreground">
+                    The official answer key awards this question&apos;s marks to every candidate, so there is no
+                    correct answer and everyone gets full marks for it.
+                  </p>
+                )}
+
                 {q.type === "NAT" ? (
                   <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
                     <div className="rounded-lg border px-3 py-2">
                       <dt className="text-xs text-muted-foreground">{isOwner ? "Your answer" : "Student's answer"}</dt>
                       <dd className="font-mono font-semibold">{r?.numericAnswer ?? "—"}</dd>
                     </div>
-                    <div className="rounded-lg border border-green-600/40 bg-green-600/5 px-3 py-2">
-                      <dt className="text-xs text-muted-foreground">Accepted answer</dt>
-                      <dd className="font-mono font-semibold">
-                        {q.natMin === q.natMax
-                          ? formatNat(q.natMin ?? 0)
-                          : `${formatNat(q.natMin ?? 0)} to ${formatNat(q.natMax ?? 0)}`}
-                      </dd>
-                    </div>
+                    {!q.marksToAll && (
+                      <div className="rounded-lg border border-green-600/40 bg-green-600/5 px-3 py-2">
+                        <dt className="text-xs text-muted-foreground">Accepted answer</dt>
+                        <dd className="font-mono font-semibold">
+                          {q.natMin === q.natMax
+                            ? formatNat(q.natMin ?? 0)
+                            : `${formatNat(q.natMin ?? 0)} to ${formatNat(q.natMax ?? 0)}`}
+                        </dd>
+                      </div>
+                    )}
                   </dl>
                 ) : (
                   <ul className="mt-4 flex flex-col gap-2">
@@ -201,7 +217,7 @@ export default async function MockResultPage({
                           className={cn(
                             "flex items-start gap-3 rounded-lg border px-3 py-2.5 text-sm",
                             isCorrect && "border-green-600/50 bg-green-600/5",
-                            isChosen && !isCorrect && "border-red-600/50 bg-red-600/5"
+                            isChosen && !isCorrect && !q.marksToAll && "border-red-600/50 bg-red-600/5"
                           )}
                         >
                           <span className="w-5 shrink-0 font-semibold">{opt.id}.</span>
@@ -213,7 +229,7 @@ export default async function MockResultPage({
                               </span>
                             )}
                             {isChosen && (
-                              <span className={cn(!isCorrect && "text-red-700 dark:text-red-400")}>
+                              <span className={cn(!isCorrect && !q.marksToAll && "text-red-700 dark:text-red-400")}>
                                 {isOwner ? "You chose this" : "Chosen"}
                               </span>
                             )}

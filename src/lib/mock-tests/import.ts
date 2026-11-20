@@ -78,6 +78,7 @@ export async function importPaper(prisma: PrismaClient, raw: unknown): Promise<I
             natMax: q.natMax,
             marks: q.marks,
             negativeMarks: q.negativeMarks,
+            marksToAll: q.marksToAll,
             explanation: q.explanation,
           };
           await tx.mockQuestion.upsert({

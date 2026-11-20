@@ -9,6 +9,8 @@ export type ScorableQuestion = {
   natMax: number | null;
   marks: number;
   negativeMarks: number;
+  /** "Marks to all" in the official key: full marks for every attempt. */
+  marksToAll?: boolean;
 };
 
 export type ScoredResponse = ResponseEntry & { isCorrect: boolean | null; marksAwarded: number | null };
@@ -81,6 +83,31 @@ export function scoreMockAttempt(
     }
 
     const entry = entryByQuestion.get(q.id);
+
+    if (q.marksToAll) {
+      // JAM awards these to every candidate, so they count as correct whether
+      // or not the student touched them. A response row is written even for
+      // an unseen question, so the review and the analysis agree with the score.
+      score += q.marks;
+      correctCount += 1;
+      if (stat) {
+        stat.attempted += 1;
+        stat.correct += 1;
+        stat.score += q.marks;
+      }
+      const answered = entry && isAnsweredStatus(entry.status);
+      responses.push({
+        questionId: q.id,
+        status: entry?.status ?? "NOT_VISITED",
+        selectedOptionIds: answered ? entry.selectedOptionIds : [],
+        numericAnswer: answered ? entry.numericAnswer : null,
+        timeSpentSeconds: entry?.timeSpentSeconds ?? 0,
+        isCorrect: true,
+        marksAwarded: roundMarks(q.marks),
+      });
+      continue;
+    }
+
     if (!entry) continue;
 
     const verdict = isAnsweredStatus(entry.status) ? judge(q, entry) : null;

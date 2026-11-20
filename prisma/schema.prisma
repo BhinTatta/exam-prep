@@ -770,6 +770,9 @@ model MockQuestion {
 
   marks         Float
   negativeMarks Float   @default(0) // stored positive; 1/3 for a 1-mark JAM MCQ
+  // "Marks to all" in the official key (a flawed question): every attempt gets
+  // full marks for it, answered or not, and it has no answer key.
+  marksToAll    Boolean @default(false)
   explanation   String? @db.Text // optional worked solution shown after submission
 
   responses MockResponse[]

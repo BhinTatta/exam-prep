@@ -145,7 +145,12 @@ export default async function AdminMockTestPage({ params }: { params: Promise<{ 
                     {q.topic && <span className="text-muted-foreground">· {q.topic}</span>}
                   </div>
                   <QuestionPrompt number={q.number} prompt={q.prompt} imageUrl={q.imageUrl} className="text-sm" />
-                  {q.type === "NAT" ? (
+                  {q.marksToAll && (
+                    <p className="mt-3 text-sm font-medium text-green-700 dark:text-green-400">
+                      Marks to all — every attempt gets +{formatMarks(q.marks)}; no answer key.
+                    </p>
+                  )}
+                  {q.marksToAll && q.type === "NAT" ? null : q.type === "NAT" ? (
                     <p className="mt-3 text-sm">
                       Accepted:{" "}
                       <span className="font-mono font-semibold text-green-700 dark:text-green-400">

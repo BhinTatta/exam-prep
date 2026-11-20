@@ -110,6 +110,11 @@ Details that matter:
 - **Negative marks** default to the JAM rule — one third of the marks on an MCQ,
   zero on MSQ and NAT. Override with `"negativeMarks": "2/3"` (a fraction
   string) or a number.
+- **Marks to all**: when the official key says "MTA" (a flawed question whose
+  marks went to every candidate), write `"marksToAll": true` and leave
+  `"answer"` out. Every attempt then gets the question's full marks whether or
+  not it was answered, and the review labels it "Marks to all". Options stay,
+  so the question still reads as printed.
 - **Options with pictures**: use objects instead of strings —
   `{ "label": "optional text", "image": "q7-a.png" }`. Ids still default to
   A, B, C…; set `"id"` to override.
@@ -133,7 +138,8 @@ official key and ask for a paper file.
    or SVG), named by question: `q12.png`, `q12-a.png` for option figures.
 3. Take answers from the **official final key**, not from solving the paper. NAT
    ranges go in exactly as the key gives them. If the key marks a question as
-   "marks to all" or dropped, say so rather than guessing an answer.
+   "marks to all", use `"marksToAll": true` (above) rather than guessing an
+   answer.
 4. `--check`, import as a draft, then proof-read every question at
    `/admin/mock-tests/<id>` against the PDF — that page shows each prompt
    rendered with its key. Publish only after that.
