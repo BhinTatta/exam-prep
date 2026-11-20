@@ -1,0 +1,856 @@
+{
+  "slug": "jam-physics-2024",
+  "title": "JAM Physics 2024",
+  "exam": "IIT JAM",
+  "subject": "physics",
+  "year": 2024,
+  "description": "The JAM 2024 Physics (PH) paper, conducted by IIT Madras — all 60 questions. Q38 is marked \"marks to all\" in the answer key, so every attempt gets its 2 marks.",
+  "durationMinutes": 180,
+  "calculator": true,
+  "published": true,
+  "sections": [
+    {
+      "name": "Section A",
+      "instructions": "Multiple Choice Questions (MCQ). Q.1 – Q.10 carry ONE mark each and Q.11 – Q.30 carry TWO marks each. Each question has four options, of which only one is correct. For a wrong answer, 1/3 mark is deducted on a one-mark question and 2/3 mark on a two-mark question.",
+      "questions": [
+        {
+          "number": 1,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The total number of $\\text{Na}$ and $\\text{Cl}$ ions per unit cell of the $\\text{NaCl}$ crystal is:",
+          "options": [
+            "$2$",
+            "$4$",
+            "$8$",
+            "$16$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The sum of three binary numbers, $10110.10$, $11010.01$, and $10101.11$, in decimal system is:",
+          "options": [
+            "$70.75$",
+            "$70.25$",
+            "$70.50$",
+            "$69.50$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Which of the following matrices is Hermitian as well as unitary?",
+          "options": [
+            "$\\begin{pmatrix} 0 & -i \\\\ i & 0 \\end{pmatrix}$",
+            "$\\begin{pmatrix} 0 & i \\\\ i & 0 \\end{pmatrix}$",
+            "$\\begin{pmatrix} 1 & -i \\\\ i & 1 \\end{pmatrix}$",
+            "$\\begin{pmatrix} 0 & 1+i \\\\ 1-i & 0 \\end{pmatrix}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "The divergence of a 3-dimensional vector $\\dfrac{\\hat{r}}{r^3}$ ($\\hat{r}$ is the unit radial vector) is:",
+          "options": [
+            "$-\\dfrac{1}{r^4}$",
+            "zero",
+            "$\\dfrac{1}{r^3}$",
+            "$-\\dfrac{3}{r^4}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 5,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "The magnitudes of spin magnetic moments of electron, proton and neutron are $\\mu_\\mathrm{e}$, $\\mu_\\mathrm{p}$ and $\\mu_\\mathrm{n}$, respectively. Then,",
+          "options": [
+            "$\\mu_\\mathrm{e} > \\mu_\\mathrm{p} > \\mu_\\mathrm{n}$",
+            "$\\mu_\\mathrm{e} = \\mu_\\mathrm{p} > \\mu_\\mathrm{n}$",
+            "$\\mu_\\mathrm{e} < \\mu_\\mathrm{p} < \\mu_\\mathrm{n}$",
+            "$\\mu_\\mathrm{e} < \\mu_\\mathrm{p} = \\mu_\\mathrm{n}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "A particle moving along the $x$-axis approaches $x = 0$ from $x = -\\infty$ with a total energy $E$. It is subjected to a potential $V(x)$. For time $t \\to \\infty$, the probability density $P(x)$ of the particle is schematically shown in the figure.\n\nThe correct option for the potential $V(x)$ is:",
+          "image": "q6.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q6-a.png"
+            },
+            {
+              "label": "",
+              "image": "q6-b.png"
+            },
+            {
+              "label": "",
+              "image": "q6-c.png"
+            },
+            {
+              "label": "",
+              "image": "q6-d.png"
+            }
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 7,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "A plane electromagnetic wave is incident on an interface AB separating two media (refractive indices $n_1 = 1.5$ and $n_2 = 2.0$) at Brewster angle $\\theta_B$, as schematically shown in the figure. The angle $\\alpha$ (in degrees) between the reflected wave and the refracted wave is:",
+          "image": "q7.png",
+          "options": [
+            "$120$",
+            "$116$",
+            "$90$",
+            "$74$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "If the electric field of an electromagnetic wave is given by, $$\\vec{E} = (4\\hat{x} + 3\\hat{y})\\,e^{i(\\omega t + ax - 600y)},$$ then the value of $a$ is:\n\n(all values are in the SI units)",
+          "options": [
+            "$450$",
+            "$-450$",
+            "$800$",
+            "$-800$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A vector field is expressed in the cylindrical coordinate system $(s, \\phi, z)$ as, $$\\vec{F} = \\frac{A}{s}\\hat{s} + \\frac{B}{s}\\hat{z}.$$ If this field represents an electrostatic field, then the possible values of $A$ and $B$, respectively, are:",
+          "options": [
+            "$1$ and $0$",
+            "$0$ and $1$",
+            "$-1$ and $1$",
+            "$1$ and $-1$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 10,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "Which of the following types of motion may be represented by the trajectory, $$y(x) = ax^2 + bx + c\\ ?$$ (Here $a$, $b$, and $c$ are constants; $x$, $y$ are the position coordinates)",
+          "options": [
+            "projectile motion in a uniform gravitational field",
+            "simple harmonic motion",
+            "uniform circular motion",
+            "motion on an inclined plane in a uniform gravitational field"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 11,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "A crystal plane of a lattice intercepts the principal axes $\\vec{a}_1$, $\\vec{a}_2$, and $\\vec{a}_3$ at $3a_1$, $4a_2$, and $2a_3$, respectively. The Miller indices of the plane are:",
+          "options": [
+            "$(436)$",
+            "$(342)$",
+            "$(634)$",
+            "$(243)$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 12,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The number of atoms in the basis of a primitive cell of hexagonal closed packed structure is:",
+          "options": [
+            "$1$",
+            "$2$",
+            "$3$",
+            "$4$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 13,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Consider the following logic circuit.\n\nThe output Y is LOW when:",
+          "image": "q13.png",
+          "options": [
+            "$A$ is high and $B$ is low",
+            "$A$ is low and $B$ is high",
+            "both $A$ and $B$ are low",
+            "both $A$ and $B$ are high"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 14,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "The value of the line integral for the vector, $$\\vec{v} = 2\\hat{x} + yz^2\\hat{y} + \\left(3y + z^2\\right)\\hat{z}$$ along the closed path OABO (as shown in the figure) is:\n\n(Path $AB$ is the arc of a circle of unit radius)",
+          "image": "q14.png",
+          "options": [
+            "$\\dfrac{1}{4}(3\\pi - 1)$",
+            "$3\\pi - \\dfrac{1}{4}$",
+            "$\\dfrac{3\\pi}{4} - 1$",
+            "$3\\pi - 1$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 15,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "In the $x$-$y$ plane, a vector is given by $$\\vec{F}(x, y) = \\frac{-y\\hat{x} + x\\hat{y}}{x^2 + y^2}.$$ The magnitude of the flux of $\\vec{\\nabla}\\times\\vec{F}$, through a circular loop of radius $2$, centered at the origin, is:",
+          "options": [
+            "$\\pi$",
+            "$2\\pi$",
+            "$4\\pi$",
+            "$0$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 16,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "The roots of the polynomial, $f(z) = z^4 - 8z^3 + 27z^2 - 38z + 26$, are $z_1$, $z_2$, $z_3$, & $z_4$, where $z$ is a complex variable. Which of the following statements is correct?",
+          "options": [
+            "$\\dfrac{z_1 + z_2 + z_3 + z_4}{z_1 z_2 z_3 z_4} = -\\dfrac{4}{19}$",
+            "$\\dfrac{z_1 + z_2 + z_3 + z_4}{z_1 z_2 z_3 z_4} = \\dfrac{4}{13}$",
+            "$\\dfrac{z_1 z_2 z_3 z_4}{z_1 + z_2 + z_3 + z_4} = -\\dfrac{26}{27}$",
+            "$\\dfrac{z_1 z_2 z_3 z_4}{z_1 + z_2 + z_3 + z_4} = \\dfrac{13}{19}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 17,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "The ultraviolet catastrophe in the classical (Rayleigh-Jeans) theory of cavity radiation is attributed to the assumption that",
+          "options": [
+            "the standing waves of all allowed frequencies in the cavity have the same average energy",
+            "the density of the standing waves in the cavity is independent of the shape and size of the cavity",
+            "the allowed frequencies of the standing waves inside the cavity have no upper limit",
+            "the number of allowed frequencies for the standing waves in a frequency range $\\nu$ to $(\\nu + d\\nu)$ is proportional to $\\nu^2$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 18,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "Given that the rest mass of electron is $0.511\\ \\text{MeV}/c^2$, the speed (in units of $c$) of an electron with kinetic energy $5.11\\ \\text{MeV}$ is closest to:",
+          "options": [
+            "$0.996$",
+            "$0.993$",
+            "$0.990$",
+            "$0.998$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 19,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "A one-dimensional infinite square-well potential is given by: $$V(x) = \\begin{cases} 0 & \\text{for } -\\dfrac{a}{2} < x < +\\dfrac{a}{2} \\\\ \\infty & \\text{elsewhere} \\end{cases}$$ Let $E_e(x)$ and $\\psi_e(x)$ be the ground state energy and the corresponding wave function, respectively, if an electron (e) is trapped in that well. Similarly, let $E_\\mu(x)$ and $\\psi_\\mu(x)$ be the corresponding quantities, if a muon ($\\mu$) is trapped in the well. Choose the correct option:",
+          "options": [
+            {
+              "label": "",
+              "image": "q19-a.png"
+            },
+            {
+              "label": "",
+              "image": "q19-b.png"
+            },
+            {
+              "label": "",
+              "image": "q19-c.png"
+            },
+            {
+              "label": "",
+              "image": "q19-d.png"
+            }
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 20,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "In a Newton's rings experiment (using light of free space wavelength $580\\ \\text{nm}$), there is an air gap of height $d$ between the glass plate and a plano-convex lens (see figure). The central fringe is observed to be bright.\n\nThe least possible value of $d$ (in $\\text{nm}$) is:",
+          "image": "q20.png",
+          "options": [
+            "$145$",
+            "$290$",
+            "$580$",
+            "$72.5$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 21,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Linearly polarized light (free space wavelength $\\lambda_0 = 600\\ \\text{nm}$) is incident normally on a retarding plate ($n_e - n_o = 0.05$ at $\\lambda_0 = 600\\ \\text{nm}$). The emergent light is observed to be linearly polarized, irrespective of the angle between the direction of polarization and the optic axis of the plate. The minimum thickness (in $\\mu\\text{m}$) of the plate is:",
+          "options": [
+            "$6$",
+            "$3$",
+            "$2$",
+            "$1$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 22,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A $15.7\\ \\text{mW}$ laser beam has a diameter of $4\\ \\text{mm}$. If the amplitude of the associated magnetic field is expressed as $\\dfrac{A}{\\sqrt{\\varepsilon_0 c^3}}$, the value of $A$ is:\n\n($\\varepsilon_0$ is the free space permittivity and $c$ is the speed of light)",
+          "options": [
+            "$50$",
+            "$35.4$",
+            "$100$",
+            "$70.8$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 23,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "The plane $z = 0$ separates two linear dielectric media with relative permittivities $\\varepsilon_{r1} = 4$ and $\\varepsilon_{r2} = 3$, respectively. There is no free charge at the interface. If the electric field in the medium 1 is $\\vec{E}_1 = 3\\hat{x} + 2\\hat{y} + 4\\hat{z}$, then the displacement vector $\\vec{D}_2$ in medium 2 is:\n\n($\\varepsilon_0$ is the permittivity of free space)",
+          "options": [
+            "$(3\\hat{x} + 4\\hat{y} + 6\\hat{z})\\,\\varepsilon_0$",
+            "$(3\\hat{x} + 6\\hat{y} + 8\\hat{z})\\,\\varepsilon_0$",
+            "$(9\\hat{x} + 6\\hat{y} + 16\\hat{z})\\,\\varepsilon_0$",
+            "$(4\\hat{x} + 2\\hat{y} + 3\\hat{z})\\,\\varepsilon_0$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 24,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A tank, placed on the ground, is filled with water up to a height $h$. A small hole is made at a height $h_1$ such that $h_1 < h$. The water jet emerging from the hole strikes the ground at a horizontal distance $D$, as shown schematically in the figure. Which of the following statements is correct?\n\n($g$ is the acceleration due to gravity)",
+          "image": "q24.png",
+          "options": [
+            "Velocity at $h_1$ is $\\sqrt{2gh_1}$",
+            "$D = 2(h - h_1)$",
+            "$D$ will be maximum when $h_1 = \\dfrac{2}{3}h$",
+            "The maximum value of $D$ is $h$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 25,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "An incompressible fluid is flowing through a vertical pipe (height $h$ and cross-sectional area $A_o$). A thin mesh, having $n$ circular holes of area $A_h$, is fixed at the bottom end of the pipe. The speed of the fluid entering the top-end of the pipe is $v_o$. The volume flow rate from an individual hole of the mesh is given by:\n\n($g$ is the acceleration due to gravity)",
+          "options": [
+            "$\\dfrac{A_o}{n}\\sqrt{v_o^2 + 2gh}$",
+            "$\\dfrac{A_o}{n}\\sqrt{v_o^2 + gh}$",
+            "$n(A_o - A_h)\\sqrt{v_o^2 + 2gh}$",
+            "$n(A_o - A_h)\\sqrt{v_o^2 + gh}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 26,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A ball is dropped from a height $h$ to the ground. If the coefficient of restitution is $e$, the time required for the ball to stop bouncing is proportional to:",
+          "options": [
+            "$\\dfrac{2+e}{1-e}$",
+            "$\\dfrac{1+e}{1-e}$",
+            "$\\dfrac{1-e}{1+e}$",
+            "$\\dfrac{2-e}{1+e}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 27,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "A cylinder-piston system contains $N$ atoms of an ideal gas. If $t_\\text{avg}$ is the average time between successive collisions of a given atom with other atoms. If the temperature $T$ of the gas is increased isobarically, then $t_\\text{avg}$ is proportional to:",
+          "options": [
+            "$\\sqrt{T}$",
+            "$\\dfrac{1}{\\sqrt{T}}$",
+            "$T$",
+            "$\\dfrac{1}{T}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "A gas consists of particles, each having three translational and three rotational degrees of freedom. The ratio of specific heats, $C_p/C_v$, is:\n\n($C_p$ and $C_v$ are the specific heats at constant pressure and constant volume, respectively)",
+          "options": [
+            "$5/3$",
+            "$7/5$",
+            "$4/3$",
+            "$3/2$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 29,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "If two traveling waves, given by $$y_1 = A_0\\sin(kx - \\omega t) \\quad\\text{and}\\quad y_2 = A_0\\sin(\\alpha kx - \\beta\\omega t)$$ are superposed, which of the following statements is correct?",
+          "options": [
+            "For $\\alpha = \\beta = 1$, the resultant wave is a standing wave",
+            "For $\\alpha = \\beta = -1$, the resultant wave is a standing wave",
+            "For $\\alpha = \\beta = 2$, the carrier frequency of the resultant wave is $\\dfrac{3}{2}\\omega$",
+            "For $\\alpha = \\beta = 2$, the carrier frequency of the resultant wave is $3\\omega$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 30,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Suppose that there is a dispersive medium whose refractive index depends on the wavelength as given by $n(\\lambda) = n_0 + \\dfrac{a}{\\lambda^2} - \\dfrac{b}{\\lambda^4}$. The value of $\\lambda$ at which the group and phase velocities would be the same, is:",
+          "options": [
+            "$\\sqrt{\\dfrac{2b}{a}}$",
+            "$\\sqrt{\\dfrac{b}{2a}}$",
+            "$\\sqrt{\\dfrac{3b}{a}}$",
+            "$\\sqrt{\\dfrac{b}{3a}}$"
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "name": "Section B",
+      "instructions": "Multiple Select Questions (MSQ). Q.31 – Q.40 carry TWO marks each. One or more options are correct. Marks are awarded only if all the correct options and no wrong option are selected. There is no negative marking and no partial marking.",
+      "questions": [
+        {
+          "number": 31,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "A pure Si crystal can be converted to an $n$-type crystal by doping with",
+          "options": [
+            "P",
+            "As",
+            "Sb",
+            "In"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 32,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In the following OP-AMP circuit, $v_\\text{in}$ and $v_\\text{out}$ represent the input and output signals, respectively.\n\nChoose the correct statement(s):",
+          "image": "q32.png",
+          "options": [
+            "$v_\\text{out}$ is out-of-phase with $v_\\text{in}$",
+            "Gain is unity when $R_1 = R_2$",
+            "$v_\\text{out}$ is in-phase with $v_\\text{in}$",
+            "$v_\\text{out}$ is zero"
+          ],
+          "answer": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "number": 33,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "A spring-mass system (spring constant $80\\ \\text{N/m}$ and damping coefficient $40\\ \\text{N s/m}$), initially at rest, is lying along the $y$-axis in the horizontal plane. One end of the spring is fixed and the mass ($5\\ \\text{kg}$) is attached at its other end. The mass is pulled along the $y$-axis by $0.5\\ \\text{m}$ from its equilibrium position and then released. Choose the correct statement(s).\n\n(Ignore mass of the spring)",
+          "options": [
+            "Motion will be under damped",
+            "Trajectory of the mass will be $y(t) = \\dfrac{1}{2}(1 + t)\\,e^{-4t}$",
+            "Motion will be critically damped",
+            "Trajectory of the mass will be $y(t) = \\dfrac{1}{2}(1 + 4t)\\,e^{-4t}$"
+          ],
+          "answer": [
+            "C",
+            "D"
+          ]
+        },
+        {
+          "number": 34,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "Consider two different Compton scattering experiments, in which X-rays and $\\gamma$ rays of wavelength ($\\lambda$) $1.024\\ \\text{Å}$ and $0.049\\ \\text{Å}$, respectively, are scattered from stationary free electrons. The scattered wavelength ($\\lambda'$) is measured as a function of the scattering angle ($\\theta$). If Compton shift is $\\Delta\\lambda = \\lambda' - \\lambda$, then which of the following statement(s) is/are true:\n\n($h = 6.63 \\times 10^{-34}\\ \\text{J s}$, $m_e = 9.11 \\times 10^{-31}\\ \\text{kg}$, $c = 3 \\times 10^8\\ \\text{m/s}$)",
+          "options": [
+            "For $\\gamma$-rays, $\\lambda'_\\text{max} \\approx 0.098\\ \\text{Å}$",
+            "For X-rays, $(\\Delta\\lambda)_\\text{max}$ is observed at $\\theta = 180^\\circ$",
+            "For X-rays, $(\\Delta\\lambda)_\\text{max} \\approx 1.049\\ \\text{Å}$",
+            "For $\\gamma$-rays, at $\\theta = 90^\\circ$, $\\lambda' \\approx 0.049\\ \\text{Å}$"
+          ],
+          "answer": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "number": 35,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle of mass $m$, having an energy $E$ and angular momentum $L$, is in a parabolic trajectory around a planet of mass $M$. If the distance of the closest approach to the planet is $r_\\text{m}$, which of the following statement(s) is(are) true?\n\n($G$ is the Gravitational constant)",
+          "options": [
+            "$E > 0$",
+            "$E = 0$",
+            "$L = \\sqrt{2GMm^2 r_\\text{m}}$",
+            "$L = \\sqrt{2GM^2 m\\, r_\\text{m}}$"
+          ],
+          "answer": [
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 36,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "The inertial frame $S'$ is moving away from the inertial frame $S$ with a speed $v = 0.6c$ along the negative $x$-direction (see figure). The origins $O'$ and $O$ of the frames coincide at $t = t' = 0$. As observed in the frame $S'$, two events occur simultaneously at two points on the $x'$-axis with a separation of $\\Delta x' = 5\\ \\text{m}$. If, $\\Delta t$ and $\\Delta x$ are the magnitudes of the time interval and the space interval, respectively, between the events in $S$, then which of the following statements is(are) correct?\n\n($c = 3 \\times 10^8\\ \\text{m/s}$)",
+          "image": "q36.png",
+          "options": [
+            "$\\Delta t = 12.5\\ \\text{ns}$",
+            "$\\Delta t = 4.2\\ \\text{ns}$",
+            "$\\Delta x = 10.6\\ \\text{m}$",
+            "$\\Delta x = 6.25\\ \\text{m}$"
+          ],
+          "answer": [
+            "A",
+            "D"
+          ]
+        },
+        {
+          "number": 37,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "For the LCR AC-circuit (resonance frequency $\\omega_0$) shown in the figure below, choose the correct statement(s).",
+          "image": "q37.png",
+          "options": [
+            "$\\omega_0$ depends on the values of $L$, $C$, and $R$",
+            "At $\\omega = \\omega_0$, voltage $V_R$ and current $I$ are in-phase",
+            "The amplitude of $V_R$ at $\\omega = \\omega_0/2$ is independent of $R$",
+            "The amplitude of $V_R$ at $\\omega = \\omega_0$ is independent of $L$ and $C$"
+          ],
+          "answer": [
+            "B",
+            "D"
+          ]
+        },
+        {
+          "number": 38,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "The $P$-$V$ diagram of an engine is shown in the figure below. The temperatures at points 1, 2, 3 and 4 are $T_1$, $T_2$, $T_3$ and $T_4$, respectively. $1 \\to 2$ and $3 \\to 4$ are adiabatic processes, and $2 \\to 3$ and $4 \\to 1$ are isochoric processes.\n\nIdentify the correct statement(s).\n\n[$\\gamma$ is the ratio of specific heats $C_p$ (at constant $P$) and $C_v$ (at constant $V$)]",
+          "image": "q38.png",
+          "options": [
+            "$T_1 T_3 = T_2 T_4$",
+            "The efficiency of the engine is $1 - \\left(\\dfrac{P_1}{P_2}\\right)^{\\frac{\\gamma - 1}{\\gamma}}$",
+            "The change in entropy for the entire cycle is zero",
+            "$T_1 T_2 = T_3 T_4$"
+          ],
+          "marksToAll": true
+        },
+        {
+          "number": 39,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "A whistle S of sound frequency $f$ is oscillating with angular frequency $\\omega$ along the $x$-axis. Its instantaneous position and the velocity are given by $x(t) = a\\sin(\\omega t)$ and $v(t) = v_0\\cos(\\omega t)$, respectively. An observer P is located on the $y$-axis at a distance $L$ from the origin (see figure). Let $v_{PS}(t)$ be the component of $v(t)$ along the line joining the source and the observer. Choose the correct option(s):\n\n(Here $a$ and $v_0$ are constants)",
+          "image": "q39.png",
+          "options": [
+            "$v_{PS}(t) = \\dfrac{1}{2}\\dfrac{a v_0}{\\sqrt{a^2\\sin^2\\omega t + L^2}}\\sin(2\\omega t)$",
+            "The observed frequency will be $f$ when the source is at $x = 0$ and $x = \\pm a$",
+            "The observed frequency will be $f$ when the source is at position $x = \\pm\\dfrac{a}{2}$",
+            "$v_{PS}(t) = \\dfrac{1}{2}\\dfrac{a v_0}{\\sqrt{a^2 + L^2}}\\sin(2\\omega t)$"
+          ],
+          "answer": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "number": 40,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "One mole of an ideal monoatomic gas, initially at temperature $T_o$ is expanded from an initial volume $V_o$ to $2.5V_o$. Which of the following statements is(are) correct?\n\n($R$ is the ideal gas constant)",
+          "options": [
+            "When the process is isothermal, the work done is $RT_o\\ln 2$",
+            "When the process is isothermal, the change in internal energy is zero",
+            "When the process is isobaric, the work done is $\\dfrac{3}{2}RT_o$",
+            "When the process is isobaric, the change in internal energy is $\\dfrac{9}{2}RT_o$"
+          ],
+          "answer": [
+            "B",
+            "C"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Section C",
+      "instructions": "Numerical Answer Type (NAT) questions. Q.41 – Q.50 carry ONE mark each and Q.51 – Q.60 carry TWO marks each. Enter the answer as a number using the keypad; no options are shown. There is no negative marking.",
+      "questions": [
+        {
+          "number": 41,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Consider a $p$-$n$ junction diode which has $10^{23}$ acceptor-atoms$/\\text{m}^3$ in the $p$-side and $10^{22}$ donor-atoms$/\\text{m}^3$ in the $n$-side. If the depletion width in the $p$-side is $0.16\\ \\mu\\text{m}$, then the value of depletion width in the $n$-side will be ________ $\\mu\\text{m}$.\n\n(Rounded off to one decimal place)",
+          "answer": 1.6
+        },
+        {
+          "number": 42,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "The co-ordinate system $(x, y, z)$ is transformed to the system $(u, v, w)$, as given by: $$\\begin{aligned} u &= 2x + 3y - z \\\\ v &= x - 4y + z \\\\ w &= x + y \\end{aligned}$$ The Jacobian of the above transformation is ________",
+          "answer": 4
+        },
+        {
+          "number": 43,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Two sides of a triangle $OAB$ are given by: $$\\overrightarrow{OA} = \\hat{x} + 2\\hat{y} + \\hat{z}, \\qquad \\overrightarrow{OB} = 2\\hat{x} - \\hat{y} + 3\\hat{z}$$ The area of the triangle is ________.\n\n(Rounded off to one decimal place)",
+          "answer": {
+            "min": 4.2,
+            "max": 4.4
+          }
+        },
+        {
+          "number": 44,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "A particle of mass $1\\ \\text{kg}$, initially at rest, starts sliding down from the top of a frictionless inclined plane of angle $\\pi/6$ (as schematically shown in the figure). The magnitude of the torque on the particle about the point O after a time $2$ seconds is ________ $\\text{N m}$.\n\n(Take $g = 10\\ \\text{m/s}^2$)\n\n(Rounded off to nearest integer)",
+          "image": "q44.png",
+          "answer": {
+            "min": 85,
+            "max": 88
+          }
+        },
+        {
+          "number": 45,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "The moment of inertia of a solid hemisphere (mass $M$ and radius $R$) about the axis passing through the hemisphere and parallel to its flat surface is $\\dfrac{2}{5}MR^2$. The distance of the axis from the center of mass of the hemisphere (in units of $R$) is ________.\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 0.36,
+            "max": 0.4
+          }
+        },
+        {
+          "number": 46,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Optics",
+          "prompt": "A collimated light beam of intensity $I_0$ is incident normally on an air-dielectric (refractive index $2.0$) interface. The intensity of the reflected light is ________ $I_0$.\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 0.1,
+            "max": 0.12
+          }
+        },
+        {
+          "number": 47,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A charge of $-9\\ \\text{C}$ is placed at the center of a concentric spherical shell made of a linear dielectric material (relative permittivity $9$) and having inner and outer radii of $0.1\\ \\text{m}$ and $0.2\\ \\text{m}$, respectively. The total charge induced on its inner surface is ________ C.\n\n(Rounded off to two decimal places)",
+          "image": "q47.png",
+          "answer": {
+            "min": 7.9,
+            "max": 8.1
+          }
+        },
+        {
+          "number": 48,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "A Zener diode (rating $10\\ \\text{V}$, $2\\ \\text{W}$) and a normal diode (turn-on voltage $0.7\\ \\text{V}$) are connected in a circuit as shown in the figure. The voltage drop $V_L$ across the $2\\ \\text{k}\\Omega$ resistance is ________ V.\n\n(Rounded off to one decimal place)",
+          "image": "q48.png",
+          "answer": 6.2
+        },
+        {
+          "number": 49,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "The Fermi energy of a system is $5.5\\ \\text{eV}$. At $500\\ \\text{K}$, the energy of a level for which the probability of occupancy is $0.2$, is ________ eV.\n\n(Boltzmann constant $k_B = 8.62 \\times 10^{-5}\\ \\text{eV/K}$)\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 5.55,
+            "max": 5.57
+          }
+        },
+        {
+          "number": 50,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "One mole of an ideal monoatomic gas is heated in a closed container, first from $273\\ \\text{K}$ to $303\\ \\text{K}$, and then from $303\\ \\text{K}$ to $373\\ \\text{K}$. The net change in the entropy is ________ $R$.\n\n($R$ is the ideal gas constant)\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 0.44,
+            "max": 0.48
+          }
+        },
+        {
+          "number": 51,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "For a simple cubic crystal, the smallest inter-planar spacing $d$ that can be determined from its second order of diffraction using monochromatic X-rays of wavelength $1.32\\ \\text{Å}$ is ________ Å.\n\n(Round off to two decimal places)",
+          "answer": 1.32
+        },
+        {
+          "number": 52,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "A transistor ($\\beta = 100$, $V_{BE} = 0.7\\ \\text{V}$) is connected as shown in the circuit below.\n\nThe current $I_C$ will be ________ mA.\n\n(Rounded off to two decimal places)",
+          "image": "q52.png",
+          "answer": {
+            "min": 1.1,
+            "max": 1.15
+          }
+        },
+        {
+          "number": 53,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "In the Taylor expansion of function, $F(x) = e^x\\sin x$, around $x = 0$, the coefficient of $x^5$ is ________.\n\n(Rounded off to three decimal places)",
+          "answer": {
+            "min": -0.034,
+            "max": -0.032
+          }
+        },
+        {
+          "number": 54,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "A stationary nitrogen ($^{14}_{7}\\text{N}$) nucleus is bombarded with $\\alpha$-particle ($^{4}_{2}\\text{He}$) and the following nuclear reaction takes place: $$\\begin{array}{lccccccc} & {}^{4}_{2}\\text{He} & + & {}^{14}_{7}\\text{N} & \\to & {}^{17}_{8}\\text{O} & + & {}^{1}_{1}\\text{H} \\\\ \\text{Mass:} & 4.003u & & 14.003u & & 16.999u & & 1.008u \\end{array}$$ If the kinetic energies of $^{4}_{2}\\text{He}$ and $^{1}_{1}\\text{H}$ are $5.314\\ \\text{MeV}$ and $4.012\\ \\text{MeV}$, respectively, then the kinetic energy of $^{17}_{8}\\text{O}$ is ________ MeV.\n\n(Masses are given in units of $u = 931.5\\ \\text{MeV}/c^2$)\n\n(Rounded off to one decimal place)",
+          "answer": 0.4
+        },
+        {
+          "number": 55,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A satellite of mass $10\\ \\text{kg}$, in a circular orbit around a planet, is having a speed $v = 200\\ \\text{m/s}$. The total energy of the satellite is ________ kJ.\n\n(Rounded off to nearest integer)",
+          "answer": -200
+        },
+        {
+          "number": 56,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "When a system of multiple long narrow slits (width $2\\ \\mu\\text{m}$ and period $4\\ \\mu\\text{m}$) is illuminated with a laser of wavelength $600\\ \\text{nm}$, there are $40$ minima between the two consecutive principal maxima observed in its diffraction pattern. Then maximum resolving power of the system is ________",
+          "answer": 246
+        },
+        {
+          "number": 57,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "Consider a thick biconvex lens (thickness $t = 4\\ \\text{cm}$ and refractive index $n = 1.5$) whose magnitudes of the radii of curvature $R_1$ and $R_2$, of the first and second surfaces are $30\\ \\text{cm}$ and $20\\ \\text{cm}$, respectively. Surface 2 is silvered to act as mirror. A point object is placed at point $A$ on the axis ($OA = 60\\ \\text{cm}$) as shown in the figure. If its image is formed at point Q, the distance $d$ between O and Q is ________ cm.\n\n(Rounded off to two decimal places)",
+          "image": "q57.png",
+          "answer": {
+            "min": 3.55,
+            "max": 3.9
+          }
+        },
+        {
+          "number": 58,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "An unstable particle created at a point $P$ moves with a constant speed of $0.998c$ until it decays at a point $Q$. If the lifetime of the particle in its rest frame is $632\\ \\text{ns}$, the distance between points $P$ and $Q$ is ________ m.\n\n($c = 3 \\times 10^8\\ \\text{m/s}$)\n\n(Rounded off to the nearest integer)",
+          "answer": {
+            "min": 2992,
+            "max": 2994
+          }
+        },
+        {
+          "number": 59,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Two positive charges $Q$ and $2Q$ are kept at points A and B, separated by a distance $2d$, as shown in the figure. MCL is a semicircle of radius $2d$ centered at the origin O. If $Q = 2\\ \\text{C}$ and $d = 10\\ \\text{cm}$, the value of the line integral $\\displaystyle\\int_M^L \\vec{E}\\cdot d\\vec{l}$ (where $\\vec{E}$ represents electric field) along the path MCL will be ________ V.",
+          "image": "q59.png",
+          "answer": 0
+        },
+        {
+          "number": 60,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A time dependent magnetic field inside a long solenoid of radius $0.05\\ \\text{m}$ is given by $\\vec{B}(t) = B_0\\sin(\\omega t)\\,\\hat{z}$. If $\\omega = 100\\ \\text{rad/s}$ and $B_0 = 0.98\\ \\text{Weber/m}^2$, then the amplitude of the induced electric field at a distance of $0.07\\ \\text{m}$ from the axis of the solenoid is ________ V/m.\n\n(Rounded off to two decimal places)",
+          "answer": {
+            "min": 1.71,
+            "max": 1.75
+          }
+        }
+      ]
+    }
+  ]
+}
