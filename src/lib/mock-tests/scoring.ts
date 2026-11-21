@@ -1,10 +1,12 @@
-import { isAnsweredStatus, type MockSectionStat, type ResponseEntry } from "./types";
+import { isAnsweredStatus, parseAltAnswers, type MockSectionStat, type ResponseEntry } from "./types";
 
 export type ScorableQuestion = {
   id: string;
   sectionId: string;
   type: "MCQ" | "MSQ" | "NAT";
   correctOptionIds: string[];
+  /** Further option sets the key also accepts (stored Json; see parseAltAnswers). */
+  altCorrectOptionIds?: unknown;
   natMin: number | null;
   natMax: number | null;
   marks: number;
@@ -44,7 +46,10 @@ function judge(q: ScorableQuestion, r: ResponseEntry): boolean | null {
   if (r.selectedOptionIds.length === 0) return null;
   const selected = new Set(r.selectedOptionIds);
   // MSQ follows the JAM rule: the exact set, or nothing. No partial credit.
-  return selected.size === q.correctOptionIds.length && q.correctOptionIds.every((id) => selected.has(id));
+  // Where the key accepts more than one set, matching any of them counts.
+  return [q.correctOptionIds, ...parseAltAnswers(q.altCorrectOptionIds)].some(
+    (key) => selected.size === key.length && key.every((id) => selected.has(id))
+  );
 }
 
 /**

@@ -115,6 +115,10 @@ Details that matter:
   `"answer"` out. Every attempt then gets the question's full marks whether or
   not it was answered, and the review labels it "Marks to all". Options stay,
   so the question still reads as printed.
+- **More than one accepted answer**: when the key accepts alternatives
+  ("A,B,D OR D"), put the first in `"answer"` and the rest in
+  `"alsoAccepted": [["D"]]` (a list of option-id lists; a bare id is fine for
+  an MCQ). Matching any of them scores full marks, and the review lists them.
 - **Options with pictures**: use objects instead of strings —
   `{ "label": "optional text", "image": "q7-a.png" }`. Ids still default to
   A, B, C…; set `"id"` to override.

@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import { Prisma, type PrismaClient } from "@prisma/client";
 import { normalizePaper } from "./types";
 
 export type ImportSummary = {
@@ -74,6 +74,7 @@ export async function importPaper(prisma: PrismaClient, raw: unknown): Promise<I
             imageUrl: q.imageUrl,
             options: q.options ?? undefined,
             correctOptionIds: q.correctOptionIds,
+            altCorrectOptionIds: q.altCorrectOptionIds ?? Prisma.DbNull,
             natMin: q.natMin,
             natMax: q.natMax,
             marks: q.marks,

@@ -9,7 +9,7 @@ import { KatexContent } from "@/components/katex-content";
 import { DeleteMockTestButton, MockPublishToggle } from "@/components/admin/mock-test-actions";
 import { OptionContent, QuestionPrompt } from "@/components/mock-tests/question-content";
 import { formatMarks, formatNegative } from "@/lib/mock-tests/scoring";
-import { parseMockOptions } from "@/lib/mock-tests/types";
+import { parseAltAnswers, parseMockOptions } from "@/lib/mock-tests/types";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Users } from "lucide-react";
 
@@ -172,6 +172,14 @@ export default async function AdminMockTestPage({ params }: { params: Promise<{ 
                         </li>
                       ))}
                     </ul>
+                  )}
+                  {parseAltAnswers(q.altCorrectOptionIds).length > 0 && (
+                    <p className="mt-2 text-sm font-medium text-green-700 dark:text-green-400">
+                      The official key also accepts:{" "}
+                      {parseAltAnswers(q.altCorrectOptionIds)
+                        .map((ids) => ids.join(", "))
+                        .join(" or ")}
+                    </p>
                   )}
                   {q.explanation && (
                     <KatexContent text={q.explanation} className="mt-3 border-t pt-3 text-sm text-muted-foreground" />

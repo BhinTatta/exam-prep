@@ -773,6 +773,9 @@ model MockQuestion {
   // "Marks to all" in the official key (a flawed question): every attempt gets
   // full marks for it, answered or not, and it has no answer key.
   marksToAll    Boolean @default(false)
+  // MCQ/MSQ: further option sets the official key also accepts, e.g. Q37 of
+  // JAM 2023 ("A,B,D OR D") stores [["D"]] here. Null when there are none.
+  altCorrectOptionIds Json?
   explanation   String? @db.Text // optional worked solution shown after submission
 
   responses MockResponse[]
