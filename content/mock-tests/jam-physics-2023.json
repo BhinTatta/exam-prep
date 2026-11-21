@@ -1,0 +1,962 @@
+{
+  "slug": "jam-physics-2023",
+  "title": "JAM Physics 2023",
+  "exam": "IIT JAM",
+  "subject": "physics",
+  "year": 2023,
+  "description": "The JAM 2023 Physics (PH) paper, conducted by IIT Guwahati — all 60 questions, scored against the official master answer key. Q22 was marked \"marks to all\", and Q37 and Q39 accept either of two answers, as in the official key.",
+  "durationMinutes": 180,
+  "calculator": true,
+  "published": true,
+  "sections": [
+    {
+      "name": "Section A",
+      "instructions": "Multiple Choice Questions (MCQ). Q.1 – Q.10 carry ONE mark each and Q.11 – Q.30 carry TWO marks each. Each question has four options, of which only one is correct. For a wrong answer, 1/3 mark is deducted on a one-mark question and 2/3 mark on a two-mark question.",
+      "questions": [
+        {
+          "number": 1,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "For a cubic unit cell, the dashed arrow in which of the following figures represents the direction $[220]$?",
+          "options": [
+            {
+              "label": "",
+              "image": "q1-a.png"
+            },
+            {
+              "label": "",
+              "image": "q1-b.png"
+            },
+            {
+              "label": "",
+              "image": "q1-c.png"
+            },
+            {
+              "label": "",
+              "image": "q1-d.png"
+            }
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Which of the following fields has non-zero curl?",
+          "options": [
+            "$x\\hat{\\imath} + y\\hat{\\jmath} + z\\hat{k}$",
+            "$(y + z)\\hat{\\imath} + (x + z)\\hat{\\jmath} + (x + y)\\hat{k}$",
+            "$y^2\\hat{\\imath} + (2xy + z^2)\\hat{\\jmath} + 2yz\\hat{k}$",
+            "$xy\\hat{\\imath} + 2yz\\hat{\\jmath} + 3xz\\hat{k}$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 3,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Which of the following statements about the viscosity of a dilute ideal gas is correct?",
+          "options": [
+            "It is independent of pressure at fixed temperature",
+            "It increases with increasing pressure at fixed temperature",
+            "It is independent of temperature",
+            "It decreases with increasing temperature"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "The plot of the function $f(x) = \\big||x| - 1\\big|$ is",
+          "options": [
+            {
+              "label": "",
+              "image": "q4-a.png"
+            },
+            {
+              "label": "",
+              "image": "q4-b.png"
+            },
+            {
+              "label": "",
+              "image": "q4-c.png"
+            },
+            {
+              "label": "",
+              "image": "q4-d.png"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 5,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "A system has $N$ spins, where each spin is capable of existing in $4$ possible states. The difference in entropy of disordered states (where all possible spin configurations are equally probable) and ordered states is",
+          "options": [
+            "$2(N - 1)k_B\\ln 2$",
+            "$(N - 1)k_B\\ln 2$",
+            "$4k_B\\ln N$",
+            "$Nk_B\\ln 2$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Temperature ($T$) dependence of the total specific heat ($C_V$) for a two dimensional metallic solid at low temperatures is",
+          "options": [
+            {
+              "label": "",
+              "image": "q6-a.png"
+            },
+            {
+              "label": "",
+              "image": "q6-b.png"
+            },
+            {
+              "label": "",
+              "image": "q6-c.png"
+            },
+            {
+              "label": "",
+              "image": "q6-d.png"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 7,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "For the following circuit, choose the correct waveform corresponding to the output signal ($V_{out}$). Given $V_{in} = 5\\sin(200\\pi t)\\ \\text{V}$, forward bias voltage of the diodes (D and Z) $= 0.7\\ \\text{V}$ and reverse Zener voltage $= 3\\ \\text{V}$.",
+          "image": "q7.png",
+          "options": [
+            {
+              "label": "",
+              "image": "q7-a.png"
+            },
+            {
+              "label": "",
+              "image": "q7-b.png"
+            },
+            {
+              "label": "",
+              "image": "q7-c.png"
+            },
+            {
+              "label": "",
+              "image": "q7-d.png"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 8,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Quantum Mechanics",
+          "prompt": "If the ground state energy of a particle in an infinite potential well of width $L_1$ is equal to the energy of the second excited state in another infinite potential well of width $L_2$, then the ratio $\\dfrac{L_1}{L_2}$ is equal to",
+          "options": [
+            "$1$",
+            "$1/3$",
+            "$1/\\sqrt{3}$",
+            "$1/9$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 9,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In the given circuit, with an ideal op-amp for what value of $\\dfrac{R_1}{R_2}$ the output of the amplifier $V_{out} = V_2 - V_1$?",
+          "image": "q9.png",
+          "options": [
+            "$1$",
+            "$1/2$",
+            "$2$",
+            "$3/2$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 10,
+          "type": "MCQ",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "A projectile of mass $m$ is moving in the vertical $x$-$y$ plane with the origin on the ground and $y$-axis pointing vertically up. Taking the gravitational potential energy to be zero on the ground, the total energy of the particle written in planar polar coordinates $(r, \\theta)$ is (here $g$ is the acceleration due to gravity)",
+          "options": [
+            "$\\dfrac{m}{2}\\dot{r}^2 + mgr\\sin\\theta$",
+            "$\\dfrac{m}{2}\\left(\\dot{r}^2 + r^2\\dot{\\theta}^2\\right) + mgr\\cos\\theta$",
+            "$\\dfrac{m}{2}\\left(\\dot{r}^2 + r^2\\dot{\\theta}^2\\right) + mgr\\sin\\theta$",
+            "$\\dfrac{m}{2}\\left(\\dot{r}^2 + r^2\\dot{\\theta}^2\\right) - mgr\\cos\\theta$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 11,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A small bar magnet is dropped through different hollow copper tubes with same length and inner diameter but with different outer diameter. The variation in the time ($t$) taken for the magnet to reach the bottom of the tube depends on its wall thickness ($d$) as",
+          "options": [
+            {
+              "label": "",
+              "image": "q11-a.png"
+            },
+            {
+              "label": "",
+              "image": "q11-b.png"
+            },
+            {
+              "label": "",
+              "image": "q11-c.png"
+            },
+            {
+              "label": "",
+              "image": "q11-d.png"
+            }
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 12,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Two digital inputs A and B are given to the following circuit. For A = 1, B = 0, the values of X and Y are:",
+          "image": "q12.png",
+          "options": [
+            "X = 0, Y = 0",
+            "X = 1, Y = 0",
+            "X = 0, Y = 1",
+            "X = 1, Y = 1"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 13,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "The Jacobian matrix for transforming from $(x, y)$ to another orthogonal coordinates system $(u, v)$ as shown in the figure is",
+          "image": "q13.png",
+          "options": [
+            "$\\dfrac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}$",
+            "$\\dfrac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ -1 & 1 \\end{pmatrix}$",
+            "$\\dfrac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & -1 \\\\ 1 & 1 \\end{pmatrix}$",
+            "$\\dfrac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & -1 \\\\ 1 & -1 \\end{pmatrix}$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 14,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A rotating disc is held in front of a plane mirror in two different orientations which are (i) angular momentum parallel to the mirror and (ii) angular momentum perpendicular to the mirror. Which of the following schematic figures correctly describes the angular momentum (solid arrow) and its mirror image (shown by dashed arrows) in the two orientations?",
+          "options": [
+            {
+              "label": "",
+              "image": "q14-a.png"
+            },
+            {
+              "label": "",
+              "image": "q14-b.png"
+            },
+            {
+              "label": "",
+              "image": "q14-c.png"
+            },
+            {
+              "label": "",
+              "image": "q14-d.png"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 15,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "Inverse of the matrix $\\begin{pmatrix} 1 & 1 & 0 \\\\ 2 & 3 & 0 \\\\ 1 & 0 & 1 \\end{pmatrix}$ is",
+          "options": [
+            "$\\begin{pmatrix} 1 & -2 & 1 \\\\ -1 & 3 & 0 \\\\ 0 & 0 & 1 \\end{pmatrix}$",
+            "$\\begin{pmatrix} 3 & -1 & 0 \\\\ -2 & 1 & 0 \\\\ -3 & 1 & 1 \\end{pmatrix}$",
+            "$\\begin{pmatrix} -1 & -1 & 0 \\\\ 2 & 3 & 0 \\\\ 1 & 0 & 1 \\end{pmatrix}$",
+            "$\\begin{pmatrix} 3 & -2 & -3 \\\\ -2 & 1 & 1 \\\\ 0 & 0 & 1 \\end{pmatrix}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 16,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Suppose the divergence of magnetic field $\\vec{B}$ is nonzero and is given as $\\vec{\\nabla}\\cdot\\vec{B} = \\mu_0\\rho_m$, where $\\mu_0$ is the permeability of vacuum and $\\rho_m$ is the magnetic charge density. If the corresponding magnetic current density is $\\vec{J}_m$, then the curl $\\vec{\\nabla}\\times\\vec{E}$ of the electric field $\\vec{E}$ is",
+          "options": [
+            "$\\vec{J}_m - \\dfrac{\\partial\\vec{B}}{\\partial t}$",
+            "$\\mu_0\\vec{J}_m - \\dfrac{\\partial\\vec{B}}{\\partial t}$",
+            "$-\\vec{J}_m - \\dfrac{\\partial\\vec{B}}{\\partial t}$",
+            "$-\\mu_0\\vec{J}_m - \\dfrac{\\partial\\vec{B}}{\\partial t}$"
+          ],
+          "answer": "D"
+        },
+        {
+          "number": 17,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "For a thermodynamic system, the coefficient of volume expansion $\\beta = \\dfrac{1}{V}\\left(\\dfrac{\\partial V}{\\partial T}\\right)_P$ and compressibility $\\kappa = -\\dfrac{1}{V}\\left(\\dfrac{\\partial V}{\\partial P}\\right)_T$, where $V$, $T$ and $P$ are respectively the volume, temperature, and pressure. Considering that $\\dfrac{dV}{V}$ is a perfect differential, we get",
+          "options": [
+            "$\\left(\\dfrac{\\partial\\beta}{\\partial P}\\right)_T = \\left(\\dfrac{\\partial\\kappa}{\\partial T}\\right)_P$",
+            "$\\left(\\dfrac{\\partial\\beta}{\\partial T}\\right)_P = -\\left(\\dfrac{\\partial\\kappa}{\\partial P}\\right)_T$",
+            "$\\left(\\dfrac{\\partial\\beta}{\\partial P}\\right)_T = -\\left(\\dfrac{\\partial\\kappa}{\\partial T}\\right)_P$",
+            "$\\left(\\dfrac{\\partial\\beta}{\\partial T}\\right)_P = \\left(\\dfrac{\\partial\\kappa}{\\partial P}\\right)_T$"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 18,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "A linearly polarized light of wavelength $590\\ \\text{nm}$ is incident normally on the surface of a $20\\ \\mu\\text{m}$ thick quartz film. The plane of polarization makes an angle $30^\\circ$ with the optic axis. Refractive indices of ordinary and extraordinary waves differ by $0.0091$, resulting in a phase difference of $f\\pi$ between them after transmission. The value of $f$ (rounded off to two decimal places) and the state of polarization of the transmitted light is",
+          "options": [
+            "$0.62$ and linear",
+            "$0.62$ and elliptical",
+            "$-0.38$ and elliptical",
+            "$0.5$ and circular"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 19,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The phase velocity $v_p$ of transverse waves on a one-dimensional crystal of atomic separation $d$ is related to the wavevector $k$ as $$v_p = C\\,\\frac{\\sin(kd/2)}{(kd/2)}$$ The group velocity of these waves is",
+          "options": [
+            "$C\\left[\\cos(kd/2) - \\dfrac{\\sin(kd/2)}{(kd/2)}\\right]$",
+            "$C\\cos(kd/2)$",
+            "$C\\left[\\cos(kd/2) + \\dfrac{\\sin(kd/2)}{(kd/2)}\\right]$",
+            "$C\\,\\dfrac{\\sin(kd/2)}{(kd/2)}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 20,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "In a dielectric medium of relative permittivity $5$, the amplitudes of the displacement current and conduction current are equal for an applied sinusoidal voltage of frequency $f = 1\\ \\text{MHz}$. The value of conductivity (in $\\Omega^{-1}\\text{m}^{-1}$) of the medium at this frequency is",
+          "options": [
+            "$2.78 \\times 10^{-4}$",
+            "$2.44 \\times 10^{-4}$",
+            "$2.78 \\times 10^{-3}$",
+            "$2.44 \\times 10^{-3}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 21,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "For a given vector $\\vec{F} = -y\\hat{\\imath} + z\\hat{\\jmath} + x^2\\hat{k}$, the surface integral $\\displaystyle\\int_S (\\vec{\\nabla}\\times\\vec{F})\\cdot\\hat{r}\\,dS$ over the surface $S$ of a hemisphere of radius $R$ with the centre of the base at the origin is",
+          "image": "q21.png",
+          "options": [
+            "$\\pi R^2$",
+            "$\\dfrac{2\\pi R^2}{3}$",
+            "$-\\pi R^2$",
+            "$-\\dfrac{2\\pi R^2}{3}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 22,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In the circuit shown, assuming the current gain $\\beta = 100$ and $V_{BE} = 0.7\\ \\text{V}$, what will be the collector voltage $V_C$ in V?\n\nGiven: $V_{CC} = 15\\ \\text{V}$, $R_1 = 100\\ \\text{k}\\Omega$, $R_2 = 50\\ \\text{k}\\Omega$, $R_C = 4.7\\ \\text{k}\\Omega$, and $R_E = 3.3\\ \\text{k}\\Omega$",
+          "image": "q22.png",
+          "options": [
+            "$8.9$",
+            "$5.1$",
+            "$4.3$",
+            "$3.2$"
+          ],
+          "marksToAll": true
+        },
+        {
+          "number": 23,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A uniform stick of length $l$ and mass $m$ pivoted at its top end is oscillating with an angular frequency $\\omega_r$. Assuming small oscillations, the ratio $\\omega_r/\\omega_s$, where $\\omega_s$ is the angular frequency of a simple pendulum of the same length, will be",
+          "options": [
+            "$\\sqrt{3}$",
+            "$\\sqrt{\\dfrac{3}{2}}$",
+            "$\\sqrt{2}$",
+            "$\\dfrac{1}{\\sqrt{3}}$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 24,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "An oil film in air of thickness $255\\ \\text{nm}$ is illuminated by white light at normal incidence. As a consequence of interference, which colour will be predominantly visible in the reflected light?\n\nGiven the refractive index of oil $= 1.47$",
+          "options": [
+            "Red ($\\sim 650\\ \\text{nm}$)",
+            "Blue ($\\sim 450\\ \\text{nm}$)",
+            "Green ($\\sim 500\\ \\text{nm}$)",
+            "Yellow ($\\sim 560\\ \\text{nm}$)"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 25,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "Water from a tank is flowing down through a hole at its bottom with velocity $5\\ \\text{m s}^{-1}$. If this water falls on a flat surface kept below the hole at a distance of $0.1\\ \\text{m}$ and spreads horizontally, the pressure (in $\\text{kN m}^{-2}$) exerted on the flat surface is closest to\n\nGiven: acceleration due to gravity $= 9.8\\ \\text{m s}^{-2}$ and density of water $= 1000\\ \\text{kg m}^{-3}$",
+          "options": [
+            "$13.5$",
+            "$27.0$",
+            "$17.6$",
+            "$6.8$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 26,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "At the planar interface of two dielectrics, which of the following statements related to the electric field ($\\vec{E}$), electric displacement ($\\vec{D}$) and polarization ($\\vec{P}$) is true?",
+          "options": [
+            "Normal component of both $\\vec{D}$ and $\\vec{P}$ are continuous",
+            "Normal component of both $\\vec{D}$ and $\\vec{E}$ are discontinuous",
+            "Normal component of $\\vec{D}$ is continuous and that of $\\vec{P}$ is discontinuous",
+            "Normal component of both $\\vec{E}$ and $\\vec{P}$ are continuous"
+          ],
+          "answer": "C"
+        },
+        {
+          "number": 27,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Consider a system of large number of particles that can be in three energy states with energies $0\\ \\text{meV}$, $1\\ \\text{meV}$, and $2\\ \\text{meV}$. At temperature $T = 300\\ \\text{K}$, the mean energy of the system (in meV) is closest to\n\nGiven: Boltzmann constant $k_B = 0.086\\ \\text{meV K}^{-1}$",
+          "options": [
+            "$0.12$",
+            "$0.97$",
+            "$1.32$",
+            "$1.82$"
+          ],
+          "answer": "B"
+        },
+        {
+          "number": 28,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "For the Maxwell-Boltzmann speed distribution, the ratio of the root-mean-square speed ($v_{rms}$) and the most probable speed ($v_{max}$) is\n\nGiven: Maxwell-Boltzmann speed distribution function for a collection of particles of mass $m$ is $$f(v) = \\left(\\frac{m}{2\\pi k_B T}\\right)^{3/2} 4\\pi v^2 \\exp\\left(-\\frac{mv^2}{2k_B T}\\right)$$",
+          "options": [
+            "$\\sqrt{\\dfrac{3}{2}}$",
+            "$\\sqrt{\\dfrac{2}{3}}$",
+            "$\\dfrac{3}{2}$",
+            "$\\dfrac{2}{3}$"
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 29,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "In an extrinsic p-type semiconductor, which of the following schematic diagram depicts the variation of the Fermi energy level ($E_F$) with temperature ($T$)?",
+          "options": [
+            {
+              "label": "",
+              "image": "q29-a.png"
+            },
+            {
+              "label": "",
+              "image": "q29-b.png"
+            },
+            {
+              "label": "",
+              "image": "q29-c.png"
+            },
+            {
+              "label": "",
+              "image": "q29-d.png"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "number": 30,
+          "type": "MCQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "A container is occupied by a fixed number of non-interacting particles. If they are obeying Fermi-Dirac, Bose-Einstein, and Maxwell-Boltzmann statistics, the pressure in the container is $P_{FD}$, $P_{BE}$ and $P_{MB}$, respectively. Then",
+          "options": [
+            "$P_{FD} > P_{MB} > P_{BE}$",
+            "$P_{FD} > P_{MB} = P_{BE}$",
+            "$P_{FD} > P_{BE} > P_{MB}$",
+            "$P_{FD} = P_{MB} = P_{BE}$"
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "name": "Section B",
+      "instructions": "Multiple Select Questions (MSQ). Q.31 – Q.40 carry TWO marks each. One or more options are correct. Marks are awarded only if all the correct options and no wrong option are selected. There is no negative marking and no partial marking.",
+      "questions": [
+        {
+          "number": 31,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "The spectral energy density $u_T(\\lambda)$ vs wavelength ($\\lambda$) curve of a black body shows a peak at $\\lambda = \\lambda_{max}$. If the temperature of the black body is doubled, then",
+          "options": [
+            "the maximum of $u_T(\\lambda)$ shifts to $\\lambda_{max}/2$",
+            "the maximum of $u_T(\\lambda)$ shifts to $2\\lambda_{max}$",
+            "the area under the curve becomes 16 times the original area",
+            "the area under the curve becomes 8 times the original area"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 32,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "A periodic function $f(x) = x^2$ for $-\\pi < x < \\pi$ is expanded in a Fourier series. Which of the following statement(s) is/are correct?",
+          "options": [
+            "Coefficients of all the sine terms are zero",
+            "The first term in the series is $\\dfrac{\\pi^2}{3}$",
+            "The second term in the series is $-4\\cos x$",
+            "Coefficients of all the cosine terms are zero"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 33,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "The state of a harmonic oscillator is given as $\\psi = \\dfrac{1}{\\sqrt{3}}\\psi_0 - \\dfrac{1}{\\sqrt{6}}\\psi_1 + \\dfrac{1}{\\sqrt{2}}\\psi_2$, where $\\psi_0$, $\\psi_1$ and $\\psi_2$ are the normalized wave functions of ground, first excited, and second excited states, respectively. Which of the following statement(s) is/are true?",
+          "options": [
+            "A measurement of the energy of the system yields $E = \\dfrac{1}{2}\\hbar\\omega$ with non-zero probability",
+            "A measurement of the energy of the system yields $E = \\dfrac{5}{3}\\hbar\\omega$ with non-zero probability",
+            "Expectation value of the energy of the system $\\langle E\\rangle = \\dfrac{5}{3}\\hbar\\omega$",
+            "Expectation value of the energy of the system $\\langle E\\rangle = \\dfrac{7}{6}\\hbar\\omega$"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 34,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A rod of mass $M$, length $L$ and non-uniform mass per unit length $\\lambda(x) = \\dfrac{3Mx^2}{L^3}$, is held horizontally by a pivot, as shown in the figure, and is free to move in the plane of the figure. For this rod, which of the following statements are true?",
+          "image": "q34.png",
+          "options": [
+            "Moment of inertia of the rod about an axis passing through the pivot is $\\dfrac{3}{5}ML^2$",
+            "Moment of inertia of the rod about an axis passing through the pivot is $\\dfrac{1}{3}ML^2$",
+            "Torque on the rod about the pivot is $\\dfrac{3}{4}MgL$",
+            "If the rod is released, the point at a distance $\\dfrac{2L}{3}$ from the pivot will fall with acceleration $g$"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ]
+        },
+        {
+          "number": 35,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "Which of the following schematic plots correctly represent(s) a first order phase transition occurring at temperature $T = T_c$? Here $g$, $s$, $v$ are specific Gibbs free energy, entropy and volume, respectively.",
+          "options": [
+            {
+              "label": "",
+              "image": "q35-a.png"
+            },
+            {
+              "label": "",
+              "image": "q35-b.png"
+            },
+            {
+              "label": "",
+              "image": "q35-c.png"
+            },
+            {
+              "label": "",
+              "image": "q35-d.png"
+            }
+          ],
+          "answer": [
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 36,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "A particle ($p_1$) of mass $m$ moving with speed $v$ collides with a stationary identical particle ($p_2$). The particles bounce off each other elastically with $p_1$ getting deflected by an angle $\\theta = 30^\\circ$ from its original direction. Then, which of the following statement(s) is/are true after the collision?",
+          "options": [
+            "Speed of $p_1$ is $\\dfrac{\\sqrt{3}}{2}v$",
+            "Kinetic energy of $p_2$ is $25\\%$ of the total energy",
+            "Angle between the directions of motion of the two particles is 90°",
+            "The kinetic energy of the centre of mass of $p_1$ and $p_2$ decreases"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "number": 37,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Waves & Oscillations",
+          "prompt": "A wave travelling along the $x$-axis with $y$ representing its displacement is described by ($v$ is the speed of the wave)",
+          "options": [
+            "$\\dfrac{dy}{dx} + \\dfrac{1}{v}\\dfrac{dy}{dt} = 0$",
+            "$\\dfrac{dy}{dx} - \\dfrac{1}{v}\\dfrac{dy}{dt} = 0$",
+            "$\\dfrac{d^2y}{dx^2} + \\dfrac{1}{v^2}\\dfrac{d^2y}{dt^2} = 0$",
+            "$\\dfrac{d^2y}{dx^2} - \\dfrac{1}{v^2}\\dfrac{d^2y}{dt^2} = 0$"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "D"
+          ],
+          "alsoAccepted": [
+            [
+              "D"
+            ]
+          ]
+        },
+        {
+          "number": 38,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Optics",
+          "prompt": "An objective lens with half angular aperture $\\alpha$ is illuminated with light of wavelength $\\lambda$. The refractive index of the medium between the sample and the objective is $n$. The lateral resolving power of the optical system can be increased by",
+          "image": "q38.png",
+          "options": [
+            "decreasing both $\\lambda$ and $\\alpha$",
+            "decreasing $\\lambda$ and increasing $\\alpha$",
+            "increasing both $\\alpha$ and $n$",
+            "decreasing $\\lambda$ and increasing $n$"
+          ],
+          "answer": [
+            "B",
+            "C",
+            "D"
+          ]
+        },
+        {
+          "number": 39,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "Which of the following statement(s) is/are true for a LC circuit with $L = 25\\ \\text{mH}$ and $C = 4\\ \\mu\\text{F}$?",
+          "options": [
+            "Resonance frequency is close to $503\\ \\text{Hz}$",
+            "The impedance at $1\\ \\text{kHz}$ is $15\\ \\Omega$",
+            "At a frequency of $200\\ \\text{Hz}$, the voltage lags the current in the circuit",
+            "At a frequency of $700\\ \\text{Hz}$, the voltage lags the current in the circuit"
+          ],
+          "answer": [
+            "A",
+            "C"
+          ],
+          "alsoAccepted": [
+            [
+              "A",
+              "D"
+            ]
+          ]
+        },
+        {
+          "number": 40,
+          "type": "MSQ",
+          "marks": 2,
+          "topic": "Mechanics",
+          "prompt": "For a particle moving in a general central force field, which of the following statement(s) is/are true?",
+          "options": [
+            "The angular momentum is a constant of motion",
+            "Kepler's second law is valid",
+            "The motion is confined to a plane",
+            "Kepler's third law is valid"
+          ],
+          "answer": [
+            "A",
+            "B",
+            "C"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Section C",
+      "instructions": "Numerical Answer Type (NAT) questions. Q.41 – Q.50 carry ONE mark each and Q.51 – Q.60 carry TWO marks each. Enter the answer as a number using the keypad; no options are shown. There is no negative marking.",
+      "questions": [
+        {
+          "number": 41,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "The lattice constant (in Å) of copper, which has FCC structure, is ________.\n\nGiven: density of copper is $8.91\\ \\text{g cm}^{-3}$ and its atomic mass is $63.55\\ \\text{g mol}^{-1}$; Avogadro's number $= 6.023 \\times 10^{23}\\ \\text{mol}^{-1}$\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 3.6,
+            "max": 3.65
+          }
+        },
+        {
+          "number": 42,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Solid State Physics & Electronics",
+          "prompt": "Two silicon diodes are connected to a battery and two resistors as shown in the figure. The current through the battery is ________ A.\n\nGiven: The forward voltage drop across each diode $= 0.7\\ \\text{V}$\n\n[The resistor values are not legible in the figure; the resistor in the upper branch is $10\\ \\Omega$.]\n\n(rounded off to two decimal places)",
+          "image": "q42.png",
+          "answer": 0.43
+        },
+        {
+          "number": 43,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "The absolute error in the value of $\\sin\\theta$ if approximated up to two terms in the Taylor's series for $\\theta = 60^\\circ$ is ________.\n\n(rounded off to three decimal places)",
+          "answer": {
+            "min": 0.009,
+            "max": 0.011
+          }
+        },
+        {
+          "number": 44,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "A single pendulum hanging vertically in an elevator has a time period $T_0$ when the elevator is stationary. If the elevator moves upward with an acceleration of $a = 0.2g$, the time period of oscillations is $T_1$. Here $g$ is the acceleration due to gravity. The ratio $\\dfrac{T_0}{T_1}$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 1.09,
+            "max": 1.11
+          }
+        },
+        {
+          "number": 45,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Special Relativity",
+          "prompt": "A spacecraft has speed $v_s = fc$ with respect to the earth, where $c$ is the speed of light in vacuum. An observer in the spacecraft measures the time of one complete rotation of the earth to be $48$ hours. The value of $f$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.85,
+            "max": 0.88
+          }
+        },
+        {
+          "number": 46,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mechanics",
+          "prompt": "The sum of the $x$-components of unit vectors $\\dot{\\hat{r}}$ and $\\dot{\\hat{\\theta}}$ for a particle moving with angular speed $2\\ \\text{rad s}^{-1}$ at angle $\\theta = 215^\\circ$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 2.7,
+            "max": 2.85
+          }
+        },
+        {
+          "number": 47,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Waves & Oscillations",
+          "prompt": "Consider a spring mass system with mass $0.5\\ \\text{kg}$ and spring constant $k = 2\\ \\text{N m}^{-1}$ in a viscous medium with drag coefficient $b = 3\\ \\text{kg s}^{-1}$. The additional mass required so that the motion becomes critically damped is ________ kg.\n\n(rounded off to three decimal places)",
+          "answer": {
+            "min": 0.62,
+            "max": 0.63
+          }
+        },
+        {
+          "number": 48,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Mathematical Physics",
+          "prompt": "Unit vector normal to the equipotential surface of $V(x, y, z) = 4x^2 + y^2 + z$ at $(1, 2, 1)$ is given by $(a\\hat{\\imath} + b\\hat{\\jmath} + c\\hat{k})$. The value of $|b|$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.43,
+            "max": 0.45
+          }
+        },
+        {
+          "number": 49,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Waves & Oscillations",
+          "prompt": "A rectangular pulse of width $0.5\\ \\text{cm}$ is travelling to the right on a taut string (shown by full line in the figure) that has mass per unit length $\\mu_1$. The string is attached to another taut string (shown by dashed line) of mass per unit length $\\mu_2$. If the tension in both the strings is the same, and the transmitted pulse has width $0.7\\ \\text{cm}$, the ratio $\\mu_1/\\mu_2$ is ________.\n\n(rounded off to two decimal places)",
+          "image": "q49.png",
+          "answer": {
+            "min": 1.94,
+            "max": 1.98
+          }
+        },
+        {
+          "number": 50,
+          "type": "NAT",
+          "marks": 1,
+          "topic": "Modern Physics",
+          "prompt": "An $\\alpha$ particle with energy of $3\\ \\text{MeV}$ is moving towards a nucleus of $^{50}\\text{Sn}$. Its minimum distance of approach to the nucleus is $f \\times 10^{-14}\\ \\text{m}$. The value of $f$ is ________.\n\n(rounded off to one decimal place)",
+          "answer": {
+            "min": 4.7,
+            "max": 4.9
+          }
+        },
+        {
+          "number": 51,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "In a X-Ray tube operating at $20\\ \\text{kV}$, the ratio of the de-Broglie wavelength of the incident electrons to the shortest wavelength of the generated X-rays is ________.\n\nGiven: $e/m$ ratio for an electron $= 1.76 \\times 10^{11}\\ \\text{C kg}^{-1}$ and the speed of light in vacuum is $3 \\times 10^8\\ \\text{m s}^{-1}$\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.12,
+            "max": 0.16
+          }
+        },
+        {
+          "number": 52,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "A point source emitting photons of $2\\ \\text{eV}$ energy and $1\\ \\text{W}$ of power is kept at a distance of $1\\ \\text{m}$ from a small piece of a photoelectric material of area $10^{-4}\\ \\text{m}^2$. If the efficiency of generation of photoelectrons is $10\\%$, then the number of photoelectrons generated are $f \\times 10^{12}$ per second. The value of $f$ is ________.\n\nGiven: $1\\ \\text{eV} = 1.6 \\times 10^{-19}\\ \\text{J}$\n\n(rounded off to two decimal places)",
+          "image": "q52.png",
+          "answer": {
+            "min": 2.3,
+            "max": 2.7
+          }
+        },
+        {
+          "number": 53,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Modern Physics",
+          "prompt": "Consider the $\\alpha$-decay $^{232}_{\\ 90}\\text{Th} \\to {}^{228}_{\\ 88}\\text{Ra}$. In an experiment with one gram of $^{232}_{\\ 90}\\text{Th}$, the average count rate (integrated over the entire volume) measured by the $\\alpha$-detector is $3000$ counts $\\text{s}^{-1}$. If the half life of $^{232}_{\\ 90}\\text{Th}$ is given as $4.4 \\times 10^{17}\\ \\text{s}$, then the efficiency of the $\\alpha$-detector is ________.\n\nGiven: Avogadro's number $= 6.023 \\times 10^{23}\\ \\text{mol}^{-1}$\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.72,
+            "max": 0.74
+          }
+        },
+        {
+          "number": 54,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Quantum Mechanics",
+          "prompt": "In the Thomson model of hydrogen atom, the nuclear charge is distributed uniformly over a sphere of radius $R$. The average potential energy of an electron confined within this atom can be taken as $V = -\\dfrac{e^2}{4\\pi\\epsilon_0 R}$. Taking the uncertainty in position to be the radius of the atom, the minimum value of $R$ for which an electron will be confined within the atom is estimated to be $f \\times 10^{-11}\\ \\text{m}$. The value of $f$ is ________.\n\nGiven: The uncertainty product of momentum and position is $\\hbar = 1 \\times 10^{-34}\\ \\text{J s}$, $e = 1.6 \\times 10^{-19}\\ \\text{C}$, and $\\dfrac{1}{4\\pi\\epsilon_0} = 9 \\times 10^9\\ \\text{N m}^2\\text{C}^{-2}$\n\n(rounded off to one decimal place)",
+          "answer": {
+            "min": 2.2,
+            "max": 2.7
+          }
+        },
+        {
+          "number": 55,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Mathematical Physics",
+          "prompt": "The sum of the eigenvalues $\\lambda_1$ and $\\lambda_2$ of matrix $B = I + A + A^2$, where $A = \\begin{pmatrix} 2 & 1 \\\\ -0.5 & 0.5 \\end{pmatrix}$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 7.7,
+            "max": 7.8
+          }
+        },
+        {
+          "number": 56,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Thermodynamics & Statistical Physics",
+          "prompt": "A container of volume $V$ has helium gas in it with $N$ number of He atoms. The mean free path of these atoms is $\\lambda_{He}$. Another container has argon gas with the same number of Ar atoms in volume $2V$ with their mean free path being $\\lambda_{Ar}$. Taking the radius of Ar atoms to be $1.5$ times the radius of He atoms, the ratio $\\lambda_{He}/\\lambda_{Ar}$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.85,
+            "max": 0.95
+          }
+        },
+        {
+          "number": 57,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "Three frames $F_0$, $F_1$ and $F_2$ are in relative motion. The frame $F_0$ is at rest, $F_1$ is moving with velocity $v_1\\hat{\\imath}$ with respect to $F_0$ and $F_2$ is moving with velocity $v_2\\hat{\\imath}$ with respect to $F_1$. A particle is moving with velocity $v_3\\hat{\\imath}$ with respect to $F_2$. If $v_1 = v_2 = v_3 = c/2$, where $c$ is the speed of light, the speed of the particle with respect to $F_0$ is $fc$. The value of $f$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 0.9,
+            "max": 0.96
+          }
+        },
+        {
+          "number": 58,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Special Relativity",
+          "prompt": "A fission device explodes into two pieces of rest masses $m$ and $0.5m$ with no loss of energy into any other form. These masses move apart respectively with speeds $\\dfrac{c}{\\sqrt{13}}$ and $\\dfrac{c}{2}$, with respect to the stationary frame. If the rest mass of the device is $fm$ then $f$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 1.6,
+            "max": 1.64
+          }
+        },
+        {
+          "number": 59,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A conducting wire AB of length $1\\ \\text{m}$ has resistance of $1.6\\ \\Omega$. It is connected to a voltage source of $0.5\\ \\text{V}$ with negligible resistance as shown in the figure. The corresponding electric and magnetic fields give Poynting vectors $\\vec{S}(\\vec{r})$ all around the wire. Surface integral $\\oint \\vec{S}\\cdot d\\vec{a}$ is calculated over a virtual sphere of diameter $0.2\\ \\text{m}$ with its centre on the wire, as shown. The value of the integral is ________ W.\n\n(rounded off to three decimal places)",
+          "image": "q59.png",
+          "answer": {
+            "min": 0.03,
+            "max": 0.033
+          }
+        },
+        {
+          "number": 60,
+          "type": "NAT",
+          "marks": 2,
+          "topic": "Electricity & Magnetism",
+          "prompt": "A metallic sphere of radius $R$ is held at electrostatic potential $V$. It is enclosed in a concentric thin metallic shell of radius $2R$ at potential $2V$. If the potential at the distance $\\dfrac{3}{2}R$ from the centre of the sphere is $fV$, then the value of $f$ is ________.\n\n(rounded off to two decimal places)",
+          "answer": {
+            "min": 1.64,
+            "max": 1.7
+          }
+        }
+      ]
+    }
+  ]
+}
