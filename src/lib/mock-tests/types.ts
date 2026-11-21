@@ -16,6 +16,12 @@ export function parseMockOptions(value: unknown): MockOption[] {
   return storedOptionsSchema.parse(value);
 }
 
+/** MockQuestion.altCorrectOptionIds (Prisma Json): extra accepted option sets. */
+export function parseAltAnswers(value: unknown): string[][] {
+  if (value == null) return [];
+  return z.array(z.array(z.string())).parse(value);
+}
+
 /** One entry of MockAttempt.sectionBreakdown (Prisma Json). */
 export type MockSectionStat = {
   sectionId: string;
@@ -102,6 +108,9 @@ const questionInput = z.object({
   // The official key says "marks to all" (MTA): the question was flawed, so
   // everyone gets its marks, attempted or not. Such a question has no answer.
   marksToAll: z.boolean().optional(),
+  // MCQ/MSQ only: further answers the official key also accepts ("A,C OR A,D"
+  // is "answer": ["A", "C"], "alsoAccepted": [["A", "D"]]).
+  alsoAccepted: z.array(z.union([z.string().min(1), z.array(z.string().min(1)).min(1)])).min(1).optional(),
   marks: marksValue,
   // Omit for the JAM default: one third of the marks on MCQs, zero elsewhere.
   negativeMarks: marksValue.optional(),
@@ -141,6 +150,7 @@ export type NormalizedQuestion = {
   imageUrl: string | null;
   options: MockOption[] | null;
   correctOptionIds: string[];
+  altCorrectOptionIds: string[][] | null;
   natMin: number | null;
   natMax: number | null;
   marks: number;
@@ -197,7 +207,11 @@ export function normalizePaper(raw: unknown): NormalizedPaper {
         marks: q.marks,
         marksToAll: q.marksToAll ?? false,
         explanation: q.explanation ?? null,
+        altCorrectOptionIds: null,
       };
+      if (q.alsoAccepted && (q.type === "NAT" || q.marksToAll)) {
+        problems.push(`${where}: "alsoAccepted" is only for MCQ/MSQ questions with an answer`);
+      }
 
       if (q.marksToAll && q.answer !== undefined) {
         problems.push(`${where}: a "marks to all" question has no answer — leave "answer" out`);
@@ -255,9 +269,18 @@ export function normalizePaper(raw: unknown): NormalizedPaper {
         if (q.type === "MCQ" && answer.length !== 1) problems.push(`${where}: an MCQ has exactly one answer`);
       }
 
+      const alternatives = (q.alsoAccepted ?? []).map((a) => (typeof a === "string" ? [a] : a));
+      const optionIds = new Set(options.map((o) => o.id));
+      for (const alt of alternatives) {
+        for (const a of alt) if (!optionIds.has(a)) problems.push(`${where}: also-accepted "${a}" is not one of the options`);
+        if (new Set(alt).size !== alt.length) problems.push(`${where}: an also-accepted answer lists an option twice`);
+        if (q.type === "MCQ" && alt.length !== 1) problems.push(`${where}: an MCQ alternative has exactly one option`);
+      }
+
       return {
         ...base,
         options,
+        altCorrectOptionIds: alternatives.length > 0 ? alternatives : null,
         correctOptionIds: answer ?? [],
         natMin: null,
         natMax: null,

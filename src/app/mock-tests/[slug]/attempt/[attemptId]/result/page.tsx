@@ -6,7 +6,7 @@ import { canViewMockAttempt, finalizeIfExpired } from "@/lib/mock-tests/attempts
 import { formatMarks } from "@/lib/mock-tests/scoring";
 import { analyseAttempt, formatDuration, getCohortStats } from "@/lib/mock-tests/analytics";
 import { isRankable, predictRank } from "@/lib/rank-predictor/predict";
-import { parseMockOptions } from "@/lib/mock-tests/types";
+import { parseAltAnswers, parseMockOptions } from "@/lib/mock-tests/types";
 import { AnalysisBoard } from "@/components/mock-tests/analysis/analysis-board";
 import { OptionContent, QuestionPrompt } from "@/components/mock-tests/question-content";
 import { KatexContent } from "@/components/katex-content";
@@ -240,6 +240,14 @@ export default async function MockResultPage({
                   </ul>
                 )}
 
+                {parseAltAnswers(q.altCorrectOptionIds).length > 0 && (
+                  <p className="mt-3 text-sm text-green-700 dark:text-green-400">
+                    The official key also accepts:{" "}
+                    {parseAltAnswers(q.altCorrectOptionIds)
+                      .map((ids) => ids.join(", "))
+                      .join(" or ")}
+                  </p>
+                )}
                 {q.explanation && (
                   <div className="mt-4 rounded-lg bg-muted/50 p-3 text-sm">
                     <p className="mb-1 text-xs font-semibold text-muted-foreground uppercase">Solution</p>

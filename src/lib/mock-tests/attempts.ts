@@ -54,6 +54,7 @@ export async function finalizeMockAttempt(
               sectionId: true,
               type: true,
               correctOptionIds: true,
+              altCorrectOptionIds: true,
               natMin: true,
               natMax: true,
               marks: true,
