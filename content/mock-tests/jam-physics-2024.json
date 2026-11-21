@@ -4,7 +4,7 @@
   "exam": "IIT JAM",
   "subject": "physics",
   "year": 2024,
-  "description": "The JAM 2024 Physics (PH) paper, conducted by IIT Madras — all 60 questions. Q38 is marked \"marks to all\" in the answer key, so every attempt gets its 2 marks.",
+  "description": "The JAM 2024 Physics (PH) paper, conducted by IIT Madras — all 60 questions, scored against the official master answer key. Q38 and Q42 were marked \"marks to all\", so every attempt gets their marks.",
   "durationMinutes": 180,
   "calculator": true,
   "published": true,
@@ -237,7 +237,7 @@
             "$4\\pi$",
             "$0$"
           ],
-          "answer": "D"
+          "answer": "B"
         },
         {
           "number": 16,
@@ -662,7 +662,7 @@
           "marks": 1,
           "topic": "Mathematical Physics",
           "prompt": "The co-ordinate system $(x, y, z)$ is transformed to the system $(u, v, w)$, as given by: $$\\begin{aligned} u &= 2x + 3y - z \\\\ v &= x - 4y + z \\\\ w &= x + y \\end{aligned}$$ The Jacobian of the above transformation is ________",
-          "answer": 4
+          "marksToAll": true
         },
         {
           "number": 43,
