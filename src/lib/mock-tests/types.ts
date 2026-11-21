@@ -90,12 +90,18 @@ const questionInput = z.object({
   image: z.string().min(1).optional(),
   options: z.array(optionInput).min(2).max(8).optional(),
   // MCQ: "B" · MSQ: ["A", "C"] · NAT: 2.5, or { min, max } from the answer key.
-  answer: z.union([
-    z.string().min(1),
-    z.array(z.string().min(1)).min(1),
-    z.number(),
-    z.object({ min: z.number(), max: z.number() }),
-  ]),
+  // Left out only for a "marks to all" question.
+  answer: z
+    .union([
+      z.string().min(1),
+      z.array(z.string().min(1)).min(1),
+      z.number(),
+      z.object({ min: z.number(), max: z.number() }),
+    ])
+    .optional(),
+  // The official key says "marks to all" (MTA): the question was flawed, so
+  // everyone gets its marks, attempted or not. Such a question has no answer.
+  marksToAll: z.boolean().optional(),
   marks: marksValue,
   // Omit for the JAM default: one third of the marks on MCQs, zero elsewhere.
   negativeMarks: marksValue.optional(),
@@ -139,6 +145,7 @@ export type NormalizedQuestion = {
   natMax: number | null;
   marks: number;
   negativeMarks: number;
+  marksToAll: boolean;
   explanation: string | null;
 };
 
@@ -188,11 +195,20 @@ export function normalizePaper(raw: unknown): NormalizedPaper {
         prompt: q.prompt,
         imageUrl: resolveImage(paper.slug, q.image) ?? null,
         marks: q.marks,
+        marksToAll: q.marksToAll ?? false,
         explanation: q.explanation ?? null,
       };
 
+      if (q.marksToAll && q.answer !== undefined) {
+        problems.push(`${where}: a "marks to all" question has no answer — leave "answer" out`);
+      }
+      if (!q.marksToAll && q.answer === undefined) problems.push(`${where}: answer is missing`);
+
       if (q.type === "NAT") {
         if (q.options) problems.push(`${where}: a NAT question cannot have options`);
+        if (q.marksToAll) {
+          return { ...base, options: null, correctOptionIds: [], natMin: null, natMax: null, negativeMarks: 0 };
+        }
         let min = NaN;
         let max = NaN;
         if (typeof q.answer === "number") min = max = q.answer;
@@ -223,6 +239,10 @@ export function normalizePaper(raw: unknown): NormalizedPaper {
       });
       if (options.length < 2) problems.push(`${where}: ${q.type} needs at least two options`);
       if (new Set(options.map((o) => o.id)).size !== options.length) problems.push(`${where}: duplicate option ids`);
+
+      if (q.marksToAll) {
+        return { ...base, options, correctOptionIds: [], natMin: null, natMax: null, negativeMarks: 0 };
+      }
 
       const answer =
         typeof q.answer === "string" ? [q.answer] : Array.isArray(q.answer) ? q.answer : null;

@@ -58,6 +58,7 @@ export async function finalizeMockAttempt(
               natMax: true,
               marks: true,
               negativeMarks: true,
+              marksToAll: true,
             },
           },
         },
