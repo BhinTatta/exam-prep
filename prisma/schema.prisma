@@ -103,6 +103,7 @@ model User {
   sessionReviews     SessionReview[]     @relation("ReviewAuthor")
   reviewsHidden      SessionReview[]     @relation("ReviewModerator")
   notifications      Notification[]
+  slotRequests       SlotRequest[]
 
   @@index([role])
 }
@@ -196,6 +197,7 @@ model MentorProfile {
   availability Availability[]
   bookings     Booking[]
   reviews      SessionReview[]
+  slotRequests SlotRequest[]
 
   // Topic tags (e.g. "Rotational Mechanics"). Kept for admin filtering and
   // future matching — the results page deliberately does NOT rank mentors by
@@ -939,4 +941,47 @@ model Notification {
   @@unique([bookingId, userId, event, channel])
   /// The drain query rides this: PENDING rows whose sendAfter has passed.
   @@index([status, sendAfter])
+}
+
+// ---------- Slot requests ("notify me") ----------
+//
+// A student looked for a session and found nothing they could book: the
+// mentor they wanted has no open slots, every mentor is booked out, or nobody
+// is free on the day they filtered to. Each row is one of those dead ends,
+// captured instead of lost — today it is a demand signal for /admin/demand;
+// later it is what the "slots opened" notification is sent from. See
+// docs/slot-requests.md for both halves.
+
+enum SlotRequestStatus {
+  OPEN // still waiting
+  NOTIFIED // told that something opened up (not wired yet)
+  CANCELLED // the student withdrew it
+}
+
+model SlotRequest {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// The mentor they wanted. null = "any mentor".
+  mentorId String?
+  mentor   MentorProfile? @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  /// The weekday they filtered to (0 = Sunday, matching Availability). null = any day.
+  dayOfWeek Int?
+
+  /// Where the request was made — "mentor_profile" or "mentor_list". Tells the
+  /// admin which dead end is costing the most.
+  source String
+
+  status     SlotRequestStatus @default(OPEN)
+  notifiedAt DateTime?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  /// The admin page and the future matcher both read open requests per mentor.
+  @@index([status, mentorId])
+  /// "Has this student already asked?" on every page render.
+  @@index([userId, status])
 }

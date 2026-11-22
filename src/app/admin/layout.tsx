@@ -14,6 +14,7 @@ const links = [
   { href: "/admin/moderation", label: "Moderation" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/sessions", label: "Sessions & payouts" },
+  { href: "/admin/demand", label: "Waitlist" },
   { href: "/admin/notifications", label: "Email & notifications" },
   { href: "/admin/users", label: "Users" },
 ];

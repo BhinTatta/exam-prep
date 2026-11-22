@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { MentorCard } from "@/components/mentors/mentor-card";
+import { NotifyMeCallout } from "@/components/mentors/notify-me";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { cn } from "@/lib/utils";
+import { DAYS } from "@/lib/days";
 import { CalendarX2, Star, Zap } from "lucide-react";
 import type { MentorListEntry } from "@/lib/mentors/list";
 
@@ -83,7 +85,16 @@ function guaranteeBookableAbove(entries: MentorListEntry[]): MentorListEntry[] {
   return ordered;
 }
 
-export function MentorBrowser({ mentors }: { mentors: MentorListEntry[] }) {
+export function MentorBrowser({
+  mentors,
+  signedIn,
+  requestedKeys,
+}: {
+  mentors: MentorListEntry[];
+  signedIn: boolean;
+  /** Open "notify me" requests this student already has — see slotRequestKey. */
+  requestedKeys: string[];
+}) {
   const [sort, setSort] = useState<SortKey>("rating");
   const [day, setDay] = useState<number | null>(null);
 
@@ -112,8 +123,35 @@ export function MentorBrowser({ mentors }: { mentors: MentorListEntry[] }) {
     return guaranteeBookableAbove(filtered);
   }, [mentors, sort, day]);
 
+  // "Any mentor" waitlist, scoped to the picked day when there is one. It
+  // leads the page when nobody can be booked at all, and otherwise trails the
+  // list for the student who scrolled it and found no time that fits.
+  const nobodyBookable = !mentors.some(isBookable);
+  const dayName = day === null ? null : DAYS[day];
+  const anyMentorAlert = (
+    <NotifyMeCallout
+      title={
+        nobodyBookable
+          ? "Everyone's booked out right now"
+          : dayName
+            ? `Need a ${dayName} slot that isn't here?`
+            : "Can't find a time that works?"
+      }
+      description={
+        dayName
+          ? `Get on the list for when any mentor opens a ${dayName} slot.`
+          : "Get on the list for when any mentor opens a new slot."
+      }
+      request={{ mentorId: null, dayOfWeek: day, source: "mentor_list" }}
+      requested={requestedKeys.includes(`any:${day ?? "any"}`)}
+      signedIn={signedIn}
+    />
+  );
+
   return (
     <div className="mt-10 flex flex-col gap-6">
+      {nobodyBookable && anyMentorAlert}
+
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <SortChip active={sort === "rating"} icon={Star} onClick={() => setSort("rating")}>
@@ -175,6 +213,8 @@ export function MentorBrowser({ mentors }: { mentors: MentorListEntry[] }) {
           ))}
         </div>
       )}
+
+      {!nobodyBookable && anyMentorAlert}
     </div>
   );
 }

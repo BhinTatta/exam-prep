@@ -30,6 +30,9 @@ export default async function MentorDashboardPage() {
     where: { userId: user.id },
     include: {
       availability: { orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }] },
+      // Students who asked to be told when this mentor opens a slot. Shown by
+      // the availability editor: it is the best reason to add one.
+      _count: { select: { slotRequests: { where: { status: "OPEN" } } } },
       bookings: {
         orderBy: { createdAt: "desc" },
         include: { mentee: { select: { name: true } }, slot: true },
@@ -126,6 +129,13 @@ export default async function MentorDashboardPage() {
 
       <section className="mb-10">
         <h2 className="mb-3 font-medium">Availability</h2>
+        {profile._count.slotRequests > 0 && (
+          <p className="mb-3 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">
+            {profile._count.slotRequests}{" "}
+            {profile._count.slotRequests === 1 ? "student is" : "students are"} waiting for you to open
+            a slot.
+          </p>
+        )}
         <AvailabilityManager slots={profile.availability} />
       </section>
 

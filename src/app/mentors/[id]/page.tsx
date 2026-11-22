@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { ShareProfile } from "@/components/mentors/share-profile";
+import { NotifyMeButton, NotifyMeCallout } from "@/components/mentors/notify-me";
+import { openSlotRequestKeys, slotRequestKey } from "@/lib/slot-requests";
 import { RatingChip, RatingSummary } from "@/components/reviews/rating-summary";
 import { ReviewQuote } from "@/components/reviews/review-quote";
 import { cn } from "@/lib/utils";
@@ -73,6 +75,13 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
     (a, b) => daysUntilSlot(a.dayOfWeek, a.startTime) - daysUntilSlot(b.dayOfWeek, b.startTime)
   );
   const hasMoreReviews = mentor.reviewCount > mentor.reviews.length;
+
+  // "Notify me" for this mentor, any day. Captured so a student who finds
+  // nothing to book is a lead on /admin/demand rather than a lost visit.
+  const slotRequest = { mentorId: mentor.id, dayOfWeek: null, source: "mentor_profile" as const };
+  const onWaitlist = (await openSlotRequestKeys(session?.user?.id)).includes(
+    slotRequestKey(mentor.id, null)
+  );
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
@@ -226,9 +235,21 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
         </div>
 
         {slots.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">
-            {firstName} has no open slots right now — check back in a day or two.
-          </p>
+          <div className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed p-6 text-center">
+            <p className="text-sm text-pretty text-muted-foreground">
+              {isOwnProfile
+                ? "You have no open slots. Students who find you here can't book until you add some."
+                : `${firstName} has no open slots right now. Ask to be told when they add one.`}
+            </p>
+            {!isOwnProfile && (
+              <NotifyMeButton
+                request={slotRequest}
+                requested={onWaitlist}
+                signedIn={!!session?.user}
+                size="lg"
+              />
+            )}
+          </div>
         ) : (
           <div className="mt-4 flex flex-col gap-3">
             {slots.map((slot, i) => (
@@ -273,6 +294,19 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
               </form>
             ))}
           </div>
+        )}
+
+        {/* Open slots, but maybe not ones that fit: a student who can only do
+            evenings and sees three mornings is the same lost booking. */}
+        {slots.length > 0 && !isOwnProfile && (
+          <NotifyMeCallout
+            className="mt-4"
+            title="None of these times work?"
+            description={`Get on ${firstName}'s list for when new slots open.`}
+            request={slotRequest}
+            requested={onWaitlist}
+            signedIn={!!session?.user}
+          />
         )}
 
         <p className="mt-4 flex items-start justify-center gap-1.5 text-center text-xs text-muted-foreground">

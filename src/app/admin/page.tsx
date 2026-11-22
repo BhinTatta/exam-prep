@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserCheck, CreditCard, ShieldAlert, Calendar, Users, MailX } from "lucide-react";
+import { UserCheck, CreditCard, ShieldAlert, Calendar, Users, MailX, BellRing } from "lucide-react";
 
 export const metadata = { title: "Admin" };
 
@@ -16,7 +16,7 @@ function countCapturedLast24h() {
 }
 
 export default async function AdminOverviewPage() {
-  const [pendingMentors, capturedToday, needsAttention, sessions, totalUsers, emailFailures] =
+  const [pendingMentors, capturedToday, needsAttention, sessions, totalUsers, emailFailures, waitlist] =
     await Promise.all([
     prisma.mentorProfile.count({ where: { verified: false } }),
     countCapturedLast24h(),
@@ -31,6 +31,8 @@ export default async function AdminOverviewPage() {
     // Nobody thinks to check whether email is working until someone complains
     // they were never told, so it gets a tile of its own.
     prisma.notification.count({ where: { status: "FAILED" } }),
+    // Students who found nothing to book and asked to be told when they can.
+    prisma.slotRequest.count({ where: { status: "OPEN" } }),
   ]);
 
   const cards = [
@@ -45,6 +47,7 @@ export default async function AdminOverviewPage() {
       href: "/admin/notifications",
       icon: MailX,
     },
+    { label: "Students on the waitlist", value: waitlist, href: "/admin/demand", icon: BellRing },
   ];
 
   return (

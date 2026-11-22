@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { MentorBrowser } from "@/components/mentors/mentor-browser";
 import { listRankedMentors } from "@/lib/mentors/list";
 import { expireStaleHolds } from "@/lib/payments/sync";
+import { getSession } from "@/lib/auth-helpers";
+import { openSlotRequestKeys } from "@/lib/slot-requests";
+import { NotifyMeButton } from "@/components/mentors/notify-me";
 import { Users, ShieldCheck, Wallet, Undo2 } from "lucide-react";
 
 export const metadata = {
@@ -22,7 +25,9 @@ export default async function MentorsPage() {
   // Ordered by weighted rating in Postgres. The sort toggle and day filter run
   // in the browser over exactly this data — see MentorBrowser for why that is
   // cheaper than a search param.
-  const mentors = await listRankedMentors({ order: "rating" });
+  const [mentors, session] = await Promise.all([listRankedMentors({ order: "rating" }), getSession()]);
+  const signedIn = !!session?.user;
+  const requestedKeys = await openSlotRequestKeys(session?.user?.id);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
@@ -55,11 +60,18 @@ export default async function MentorsPage() {
           <EmptyState
             icon={Users}
             title="No verified mentors yet"
-            description="We verify every mentor by hand, so this list fills up slowly. Check back soon."
+            description="We verify every mentor by hand, so this list fills up slowly. Get told when the first one can take a session."
+            action={
+              <NotifyMeButton
+                request={{ mentorId: null, dayOfWeek: null, source: "mentor_list" }}
+                requested={requestedKeys.includes("any:any")}
+                signedIn={signedIn}
+              />
+            }
           />
         </div>
       ) : (
-        <MentorBrowser mentors={mentors} />
+        <MentorBrowser mentors={mentors} signedIn={signedIn} requestedKeys={requestedKeys} />
       )}
 
       <div className="mt-14 flex flex-col items-center gap-3 border-t pt-10 text-center">
