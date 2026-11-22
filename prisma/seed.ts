@@ -526,10 +526,11 @@ async function main() {
       const slots = slotPlans[mentorIndex % slotPlans.length];
       for (const slot of slots) {
         const exists = await prisma.availability.findFirst({
-          where: { mentorId: profile.id, dayOfWeek: slot.dayOfWeek, startTime: slot.startTime },
+          where: { mentorId: profile.id, days: { has: slot.dayOfWeek }, startTime: slot.startTime },
         });
         if (!exists) {
-          await prisma.availability.create({ data: { ...slot, mentorId: profile.id } });
+          const { dayOfWeek, ...rest } = slot;
+          await prisma.availability.create({ data: { ...rest, days: [dayOfWeek], mentorId: profile.id } });
         }
       }
     }

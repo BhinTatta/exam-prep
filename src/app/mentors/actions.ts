@@ -7,8 +7,11 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadFile } from "@/lib/supabase";
 import { mentorSubjects, mentorLanguages, examCredentials, sessionPricing } from "@/config/site";
-import { resolveSlotOccurrence } from "@/lib/days";
+import { minutesOfDay } from "@/lib/days";
 import { expireStaleHolds, holdDeadline } from "@/lib/payments/sync";
+import { busyIntervalsByMentor } from "@/lib/mentors/availability";
+import { SESSION_LENGTHS, expandRule, isBusy, sessionStartsOf } from "@/lib/slots";
+import { isValidPrice, mentorShare } from "@/lib/pricing";
 
 // Everything here is required. A half-filled mentor profile converts nobody,
 // and letting one through means an empty card sitting next to a complete one.
@@ -56,7 +59,7 @@ export async function applyAsMentor(formData: FormData) {
       // price (that unlocks after verification), so a `rate` in this payload
       // could only have been forged — a hidden input is editable by anyone with
       // devtools, and this one decides what a mentee is charged.
-      data: { ...parsed, rate: sessionPricing.studentPays, userId: user.id, proofUrl },
+      data: { ...parsed, rate: sessionPricing.defaultPrice, userId: user.id, proofUrl },
     }),
     // USER -> MENTOR so they get dashboard access while awaiting verification.
     // Moderators/admins keep their higher-privilege role.
@@ -70,56 +73,127 @@ export async function applyAsMentor(formData: FormData) {
   redirect("/mentor/dashboard");
 }
 
-const availabilitySchema = z.object({
-  dayOfWeek: z.coerce.number().int().min(0).max(6),
-  startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
-  // A session is `sessionPricing.durationMinutes` at minimum — mentors are free
-  // to run over, but they can't offer a slot shorter than what a mentee paid for.
-  duration: z.coerce.number().int().min(sessionPricing.durationMinutes).max(180),
-});
+const HHMM = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
+/** Most sessions one rule may produce in a day — a guard against a 00:00–23:59 typo. */
+const MAX_SESSIONS_PER_DAY = 16;
+
+const availabilitySchema = z
+  .object({
+    days: z.array(z.coerce.number().int().min(0).max(6)).min(1, "Pick at least one day"),
+    startTime: z.string().regex(HHMM),
+    // Empty means "one session at startTime"; a value means "sessions back to back until then".
+    endTime: z
+      .string()
+      .regex(HHMM)
+      .nullable()
+      .or(z.literal("").transform(() => null)),
+    // Fixed choices: a session is at least what a mentee paid for, and odd
+    // lengths make a range chop into odd times.
+    duration: z.coerce
+      .number()
+      .int()
+      .refine((d) => (SESSION_LENGTHS as readonly number[]).includes(d), "Pick a session length"),
+  })
+  .superRefine((rule, ctx) => {
+    if (!rule.endTime) return;
+    if (minutesOfDay(rule.endTime) - minutesOfDay(rule.startTime) < rule.duration) {
+      ctx.addIssue({ code: "custom", message: "The range must fit at least one session" });
+    } else if (sessionStartsOf(rule).length > MAX_SESSIONS_PER_DAY) {
+      ctx.addIssue({ code: "custom", message: `That range is more than ${MAX_SESSIONS_PER_DAY} sessions a day` });
+    }
+  });
+
+/**
+ * Add a recurring availability rule: one or more weekdays, and either a single
+ * session time or a time range that is split into back-to-back sessions.
+ * It keeps producing bookable sessions every week until the mentor removes it.
+ */
 export async function addAvailability(formData: FormData) {
   const user = await requireUser();
   const profile = await prisma.mentorProfile.findUniqueOrThrow({ where: { userId: user.id } });
 
   const parsed = availabilitySchema.parse({
-    dayOfWeek: formData.get("dayOfWeek"),
+    days: [...new Set(formData.getAll("days"))],
     startTime: formData.get("startTime"),
+    endTime: formData.get("endTime") ?? null,
     duration: formData.get("duration"),
   });
 
-  await prisma.availability.create({ data: { ...parsed, mentorId: profile.id } });
+  await prisma.availability.create({
+    data: { ...parsed, days: [...new Set(parsed.days)].sort(), mentorId: profile.id },
+  });
   revalidatePath("/mentor/dashboard");
+  revalidatePath(`/mentors/${profile.id}`);
 }
 
+/**
+ * Remove a rule. Bookings already made from it stand: those are dated, paid
+ * sessions. A rule that bookings still point at is switched off rather than
+ * deleted, so their history keeps its row.
+ */
 export async function removeAvailability(id: string) {
   const user = await requireUser();
   const profile = await prisma.mentorProfile.findUniqueOrThrow({ where: { userId: user.id } });
-  await prisma.availability.deleteMany({ where: { id, mentorId: profile.id, isBooked: false } });
+
+  const used = await prisma.booking.count({ where: { slotId: id } });
+  if (used > 0) {
+    await prisma.availability.updateMany({ where: { id, mentorId: profile.id }, data: { active: false } });
+  } else {
+    await prisma.availability.deleteMany({ where: { id, mentorId: profile.id } });
+  }
   revalidatePath("/mentor/dashboard");
+  revalidatePath(`/mentors/${profile.id}`);
 }
 
-export async function bookSlot(mentorId: string, slotId: string) {
+/** Set the mentor's own session price. The platform cut follows from it (src/lib/pricing.ts). */
+export async function updateRate(formData: FormData) {
   const user = await requireUser();
+  const rate = Number(formData.get("rate"));
+  if (!isValidPrice(rate)) {
+    throw new Error(`Pick a whole-rupee price from ₹${sessionPricing.minPrice} to ₹${sessionPricing.maxPrice}`);
+  }
 
-  // Free up any slots whose payment window lapsed, so an abandoned checkout
-  // doesn't keep a slot locked out of circulation.
+  const profile = await prisma.mentorProfile.update({ where: { userId: user.id }, data: { rate }, select: { id: true } });
+  revalidatePath("/mentor/dashboard");
+  revalidatePath(`/mentors/${profile.id}`);
+  revalidatePath("/mentors");
+}
+
+/**
+ * Book one dated session of a mentor's recurring rule.
+ *
+ * `startsAtIso` comes from the page, so it is checked, not trusted: it must be
+ * a session the rule really produces inside the booking window. Then, with the
+ * mentor's row locked so two students cannot both pass the check at once, it
+ * must not overlap any live booking.
+ */
+export async function bookSlot(mentorId: string, slotId: string, startsAtIso: string) {
+  const user = await requireUser(`/mentors/${mentorId}`);
+
+  // Put lapsed holds back on offer before checking what is free.
   await expireStaleHolds();
 
   const mentor = await prisma.mentorProfile.findUniqueOrThrow({ where: { id: mentorId } });
   if (!mentor.verified) throw new Error("This mentor isn't verified yet");
   if (mentor.userId === user.id) throw new Error("You can't book your own slot");
 
-  const booking = await prisma.$transaction(async (tx) => {
-    const claimed = await tx.availability.updateMany({
-      where: { id: slotId, mentorId, isBooked: false },
-      data: { isBooked: true },
-    });
-    if (claimed.count === 0) throw new Error("That slot was just booked — pick another one.");
+  const rule = await prisma.availability.findFirst({ where: { id: slotId, mentorId, active: true } });
+  const startsAt = new Date(startsAtIso);
+  const occurrence = rule
+    ? expandRule(rule).find((o) => o.startsAt.getTime() === startsAt.getTime())
+    : undefined;
+  if (!rule || !occurrence) throw new Error("That time is no longer available — pick another one.");
 
-    // Read after claiming: the updateMany above is the lock, so this row is
-    // ours to snapshot now.
-    const slot = await tx.availability.findUniqueOrThrow({ where: { id: slotId } });
+  const booking = await prisma.$transaction(async (tx) => {
+    // Serialise bookings per mentor: the overlap check below and the insert
+    // after it must not interleave with another student's.
+    await tx.$queryRaw`SELECT id FROM "MentorProfile" WHERE id = ${mentorId} FOR UPDATE`;
+
+    const busy = await busyIntervalsByMentor([mentorId], new Date(), tx);
+    if (isBusy(occurrence, busy.get(mentorId) ?? [])) {
+      throw new Error("That time was just booked — pick another one.");
+    }
 
     return tx.booking.create({
       data: {
@@ -127,13 +201,11 @@ export async function bookSlot(mentorId: string, slotId: string) {
         mentorId,
         slotId,
         amount: mentor.rate,
+        mentorPayout: mentorShare(mentor.rate),
         expiresAt: holdDeadline(),
-        // Pin the recurring weekly slot to the one instant it next falls on,
-        // here and only here. Reminders, the meeting-link window and the
-        // completion sweep all compare this against now(); re-deriving it
-        // later would roll a finished session forward to next week.
-        scheduledStartAt: resolveSlotOccurrence(slot.dayOfWeek, slot.startTime),
-        durationMinutes: slot.duration,
+        // The dated session, fixed here and never re-derived from the rule.
+        scheduledStartAt: occurrence.startsAt,
+        durationMinutes: occurrence.duration,
       },
     });
   });

@@ -5,11 +5,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
 import { PayoutButton } from "@/components/admin/payout-button";
 import { Badge } from "@/components/ui/badge";
-import { DAYS } from "@/lib/days";
+import { formatBookingWhen } from "@/lib/days";
+import { mentorShare } from "@/lib/pricing";
 import { Calendar } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export const metadata = { title: "Sessions & payouts" };
+
+/** The mentor's share, as snapshotted at booking; derived for rows older than the snapshot. */
+function payoutFor(b: { amount: number; mentorPayout: number | null }) {
+  return b.mentorPayout ?? mentorShare(b.amount);
+}
 
 export default async function AdminSessionsPage() {
   const bookings = await prisma.booking.findMany({
@@ -41,11 +47,11 @@ export default async function AdminSessionsPage() {
                     {b.mentee.name} → {b.mentor.user.name}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {DAYS[b.slot.dayOfWeek]} {b.slot.startTime} · ₹{b.amount} ·{" "}
+                    {formatBookingWhen(b)} · ₹{b.amount} paid ·{" "}
                     {formatDistanceToNow(b.createdAt, { addSuffix: true })}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Pay <span className="font-mono">{b.mentor.upiId}</span>
+                    Pay ₹{payoutFor(b)} to <span className="font-mono">{b.mentor.upiId}</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -54,7 +60,7 @@ export default async function AdminSessionsPage() {
                     (b.payout?.paidAt ? (
                       <Badge variant="outline">Paid out</Badge>
                     ) : (
-                      <PayoutButton bookingId={b.id} amount={b.amount} />
+                      <PayoutButton bookingId={b.id} amount={payoutFor(b)} />
                     ))}
                 </div>
               </CardContent>

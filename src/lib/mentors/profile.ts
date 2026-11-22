@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import { slotRuleColumns } from "@/lib/mentors/availability";
 
 /** Testimonials shown inline on a profile before it links out to the rest. */
 export const REVIEWS_ON_PROFILE = 4;
@@ -36,7 +37,8 @@ export const getMentorProfile = cache(async (id: string) => {
     where: { id },
     include: {
       user: { select: { name: true, image: true } },
-      availability: { where: { isBooked: false } },
+      // The recurring rules; openSlotsForMentor() turns them into dated sessions.
+      availability: { where: { active: true }, select: slotRuleColumns },
       reviews: {
         where: { published: true, NOT: { comment: null } },
         orderBy: { createdAt: "desc" },

@@ -18,8 +18,8 @@ export function PayoutButton({ bookingId, amount }: { bookingId: string; amount:
       className="gap-1.5"
       onClick={() =>
         startTransition(async () => {
-          await markPayoutPaid(bookingId, amount);
-          toast.success("Marked as paid out");
+          await markPayoutPaid(bookingId);
+          toast.success(`Marked ₹${amount} as paid out`);
         })
       }
     >

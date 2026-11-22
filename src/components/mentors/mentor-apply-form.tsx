@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileInput } from "@/components/ui/file-input";
+import { mentorShare, platformCut } from "@/lib/pricing";
 import { mentorSubjects, mentorLanguages, examCredentials, sessionPricing } from "@/config/site";
 import { applyAsMentor } from "@/app/mentors/actions";
 
@@ -164,8 +165,8 @@ export function MentorApplyForm() {
                 ))}
               </div>
             </div>
-            {/* Not an input. Applicants start on the standard rate and set their
-                own once they're verified, so there is nothing to fill in here —
+            {/* Not an input. Applicants start on the standard rate and can lower
+                it from their dashboard, so there is nothing to fill in here —
                 only a number they deserve to see before they upload an ID.
                 Spelled out rather than tucked into a tooltip: most of this
                 audience is on a phone, where a hover tooltip never opens. */}
@@ -173,17 +174,18 @@ export function MentorApplyForm() {
               <p className="text-sm leading-none font-medium">What a session pays</p>
               <div className="rounded-lg border bg-muted/40 p-3">
                 <p className="text-sm">
-                  <span className="font-semibold">₹{sessionPricing.studentPays} from the student</span>
+                  <span className="font-semibold">₹{sessionPricing.defaultPrice} from the student</span>
                   {" — "}
                   <span className="font-semibold text-primary">
-                    ₹{sessionPricing.mentorReceives} to you
+                    ₹{mentorShare(sessionPricing.defaultPrice)} to you
                   </span>
                   , per {sessionPricing.durationMinutes}-minute call.
                 </p>
                 <p className="mt-1.5 text-xs text-muted-foreground">
-                  The ₹{sessionPricing.studentPays - sessionPricing.mentorReceives} covers the payment
-                  gateway&apos;s cut, GST, hosting, and the refund we pay out of pocket when a mentor
-                  misses a call. Nobody here takes a salary from it.
+                  The ₹{platformCut(sessionPricing.defaultPrice)} covers the payment gateway&apos;s cut,
+                  GST, hosting, and the refund we pay out of pocket when a mentor misses a call. Once
+                  you&apos;re verified you can lower your price to as little as ₹
+                  {sessionPricing.minPrice}; below ₹{sessionPricing.freeBelow} we take nothing.
                 </p>
               </div>
             </div>

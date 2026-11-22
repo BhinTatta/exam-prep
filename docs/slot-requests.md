@@ -45,14 +45,15 @@ any day), `source`, `status` (`OPEN` / `NOTIFIED` / `CANCELLED`), `notifiedAt`.
 ### Trigger
 
 Matching happens when supply appears. That is `addAvailability` in
-`src/app/mentors/actions.ts`, and later a cancelled booking that frees its slot.
-After the `Availability` insert, call a `planSlotAlerts(mentorId, dayOfWeek)`
-that finds the requests the new slot satisfies:
+`src/app/mentors/actions.ts`, and a cancelled, expired or refunded booking that
+frees its time. After the `Availability` insert, call a
+`planSlotAlerts(mentorId, days)`, where `days` are the rule's weekdays, that
+finds the requests the new rule satisfies:
 
 ```sql
 status = 'OPEN'
 AND (mentorId = :mentorId OR mentorId IS NULL)
-AND (dayOfWeek = :dayOfWeek OR dayOfWeek IS NULL)
+AND (dayOfWeek = ANY(:days) OR dayOfWeek IS NULL)
 ```
 
 Wrap it in `try`/`catch` the same way `planBookingNotifications` is wrapped. A

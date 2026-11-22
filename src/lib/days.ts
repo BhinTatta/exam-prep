@@ -16,12 +16,12 @@ export const DAYS = [
 const IST_TIME_ZONE = "Asia/Kolkata";
 
 /** IST is a fixed UTC+05:30 and has never observed DST. */
-const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+export const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
 const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
 /** Where `now` falls on the Indian calendar and clock. */
-function istParts(now: Date) {
+export function istParts(now: Date) {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: IST_TIME_ZONE,
     year: "numeric",
@@ -45,7 +45,7 @@ function istParts(now: Date) {
   };
 }
 
-function minutesOfDay(startTime: string) {
+export function minutesOfDay(startTime: string) {
   const [h, m] = startTime.split(":").map(Number);
   return h * 60 + m;
 }
@@ -139,4 +139,17 @@ export function pickNextSlot<T extends { dayOfWeek: number; startTime: string }>
       }))
       .sort((a, b) => a.distance - b.distance)[0]?.slot ?? null
   );
+}
+
+/**
+ * When a booking happens, for display. Every booking made since
+ * scheduledStartAt exists carries its exact time; the fallback covers the few
+ * older rows, which only knew the weekly slot they came from.
+ */
+export function formatBookingWhen(booking: {
+  scheduledStartAt: Date | null;
+  slot: { days: number[]; startTime: string };
+}) {
+  if (booking.scheduledStartAt) return formatIstDateTime(booking.scheduledStartAt);
+  return `${DAYS[booking.slot.days[0] ?? 0]} ${formatSlotTime(booking.slot.startTime)}`;
 }

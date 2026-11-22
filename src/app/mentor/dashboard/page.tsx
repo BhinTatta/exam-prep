@@ -12,7 +12,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, IndianRupee, ArrowRight } from "lucide-react";
-import { DAYS } from "@/lib/days";
+import { formatBookingWhen } from "@/lib/days";
+import { mentorShare } from "@/lib/pricing";
+import { RateEditor } from "@/components/mentors/rate-editor";
 import { siteConfig } from "@/config/site";
 import { formatDistanceToNow } from "date-fns";
 
@@ -29,7 +31,7 @@ export default async function MentorDashboardPage() {
   const profile = await prisma.mentorProfile.findUnique({
     where: { userId: user.id },
     include: {
-      availability: { orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }] },
+      availability: { where: { active: true }, orderBy: [{ startTime: "asc" }, { createdAt: "asc" }] },
       // Students who asked to be told when this mentor opens a slot. Shown by
       // the availability editor: it is the best reason to add one.
       _count: { select: { slotRequests: { where: { status: "OPEN" } } } },
@@ -136,7 +138,12 @@ export default async function MentorDashboardPage() {
             a slot.
           </p>
         )}
-        <AvailabilityManager slots={profile.availability} />
+        <AvailabilityManager rules={profile.availability} />
+      </section>
+
+      <section className="mb-10">
+        <h2 className="mb-3 font-medium">Your price</h2>
+        <RateEditor rate={profile.rate} />
       </section>
 
       <section>
@@ -152,13 +159,14 @@ export default async function MentorDashboardPage() {
                     <div>
                       <p className="text-sm font-medium">{b.mentee.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {DAYS[b.slot.dayOfWeek]} {b.slot.startTime} ·{" "}
+                        {formatBookingWhen(b)} ·{" "}
                         {formatDistanceToNow(b.createdAt, { addSuffix: true })}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="flex items-center text-sm font-medium">
-                        <IndianRupee className="size-3.5" /> {b.amount}
+                      {/* What the mentor earns, not what the student paid. */}
+                      <span className="flex items-center text-sm font-medium" title={`Student paid ₹${b.amount}`}>
+                        <IndianRupee className="size-3.5" /> {b.mentorPayout ?? mentorShare(b.amount)}
                       </span>
                       <BookingStatusBadge status={b.status} />
                     </div>

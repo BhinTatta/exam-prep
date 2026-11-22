@@ -31,8 +31,8 @@ export function holdDeadline(from: Date = new Date()): Date {
   return new Date(from.getTime() + HOLD_MINUTES * 60_000);
 }
 
-/** Booking states that still hold a claim on the mentor's slot. */
-const SLOT_HOLDING_STATUSES: BookingStatus[] = [
+/** Booking states that make their session time busy, so no one else can book it. */
+export const SLOT_HOLDING_STATUSES: BookingStatus[] = [
   "PENDING_PAYMENT",
   "PAYMENT_PROCESSING",
   "CONFIRMED",
@@ -49,28 +49,6 @@ const DEAD_STATUSES: BookingStatus[] = ["EXPIRED", "CANCELLED", "REFUNDED"];
  * has run, so a later refund has something to take back off.
  */
 const COUNTED_PAID_STATUSES: BookingStatus[] = ["CONFIRMED", "COMPLETED", "DISPUTED"];
-
-/**
- * Release a slot, unless another live booking has since claimed it.
- *
- * Availability rows are recurring weekly slots, so `isBooked` is a shared flag:
- * blindly clearing it could hand away a slot somebody else is now holding.
- */
-async function releaseSlot(slotId: string, exceptBookingId: string): Promise<void> {
-  const stillClaimed = await prisma.booking.count({
-    where: {
-      slotId,
-      id: { not: exceptBookingId },
-      status: { in: SLOT_HOLDING_STATUSES },
-    },
-  });
-  if (stillClaimed === 0) {
-    await prisma.availability.updateMany({
-      where: { id: slotId },
-      data: { isBooked: false },
-    });
-  }
-}
 
 function mapPaymentStatus(entity: RazorpayPayment): PaymentStatus {
   switch (entity.status) {
@@ -356,9 +334,9 @@ export async function applyRefundEntity(
     data: { status: "REFUNDED", expiresAt: null },
   });
 
+  // The status change is the release: a REFUNDED booking no longer counts as
+  // busy time, so its session goes straight back on offer.
   if (moved.count > 0) {
-    await releaseSlot(payment.booking.slotId, payment.booking.id);
-
     // Take the session back off the mentor's count, but only if it was ever on
     // it. CONFIRMED and DISPUTED are the two states above that a capture can
     // have counted; a booking refunded straight out of PENDING_PAYMENT or
@@ -386,7 +364,7 @@ export async function expireStaleHolds(): Promise<number> {
       // payer must not lose the slot out from under their own payment.
       payments: { none: { status: { in: ["AUTHORIZED", "CAPTURED"] } } },
     },
-    select: { id: true, slotId: true },
+    select: { id: true },
     take: 100,
   });
 
@@ -397,10 +375,6 @@ export async function expireStaleHolds(): Promise<number> {
     where: { id: { in: ids }, status: "PENDING_PAYMENT" },
     data: { status: "EXPIRED" },
   });
-
-  for (const booking of stale) {
-    await releaseSlot(booking.slotId, booking.id);
-  }
 
   return expired.count;
 }
@@ -436,9 +410,4 @@ export async function reconcileBookingPayments(bookingId: string): Promise<void>
       error: err instanceof Error ? err.message : String(err),
     });
   }
-}
-
-/** Release a slot from a booking the mentee or an admin cancelled. */
-export async function releaseBookingSlot(bookingId: string, slotId: string): Promise<void> {
-  await releaseSlot(slotId, bookingId);
 }

@@ -119,9 +119,19 @@ export const examCredentials = exams.flatMap((exam) =>
 // new profile and the price must never be read back off the apply form.
 // The gap between the two numbers pays the payment gateway, GST, hosting and
 // the refund we cover out of pocket when a mentor misses a call.
+/**
+ * What a session costs. Mentors pick their own price inside [minPrice,
+ * maxPrice]; the platform's cut comes off it by the rule in src/lib/pricing.ts
+ * (no cut below `freeBelow`, then it tapers up to `maxCut`).
+ */
 export const sessionPricing = {
-  studentPays: 350,
-  mentorReceives: 250,
+  defaultPrice: 350,
+  minPrice: 99,
+  maxPrice: 350,
+  /** Prices below this carry no platform cut at all. */
+  freeBelow: 200,
+  /** The most the platform ever takes from one session. */
+  maxCut: 100,
   durationMinutes: 30,
 } as const;
 

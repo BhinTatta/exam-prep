@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { sessionPricing } from "@/config/site";
+import { mentorShare } from "@/lib/pricing";
 import { ArrowRight, BadgeCheck, EyeOff, Undo2 } from "lucide-react";
 
 export const metadata = {
@@ -86,8 +87,9 @@ export default async function MentorApplyPage() {
         </Pitch>
 
         <Pitch title="And you’re paid for the time">
-          ₹{sessionPricing.studentPays} from the student, ₹{sessionPricing.mentorReceives} to you, for
-          a {sessionPricing.durationMinutes}-minute call. Being paid isn&apos;t the opposite of
+          ₹{sessionPricing.defaultPrice} from the student, ₹{mentorShare(sessionPricing.defaultPrice)} to
+          you, for a {sessionPricing.durationMinutes}-minute call. Charge less if you like: below ₹
+          {sessionPricing.freeBelow} we take nothing and every rupee is yours. Being paid isn&apos;t the opposite of
           helping — it&apos;s what makes it possible to do this on a Sunday instead of feeling guilty
           about an hour you didn&apos;t have. Take the calls you want, when you want.
         </Pitch>

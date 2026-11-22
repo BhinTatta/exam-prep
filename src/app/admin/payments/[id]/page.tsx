@@ -8,7 +8,7 @@ import { BookingStatusBadge } from "@/components/bookings/booking-status-badge";
 import { PaymentStatusBadge } from "@/components/admin/payment-status-badge";
 import { RefundDialog, SyncPaymentButton } from "@/components/admin/payment-admin-controls";
 import { formatInr } from "@/lib/razorpay/money";
-import { DAYS } from "@/lib/days";
+import { formatBookingWhen } from "@/lib/days";
 
 export const metadata = { title: "Payment" };
 export const dynamic = "force-dynamic";
@@ -132,8 +132,8 @@ export default async function AdminPaymentDetailPage({
               <span className="font-mono text-xs">{payment.booking.mentor.upiId}</span>
             </Row>
             <Row label="Slot">
-              {DAYS[payment.booking.slot.dayOfWeek]} {payment.booking.slot.startTime} (
-              {payment.booking.slot.duration} min)
+              {formatBookingWhen(payment.booking)} (
+              {payment.booking.durationMinutes ?? payment.booking.slot.duration} min)
             </Row>
             {payment.booking.cancellationRequestedAt && (
               <>

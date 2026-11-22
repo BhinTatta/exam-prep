@@ -9,7 +9,7 @@ import { createOrder, fetchPayment } from "@/lib/razorpay/client";
 import { razorpayCredentials } from "@/lib/razorpay/config";
 import { verifyPaymentSignature } from "@/lib/razorpay/signature";
 import { assertPayableAmount, toPaise } from "@/lib/razorpay/money";
-import { applyPaymentEntity, expireStaleHolds, releaseBookingSlot } from "@/lib/payments/sync";
+import { applyPaymentEntity, expireStaleHolds } from "@/lib/payments/sync";
 
 async function requireOwnBooking(bookingId: string, userId: string) {
   const booking = await prisma.booking.findUniqueOrThrow({ where: { id: bookingId } });
@@ -196,8 +196,8 @@ export async function cancelBooking(bookingId: string) {
     throw new Error("This booking can no longer be cancelled on your own");
   }
 
+  // CANCELLED is not busy time, so this alone puts the session back on offer.
   await prisma.booking.update({ where: { id: bookingId }, data: { status: "CANCELLED" } });
-  await releaseBookingSlot(bookingId, booking.slotId);
 
   revalidatePath(`/bookings/${bookingId}`);
   revalidatePath("/bookings");

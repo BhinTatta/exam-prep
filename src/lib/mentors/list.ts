@@ -1,7 +1,8 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { daysUntilSlot, formatSlotWhen } from "@/lib/days";
+import { formatOccurrence, openOccurrences } from "@/lib/slots";
+import { busyIntervalsByMentor, slotRuleColumns } from "@/lib/mentors/availability";
 import { isProvenMentor } from "@/lib/mentors/rank";
 import type { MentorCardData, MentorSlotView } from "@/components/mentors/mentor-card";
 
@@ -32,10 +33,28 @@ const LIST_CAP = 120;
  * Wednesday and reading "Today, Friday". The card slices this down to what
  * fits; the filter picks which ones it slices.
  *
- * Capped so a mentor who opens forty slots does not bloat the payload for
- * everyone. Two or three a day for a week is well inside it.
+ * Capped so a mentor with long time ranges does not bloat the payload for
+ * everyone: three per weekday (see capPerDay), which is what a card shows.
  */
 const SLOTS_PER_MENTOR = 21;
+
+/**
+ * The soonest few sessions on each weekday, still soonest first.
+ *
+ * A plain "first N" would not do: a mentor with a 6-to-10 PM range every day
+ * fills N with today and tomorrow, and the card then shows nothing when a
+ * student filters to Saturday, which reads as booked out.
+ */
+function capPerDay<T extends { dayOfWeek: number }>(sorted: T[]): T[] {
+  const perDay = new Map<number, number>();
+  const perDayCap = Math.floor(SLOTS_PER_MENTOR / 7);
+  return sorted.filter((slot) => {
+    const taken = perDay.get(slot.dayOfWeek) ?? 0;
+    if (taken >= perDayCap) return false;
+    perDay.set(slot.dayOfWeek, taken + 1);
+    return true;
+  });
+}
 
 /** A mentor as every listing renders them. */
 export type MentorListEntry = {
@@ -84,12 +103,6 @@ const cardColumns = {
   user: { select: { name: true, image: true } },
 } as const;
 
-/** Minutes from now until the next occurrence of a weekly slot. */
-function minutesUntil(slot: { dayOfWeek: number; startTime: string }, now: Date) {
-  const [hours, minutes] = slot.startTime.split(":").map(Number);
-  return daysUntilSlot(slot.dayOfWeek, slot.startTime, now) * 1440 + hours * 60 + minutes;
-}
-
 /**
  * Verified mentors, ordered, with their open slots resolved for rendering.
  *
@@ -114,10 +127,7 @@ export async function listRankedMentors({
     where: { verified: true },
     select: {
       ...cardColumns,
-      availability: {
-        where: { isBooked: false },
-        select: { dayOfWeek: true, startTime: true, duration: true },
-      },
+      availability: { where: { active: true }, select: slotRuleColumns },
     },
     orderBy:
       order === "featured"
@@ -140,21 +150,27 @@ export async function listRankedMentors({
   });
 
   const now = new Date();
+  // One query for every listed mentor's live bookings, not one per card.
+  const busy = await busyIntervalsByMentor(
+    profiles.filter((p) => p.availability.length > 0).map((p) => p.id),
+    now
+  );
 
   const entries = profiles.map(({ availability, featuredRank, ...mentor }): MentorListEntry => {
-    const sorted = [...availability].sort((a, b) => minutesUntil(a, now) - minutesUntil(b, now));
+    const sorted = openOccurrences(availability, busy.get(mentor.id) ?? [], now);
 
     return {
       mentor,
-      slots: sorted.slice(0, SLOTS_PER_MENTOR).map((slot) => ({
+      slots: capPerDay(sorted).map((slot) => ({
         dayOfWeek: slot.dayOfWeek,
         duration: slot.duration,
-        when: formatSlotWhen(slot.dayOfWeek, slot.startTime, now),
+        when: formatOccurrence(slot, now),
       })),
       // Read off every slot, including any past the cap above, so filtering by
       // a day cannot hide a mentor whose only Sunday opening sits at the tail.
       openDays: [...new Set(sorted.map((slot) => slot.dayOfWeek))].sort((a, b) => a - b),
-      soonestInMinutes: sorted.length > 0 ? minutesUntil(sorted[0], now) : null,
+      soonestInMinutes:
+        sorted.length > 0 ? Math.round((sorted[0].startsAt.getTime() - now.getTime()) / 60_000) : null,
       featuredRank,
     };
   });

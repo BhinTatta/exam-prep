@@ -55,7 +55,7 @@ async function reset() {
     data: { id: "mp1", userId: "mentoru", institute: "IITD", rate: 500, upiId: "a@b", proofUrl: "http://x", verified: true },
   });
   await db.availability.create({
-    data: { id: "slot1", mentorId: "mp1", dayOfWeek: 4, startTime: "18:00", duration: 60, isBooked: true },
+    data: { id: "slot1", mentorId: "mp1", days: [4], startTime: "18:00", duration: 60 },
   });
 }
 

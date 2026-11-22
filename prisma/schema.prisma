@@ -184,7 +184,7 @@ model MentorProfile {
   institute  String
   rank       String? // e.g. AIR / rank proof text
   subjects   String[]
-  rate       Int // per-session rate, INR — this is exactly what the mentee is charged
+  rate       Int // per-session price, INR, set by the mentor within sessionPricing's bounds — exactly what the mentee is charged
   upiId      String // where the admin sends this mentor's payout (mentees never see it)
   proofUrl   String // uploaded proof document (Supabase Storage)
   bio        String?   @db.Text
@@ -263,19 +263,28 @@ model MentorProfile {
   @@index([verified, featuredRank])
 }
 
+/// A recurring availability rule: "every day at 7 PM", "weekends, 6 to 9 PM".
+///
+/// A rule is never used up. Students book one dated occurrence of it, and
+/// that occurrence is taken because a live Booking covers that time, not
+/// because of a flag on this row. src/lib/slots.ts expands rules into
+/// bookable sessions.
 model Availability {
-  id        String        @id @default(cuid())
-  mentorId  String
-  mentor    MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
-  dayOfWeek Int // 0 = Sunday .. 6 = Saturday
-  startTime String // "HH:mm", 24h
-  duration  Int           @default(30) // minutes
-  isBooked  Boolean       @default(false)
+  id       String        @id @default(cuid())
+  mentorId String
+  mentor   MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  days     Int[] // weekdays it repeats on, 0 = Sunday .. 6 = Saturday
+  startTime String // "HH:mm", 24h IST: the session, or the start of the range
+  endTime   String? // "HH:mm": null = one session at startTime; set = back-to-back sessions until here
+  duration  Int           @default(30) // minutes per session
+  /// false once the mentor removes a rule that bookings still point at. It
+  /// stops producing sessions, and the bookings keep their row.
+  active    Boolean       @default(true)
   createdAt DateTime      @default(now())
 
   bookings Booking[]
 
-  @@index([mentorId])
+  @@index([mentorId, active])
 }
 
 enum BookingStatus {
@@ -303,6 +312,12 @@ model Booking {
 
   status BookingStatus @default(PENDING_PAYMENT)
   amount Int // INR rupees (Payment.amount is paise — see src/lib/razorpay/money.ts)
+
+  /// What the mentor is owed for this session, fixed when it is booked (see
+  /// mentorShare() in src/lib/pricing.ts). A snapshot, so changing the price
+  /// or the cut later never changes what an existing booking pays out.
+  /// Nullable only for bookings that predate the column.
+  mentorPayout Int?
 
   meetLink String?
 

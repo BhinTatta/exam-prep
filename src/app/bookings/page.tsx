@@ -8,7 +8,7 @@ import { Stars } from "@/components/reviews/stars";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, IndianRupee, Star } from "lucide-react";
-import { DAYS, formatIstDateTime } from "@/lib/days";
+import { formatBookingWhen } from "@/lib/days";
 import { formatDistanceToNow } from "date-fns";
 
 // Per-user data behind an auth guard: never prerender or cache this.
@@ -89,9 +89,7 @@ export default async function BookingsPage() {
                             pattern — the pattern rolls forward to next week the
                             moment a session passes, so an old booking would
                             advertise a date it was never for. */}
-                        {b.scheduledStartAt
-                          ? formatIstDateTime(b.scheduledStartAt)
-                          : `${DAYS[b.slot.dayOfWeek]} ${b.slot.startTime}`}{" "}
+                        {formatBookingWhen(b)}{" "}
                         · {formatDistanceToNow(b.createdAt, { addSuffix: true })}
                       </p>
                       {b.review && (

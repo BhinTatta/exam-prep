@@ -58,7 +58,7 @@ export default async function AdminDemandPage() {
       select: {
         id: true,
         user: { select: { name: true } },
-        _count: { select: { availability: { where: { isBooked: false } } } },
+        _count: { select: { availability: { where: { active: true } } } },
       },
     }),
   ]);
@@ -130,11 +130,11 @@ export default async function AdminDemandPage() {
                   <div className="flex items-center gap-3">
                     {mentor._count.availability > 0 ? (
                       <Badge variant="outline" className="border-emerald-500/40 text-emerald-600 dark:text-emerald-400">
-                        {mentor._count.availability} open now — tell them
+                        Has availability now — tell them
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="text-muted-foreground">
-                        No open slots
+                        No availability
                       </Badge>
                     )}
                     <span className="tabular-nums">{waiting} waiting</span>

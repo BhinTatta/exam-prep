@@ -15,7 +15,7 @@ import { ReviewForm } from "@/components/reviews/review-form";
 import { expireStaleHolds, reconcileBookingPayments } from "@/lib/payments/sync";
 import { formatInr } from "@/lib/razorpay/money";
 import { siteConfig } from "@/config/site";
-import { DAYS, formatIstDateTime } from "@/lib/days";
+import { formatBookingWhen, formatIstDateTime } from "@/lib/days";
 import { IndianRupee, ShieldCheck } from "lucide-react";
 
 // Per-user data behind an auth guard: never prerender or cache this.
@@ -87,7 +87,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                   every day after. */}
               {booking.scheduledStartAt
                 ? `${formatIstDateTime(booking.scheduledStartAt)} (${booking.durationMinutes ?? booking.slot.duration} min)`
-                : `${DAYS[booking.slot.dayOfWeek]} ${booking.slot.startTime} (${booking.slot.duration} min)`}
+                : `${formatBookingWhen(booking)} (${booking.slot.duration} min)`}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">

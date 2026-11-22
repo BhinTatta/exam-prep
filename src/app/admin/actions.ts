@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { mentorShare } from "@/lib/pricing";
 import { requireRole } from "@/lib/auth-helpers";
 import { createRefund, fetchOrderPayments } from "@/lib/razorpay/client";
 import { applyPaymentEntity, applyRefundEntity } from "@/lib/payments/sync";
@@ -129,8 +130,16 @@ export async function dismissCancellationRequest(bookingId: string) {
   revalidatePath(`/bookings/${bookingId}`);
 }
 
-export async function markPayoutPaid(bookingId: string, amount: number, notes?: string) {
+export async function markPayoutPaid(bookingId: string, notes?: string) {
   const admin = await requireRole("ADMIN");
+
+  // The amount owed comes from the booking, not the button: the mentor's share
+  // was fixed when the session was booked.
+  const booking = await prisma.booking.findUniqueOrThrow({
+    where: { id: bookingId },
+    select: { amount: true, mentorPayout: true },
+  });
+  const amount = booking.mentorPayout ?? mentorShare(booking.amount);
 
   await prisma.payout.upsert({
     where: { bookingId },

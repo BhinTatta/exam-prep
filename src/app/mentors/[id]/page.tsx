@@ -4,16 +4,15 @@ import { getSession } from "@/lib/auth-helpers";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { ShareProfile } from "@/components/mentors/share-profile";
 import { NotifyMeButton, NotifyMeCallout } from "@/components/mentors/notify-me";
 import { openSlotRequestKeys, slotRequestKey } from "@/lib/slot-requests";
 import { RatingChip, RatingSummary } from "@/components/reviews/rating-summary";
 import { ReviewQuote } from "@/components/reviews/review-quote";
-import { cn } from "@/lib/utils";
-import { daysUntilSlot, formatSlotWhen } from "@/lib/days";
-import { bookSlot } from "@/app/mentors/actions";
+import { formatSlotTime } from "@/lib/days";
+import { openSlotsForMentor } from "@/lib/mentors/availability";
+import { formatOccurrenceDay } from "@/lib/slots";
+import { SlotPicker, type SlotDay } from "@/components/mentors/slot-picker";
 import { expireStaleHolds } from "@/lib/payments/sync";
 import { getMentorProfile, REVIEWS_ON_PROFILE } from "@/lib/mentors/profile";
 import { MIN_SESSIONS_TO_SHOW } from "@/lib/mentors/rank";
@@ -26,7 +25,6 @@ import {
   NotebookPen,
   ListOrdered,
   Undo2,
-  CalendarClock,
   Users,
   ArrowRight,
 } from "lucide-react";
@@ -71,9 +69,10 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
   const isOwnProfile = session?.user?.id === mentor.userId;
   const firstName = mentor.user.name?.trim().split(/\s+/)[0] ?? "them";
   const credential = [mentor.rank, mentor.examCleared, mentor.examYear || null].filter(Boolean).join(" · ");
-  const slots = [...mentor.availability].sort(
-    (a, b) => daysUntilSlot(a.dayOfWeek, a.startTime) - daysUntilSlot(b.dayOfWeek, b.startTime)
-  );
+  const now = new Date();
+  const slots = await openSlotsForMentor(mentor.id, mentor.availability, now);
+  const slotDays = groupByDay(slots, now);
+  const durations = new Set(slots.map((s) => s.duration));
   const hasMoreReviews = mentor.reviewCount > mentor.reviews.length;
 
   // "Notify me" for this mentor, any day. Captured so a student who finds
@@ -251,48 +250,17 @@ export default async function MentorProfilePage({ params }: { params: Promise<{ 
             )}
           </div>
         ) : (
-          <div className="mt-4 flex flex-col gap-3">
-            {slots.map((slot, i) => (
-              <form key={slot.id} action={bookSlot.bind(null, mentor.id, slot.id)}>
-                <Card
-                  className={cn(
-                    "transition-all",
-                    i === 0 && "border-primary/40 ring-1 ring-primary/15"
-                  )}
-                >
-                  <CardContent className="flex flex-col items-stretch gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0">
-                      <p className="flex items-center gap-1.5 font-medium">
-                        {i === 0 && <CalendarClock className="size-4 shrink-0 text-primary" />}
-                        {formatSlotWhen(slot.dayOfWeek, slot.startTime)}
-                      </p>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
-                        {slot.duration} minutes with {firstName}
-                        {i === 0 ? " · soonest" : ""}
-                      </p>
-                    </div>
-                    {isOwnProfile ? (
-                      <Badge variant="outline">Your own slot</Badge>
-                    ) : session?.user ? (
-                      <SubmitButton
-                        size="xl"
-                        emphasis={i === 0 ? "glow" : "lift"}
-                        loadingText="Holding your slot…"
-                        className="w-full sm:w-auto"
-                      >
-                        Book for ₹{mentor.rate}
-                      </SubmitButton>
-                    ) : (
-                      <Button size="xl" emphasis="lift" asChild className="w-full sm:w-auto">
-                        <Link href={`/sign-in?callbackUrl=/mentors/${mentor.id}`}>
-                          Sign in to book
-                        </Link>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              </form>
-            ))}
+          <div className="mt-4">
+            <p className="mb-4 text-sm text-muted-foreground">
+              {durations.size === 1 ? `${[...durations][0]}-minute video call` : "1:1 video call"} · times in IST
+            </p>
+            <SlotPicker
+              mentorId={mentor.id}
+              days={slotDays}
+              price={mentor.rate}
+              mode={isOwnProfile ? "preview" : session?.user ? "book" : "sign-in"}
+              showDuration={durations.size > 1}
+            />
           </div>
         )}
 
@@ -325,4 +293,28 @@ function Expectation({ icon: Icon, children }: { icon: typeof Video; children: R
       <span className="text-pretty">{children}</span>
     </li>
   );
+}
+
+const DATE_ONLY = new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short" });
+
+/** Sessions grouped under their IST day, for the picker. */
+function groupByDay(slots: Awaited<ReturnType<typeof openSlotsForMentor>>, now: Date): SlotDay[] {
+  const days: SlotDay[] = [];
+  for (const slot of slots) {
+    const heading = formatOccurrenceDay(slot.startsAt, now);
+    let day = days.at(-1);
+    if (!day || day.heading !== heading) {
+      // Past the coming week the heading is already a date ("Wed, 3 Dec").
+      const date = heading.includes(",") ? "" : DATE_ONLY.format(slot.startsAt);
+      day = { key: slot.startsAt.toISOString(), heading, date, slots: [] };
+      days.push(day);
+    }
+    day.slots.push({
+      ruleId: slot.ruleId,
+      startsAtIso: slot.startsAt.toISOString(),
+      time: formatSlotTime(slot.startTime),
+      duration: slot.duration,
+    });
+  }
+  return days;
 }

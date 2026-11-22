@@ -39,8 +39,8 @@ that becoming a second copy in somebody's inbox.
 
 ## The absolute session time
 
-`Availability` is a recurring weekly pattern — `dayOfWeek` plus `"HH:mm"` in
-IST. That is right for a mentor setting their hours and useless for everything
+`Availability` is a recurring weekly rule — weekdays plus `"HH:mm"` in IST
+(see `docs/availability-and-pricing.md`). That is right for a mentor setting their hours and useless for everything
 else, because a weekday and a clock time is not a point in time. Before any of
 this could work, `Booking` needed `scheduledStartAt`.
 
